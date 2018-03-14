@@ -21,7 +21,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
         Parent root = loader.load();
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("FOOP");
         primaryStage.setScene(new Scene(root, 500, 500));
         Controller controller = loader.getController();
         GraphicsContext gc = controller.labyrinth.getGraphicsContext2D();
