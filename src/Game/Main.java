@@ -33,7 +33,7 @@ public class Main extends Application {
         robot2.initialize(lab, 3,3);
         labyrinth.attach(robot);
         labyrinth.attach(robot2);
-        
+
         labyrinth.draw(gc);
         primaryStage.show();
     }
