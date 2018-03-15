@@ -74,7 +74,7 @@ public class MainLabyrinth extends GameObject{
 
                 if(labyrinth.getNodeAt(i,j).getType() == Labyrinth.NodeType.finish){
                     gc.setStroke(Color.ORANGE);
-                    gc.fillOval(centerX, centerY, 6,6);
+                    gc.fillOval(centerX, centerY, 10,10);
                     gc.setStroke(Color.BLACK);
                 }
             }
@@ -93,7 +93,7 @@ public class MainLabyrinth extends GameObject{
     }
 
     public Set<Labyrinth.Direction> getEdgesAt(int x, int y){
-        return  new HashSet<>(labyrinth.getNodeAt(x,y).getEdges());
+        return  labyrinth.getNodeAt(x,y).getEdges();
     }
 
     public int getDimX(){

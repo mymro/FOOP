@@ -56,7 +56,7 @@ public class Labyrinth{
         }
 
         public Set<Direction> getEdges(){
-            return neighbours.keySet();
+            return new HashSet<>(neighbours.keySet());
         }
     }
 

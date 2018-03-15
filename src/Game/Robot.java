@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Robot extends GameObject{
 
-    public static final double seconds_per_move = 0.5;
+    public static final double seconds_per_move = 0.1;
 
     private Labyrinth labyrinth;
     private Labyrinth.LabyrinthNode current_pos;
@@ -35,6 +35,10 @@ public class Robot extends GameObject{
     @Override
     public void draw(GraphicsContext gc) {
         if(current_pos != null && labyrinth != null){
+            drawLabyrinth(gc);
+            if(current_path != null){
+                drawPath(current_path, gc, labyrinth);
+            }
             gc.setFill(color);
             int x = labyrinth.getDim_x();
             int y = labyrinth.getDim_y();
@@ -43,10 +47,6 @@ public class Robot extends GameObject{
             double[] points_x = {current_pos.getX()*width, (current_pos.getX()+1) * width, (current_pos.getX()+0.5) * width};
             double[] points_y = {(current_pos.getY()+1)*height, (current_pos.getY()+1)*height, current_pos.getY()*height};
             gc.fillPolygon(points_x, points_y, 3);
-            drawLabyrinth(gc);
-            if(current_path != null){
-                drawPath(current_path, gc, labyrinth);
-            }
         }
 
         super.draw(gc);
