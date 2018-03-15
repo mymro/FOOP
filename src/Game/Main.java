@@ -26,11 +26,11 @@ public class Main extends Application {
         GraphicsContext gc = controller.labyrinth.getGraphicsContext2D();
         MainLabyrinth labyrinth = new MainLabyrinth(20,20, 0, 10);
         Robot robot = new Robot(0, Color.GREEN);
-        Robot robot2 = new Robot(3, Color.RED);
+        Robot robot2 = new Robot(-1, Color.RED);
         Labyrinth lab = new Labyrinth(20,20);
         lab.setNodeAt(3,3, Labyrinth.NodeType.normal);
+        robot.initialize(lab,3,3);
         robot.initialize(lab, 3,3);
-        robot2.initialize(lab, 3,3);
         labyrinth.attach(robot);
         labyrinth.attach(robot2);
 

@@ -229,35 +229,43 @@ public class Labyrinth{
 
     public LabyrinthNode setNodeAt(int x, int y, NodeType type)throws  ArrayIndexOutOfBoundsException{
         try {
-            return setNodeAt(x,y,type, new ArrayList<>());
+            return setNodeAt(x,y,type, new HashSet<>());
         }catch (ArrayIndexOutOfBoundsException e){
             throw e;
         }
     }
 
-    public LabyrinthNode setNodeAt(int x, int y, NodeType type, ArrayList<Direction> new_connections) throws  ArrayIndexOutOfBoundsException{
+    public LabyrinthNode setNodeAt(int x, int y, NodeType type, Set<Direction> new_connections) throws  ArrayIndexOutOfBoundsException{
 
         LabyrinthNode node = labyrinth[x][y];
 
         if(node != null && new_connections.size()>0) {
-            for (Direction dir : node.neighbours.keySet()) {
-                LabyrinthNode neighbour = node.neighbours.get(dir);
-                switch (dir) {
-                    case up:
-                        neighbour.neighbours.remove(Direction.down);
-                        break;
-                    case down:
-                        neighbour.neighbours.remove(Direction.up);
-                        break;
-                    case left:
-                        neighbour.neighbours.remove(Direction.right);
-                        break;
-                    case right:
-                        neighbour.neighbours.remove(Direction.left);
-                        break;
+            Set<Direction> dirs = node.neighbours.keySet();
+            for (Direction dir : dirs) {
+                if(!new_connections.contains(dir)){
+                    LabyrinthNode neighbour = node.neighbours.get(dir);
+                    switch (dir) {
+                        case up:
+                            neighbour.neighbours.remove(Direction.down);
+                            node.neighbours.remove(Direction.up);
+                            break;
+                        case down:
+                            neighbour.neighbours.remove(Direction.up);
+                            node.neighbours.remove(Direction.down);
+                            break;
+                        case left:
+                            neighbour.neighbours.remove(Direction.right);
+                            node.neighbours.remove(Direction.left);
+                            break;
+                        case right:
+                            neighbour.neighbours.remove(Direction.left);
+                            node.neighbours.remove(Direction.right);
+                            break;
+                    }
+                } else {
+                    new_connections.remove(dir);
                 }
             }
-            node.neighbours = new HashMap<>(4);
         }else{
                 node = new LabyrinthNode(x,y,type);
                 labyrinth[x][y] = node;

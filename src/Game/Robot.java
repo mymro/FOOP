@@ -34,6 +34,7 @@ public class Robot extends GameObject{
             double[] points_y = {(current_pos.getY()+1)*height, (current_pos.getY()+1)*height, current_pos.getY()*height};
             gc.fillPolygon(points_x, points_y, 3);
         }
+
         super.draw(gc);
     }
 
