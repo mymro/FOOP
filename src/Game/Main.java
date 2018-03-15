@@ -24,25 +24,29 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 500, 500));
         Controller controller = loader.getController();
         GraphicsContext gc = controller.labyrinth.getGraphicsContext2D();
-        MainLabyrinth labyrinth = new MainLabyrinth(20,20);
+        MainLabyrinth labyrinth = new MainLabyrinth(20,20, 0, 10);
+        Robot robot = new Robot(0, Color.GREEN);
+        Robot robot2 = new Robot(3, Color.RED);
+        Labyrinth lab = new Labyrinth(20,20);
+        lab.setNodeAt(3,3, Labyrinth.NodeType.normal);
+        robot.initialize(lab, 3,3);
+        robot2.initialize(lab, 3,3);
+        labyrinth.attach(robot);
+        labyrinth.attach(robot2);
+        
         labyrinth.draw(gc);
-        Random random = new Random();
-        int x1 = random.nextInt(labyrinth.getDimX());
-        int x2 = random.nextInt(labyrinth.getDimX());
-        int y1 = random.nextInt(labyrinth.getDimY());
-        int y2 = random.nextInt(labyrinth.getDimY());
         primaryStage.show();
     }
 
 
-    public void drawPath(ArrayList<Labyrinth.Node> path, GraphicsContext gc, Labyrinth labyrinth){
+    public void drawPath(ArrayList<Labyrinth.LabyrinthNode> path, GraphicsContext gc, Labyrinth labyrinth){
         double width = gc.getCanvas().getWidth()/labyrinth.getDim_x();
         double height = gc.getCanvas().getHeight()/labyrinth.getDim_y();
         gc.setStroke(Color.RED);
         gc.setLineWidth(2);
         for(int i = 0; i < path.size() -1; i++){
-            Labyrinth.Node from = path.get(i);
-            Labyrinth.Node to = path.get(i+1);
+            Labyrinth.LabyrinthNode from = path.get(i);
+            Labyrinth.LabyrinthNode to = path.get(i+1);
             double centerXfrom = from.getX()*width+width/2;
             double centerYfrom = from.getY()*height+height/2;
             double centerXto = to.getX()*width+width/2;

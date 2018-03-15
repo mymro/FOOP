@@ -5,13 +5,9 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 
-public class MainLabyrinth extends DrawableGameObject{
+public class MainLabyrinth extends GameObject{
 
     private Labyrinth labyrinth;
-
-    MainLabyrinth(int dim_x, int dim_y){
-        this(dim_x, dim_y, 0, new Random());
-    }
 
     MainLabyrinth(int dim_x, int dim_y, int layer){
         this(dim_x, dim_y, layer, new Random());
@@ -41,7 +37,7 @@ public class MainLabyrinth extends DrawableGameObject{
         double height = gc.getCanvas().getHeight()/y;
         for (int i = 0; i < x; i++){
             for (int j = 0; j < y; j++){
-                Labyrinth.Node current = labyrinth.getNodeAt(i,j);
+                Labyrinth.LabyrinthNode current = labyrinth.getNodeAt(i,j);
                 double centerX = current.getX()*width+width/2;
                 double centerY = current.getY()*height+height/2;
 
@@ -61,11 +57,13 @@ public class MainLabyrinth extends DrawableGameObject{
                 gc.strokeOval(centerX, centerY, 3,3);
             }
         }
+
+        super.draw(gc);
     }
 
     @Override
     public void update() {
-
+        super.update();
     }
 
     public int getDimX(){

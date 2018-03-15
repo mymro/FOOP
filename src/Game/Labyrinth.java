@@ -1,8 +1,5 @@
 package Game;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
 import java.util.*;
 
 public class Labyrinth{
@@ -15,19 +12,20 @@ public class Labyrinth{
 
     public enum NodeType{
         finish,
-        normal
+        normal,
+        unknwon,
     }
 
-    public class Node{
+    public static class LabyrinthNode {
         private NodeType type;
         private int x,y;
-        private HashMap<Direction, Node> neighbours = new HashMap<>();
+        private HashMap<Direction, LabyrinthNode> neighbours = new HashMap<>();
 
-        Node(int x, int y){
+        LabyrinthNode(int x, int y){
             this(x, y, NodeType.normal);
         }
 
-        Node(int x, int y, NodeType type){
+        LabyrinthNode(int x, int y, NodeType type){
             this.type = type;
             this.x = x;
             this.y = y;
@@ -45,17 +43,17 @@ public class Labyrinth{
             return y;
         }
 
-        private HashMap<Direction, Node> getNeighbours(){
+        private HashMap<Direction, LabyrinthNode> getNeighbours(){
             return neighbours;
         }
 
-        public Node getNeighbourAt(Direction dir){
+        public LabyrinthNode getNeighbourAt(Direction dir){
             return neighbours.get(dir);
         }
     }
 
     private int dim_x, dim_y;
-    private Node[][] labyrinth;
+    private LabyrinthNode[][] labyrinth;
 
     Labyrinth(int dim_x, int dim_y){
         if(dim_x < 1 || dim_y <1){
@@ -63,7 +61,7 @@ public class Labyrinth{
         }
         this.dim_x = dim_x;
         this.dim_y = dim_y;
-        labyrinth = new Node[dim_x][dim_y];
+        labyrinth = new LabyrinthNode[dim_x][dim_y];
     }
 
     public void createLabyrinth(){
@@ -97,27 +95,27 @@ public class Labyrinth{
                 j = dim_y-1;
         }
 
-        ArrayList<Node> frontier = new ArrayList<Node>();
+        ArrayList<LabyrinthNode> frontier = new ArrayList<LabyrinthNode>();
         boolean[][] frontierMatrix = new boolean[dim_x][dim_y];
-        Node current = new Node(i, j, NodeType.finish);
+        LabyrinthNode current = new LabyrinthNode(i, j, NodeType.finish);
         labyrinth[current.x][current.y] = current;
         int rand = 0;
 
         do{
             if(current.y-1 >= 0 && labyrinth[current.x][current.y-1] == null && frontierMatrix[current.x][current.y-1] != true){
-                frontier.add(new Node(current.x, current.y-1));
+                frontier.add(new LabyrinthNode(current.x, current.y-1));
                 frontierMatrix[current.x][current.y-1] = true;
             }
             if(current.y+1 < dim_y && labyrinth[current.x][current.y+1] == null && frontierMatrix[current.x][current.y+1] != true){
-                frontier.add(new Node(current.x, current.y+1));
+                frontier.add(new LabyrinthNode(current.x, current.y+1));
                 frontierMatrix[current.x][current.y+1] = true;
             }
             if(current.x-1 >= 0 && labyrinth[current.x-1][current.y] == null && frontierMatrix[current.x-1][current.y] != true){
-                frontier.add(new Node(current.x-1, current.y));
+                frontier.add(new LabyrinthNode(current.x-1, current.y));
                 frontierMatrix[current.x-1][current.y] = true;
             }
             if(current.x+1 < dim_x && labyrinth[current.x+1][current.y] == null && frontierMatrix[current.x+1][current.y] != true){
-                frontier.add(new Node(current.x+1, current.y));
+                frontier.add(new LabyrinthNode(current.x+1, current.y));
                 frontierMatrix[current.x+1][current.y] = true;
             }
 
@@ -126,7 +124,7 @@ public class Labyrinth{
             labyrinth[current.x][current.y] = current;
             frontier.remove(rand);
 
-            ArrayList<Node> possibleConnections = new ArrayList<>();
+            ArrayList<LabyrinthNode> possibleConnections = new ArrayList<>();
 
             if(current.y-1 >= 0 && labyrinth[current.x][current.y-1] != null){
                 possibleConnections.add(labyrinth[current.x][current.y-1]);
@@ -142,7 +140,7 @@ public class Labyrinth{
             }
 
             rand = random.nextInt(possibleConnections.size());
-            Node connect = possibleConnections.get(rand);
+            LabyrinthNode connect = possibleConnections.get(rand);
 
             if(connect.x == current.x){
                 if(connect.y > current.y){
@@ -164,16 +162,16 @@ public class Labyrinth{
         }while(frontier.size()>0);
     }
 
-    public ArrayList<Node> findPath(Node from, Node to){
-        LinkedList<Node> openSet = new LinkedList<>();
-        ArrayList<Node> closedSet = new ArrayList<>();
-        HashMap<Node, Integer> g = new HashMap<>();
-        HashMap<Node, Integer> f = new HashMap<>();
-        HashMap<Node, Node> cameFrom = new HashMap<>();
+    public ArrayList<LabyrinthNode> findPath(LabyrinthNode from, LabyrinthNode to){
+        LinkedList<LabyrinthNode> openSet = new LinkedList<>();
+        ArrayList<LabyrinthNode> closedSet = new ArrayList<>();
+        HashMap<LabyrinthNode, Integer> g = new HashMap<>();
+        HashMap<LabyrinthNode, Integer> f = new HashMap<>();
+        HashMap<LabyrinthNode, LabyrinthNode> cameFrom = new HashMap<>();
         g.put(from, 0);
         f.put(from, Math.abs(from.x-to.x)+Math.abs(from.y-to.y));
         openSet.addFirst(from);
-        Node current = from;
+        LabyrinthNode current = from;
         while (openSet.size()>0) {
             current = openSet.getFirst();
             if (current == to) {
@@ -181,7 +179,7 @@ public class Labyrinth{
             }
             openSet.remove(0);
             closedSet.add(current);
-            for (Node neighbour : current.neighbours.values()) {
+            for (LabyrinthNode neighbour : current.neighbours.values()) {
                 if (closedSet.indexOf(neighbour) != -1) {
                     continue;
                 }
@@ -191,11 +189,11 @@ public class Labyrinth{
 
                 int index = openSet.indexOf(neighbour);
                 if (index == -1) {
-                    ListIterator<Node> it = openSet.listIterator();
+                    ListIterator<LabyrinthNode> it = openSet.listIterator();
                     boolean set = false;
                     while (it.hasNext()) {
                         int i = it.nextIndex();
-                        Node node = it.next();
+                        LabyrinthNode node = it.next();
                         if (f.get(node) > tentativef) {
                             openSet.add(i, neighbour);
                             set = true;
@@ -213,7 +211,7 @@ public class Labyrinth{
                 cameFrom.put(neighbour, current);
             }
         }
-        ArrayList<Node> path = new ArrayList<>();
+        ArrayList<LabyrinthNode> path = new ArrayList<>();
         int i = 0;
         if(cameFrom.get(current) != null || from == to){
             path.add(current);
@@ -225,8 +223,87 @@ public class Labyrinth{
         return path;
     }
 
-    public Node getNodeAt(int x, int y) throws ArrayIndexOutOfBoundsException{
+    public LabyrinthNode getNodeAt(int x, int y) throws ArrayIndexOutOfBoundsException{
         return labyrinth[x][y];
+    }
+
+    public LabyrinthNode setNodeAt(int x, int y, NodeType type)throws  ArrayIndexOutOfBoundsException{
+        try {
+            return setNodeAt(x,y,type, new ArrayList<>());
+        }catch (ArrayIndexOutOfBoundsException e){
+            throw e;
+        }
+    }
+
+    public LabyrinthNode setNodeAt(int x, int y, NodeType type, ArrayList<Direction> new_connections) throws  ArrayIndexOutOfBoundsException{
+
+        LabyrinthNode node = labyrinth[x][y];
+
+        if(node != null && new_connections.size()>0) {
+            for (Direction dir : node.neighbours.keySet()) {
+                LabyrinthNode neighbour = node.neighbours.get(dir);
+                switch (dir) {
+                    case up:
+                        neighbour.neighbours.remove(Direction.down);
+                        break;
+                    case down:
+                        neighbour.neighbours.remove(Direction.up);
+                        break;
+                    case left:
+                        neighbour.neighbours.remove(Direction.right);
+                        break;
+                    case right:
+                        neighbour.neighbours.remove(Direction.left);
+                        break;
+                }
+            }
+            node.neighbours = new HashMap<>(4);
+        }else{
+                node = new LabyrinthNode(x,y,type);
+                labyrinth[x][y] = node;
+            }
+
+        for (Direction dir : new_connections){
+            int neighbour_x = x;
+            int neighbour_y = y;
+            Direction neighbour_dir = null;
+
+            switch (dir){
+                case up:
+                    neighbour_x = x;
+                    neighbour_y = y-1;
+                    neighbour_dir = Direction.down;
+                    break;
+                case down:
+                    neighbour_x = x;
+                    neighbour_y = y+1;
+                    neighbour_dir = Direction.up;
+                    break;
+                case left:
+                    neighbour_x = x-1;
+                    neighbour_y = y;
+                    neighbour_dir = Direction.right;
+                    break;
+                case right:
+                    neighbour_x = x+1;
+                    neighbour_y = y;
+                    neighbour_dir = Direction.left;
+                    break;
+            }
+
+            if (neighbour_x < dim_x && neighbour_y < dim_y && neighbour_x >= 0 && neighbour_y >= 0 ){
+                LabyrinthNode neighbour = labyrinth[neighbour_x][neighbour_y];
+                if(neighbour == null){
+                    neighbour = new LabyrinthNode(neighbour_x, neighbour_y, NodeType.unknwon);
+                    labyrinth[neighbour_x][neighbour_y] = neighbour;
+                }
+
+                neighbour.neighbours.put(neighbour_dir, node);
+                node.neighbours.put(dir, neighbour);
+            }
+        }
+
+        return node;
     }
 
     public int getDim_x(){

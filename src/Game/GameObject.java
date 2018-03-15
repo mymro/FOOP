@@ -1,5 +1,7 @@
 package Game;
 
+import javafx.scene.canvas.GraphicsContext;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
@@ -18,14 +20,26 @@ public abstract class GameObject implements Comparable<GameObject>{
         this.layer = layer;
     }
 
-    abstract public void update();
+    public void update(){
+        for(GameObject go : children){
+            go.update();
+        }
+    }
+
+    public void draw(GraphicsContext gc){
+        for(GameObject go : children){
+            go.draw(gc);
+        }
+    }
 
     public void attach(GameObject go){
         children.add(go);
+        go.parent = this;
     }
 
     public void detach(GameObject go){
         children.remove(go);
+        go.parent = null;
     }
 
     public void setLayer(int layer){
@@ -34,6 +48,10 @@ public abstract class GameObject implements Comparable<GameObject>{
 
     public int getLayer(){
         return layer;
+    }
+
+    public GameObject getParent() {
+        return parent;
     }
 
     @Override
