@@ -1,26 +1,44 @@
 package Game;
 
+import javafx.scene.Node;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class MainLabyrinth extends GameObject{
 
     private Labyrinth labyrinth;
+    private long seed;
 
     MainLabyrinth(int dim_x, int dim_y, int layer){
-        this(dim_x, dim_y, layer, new Random());
+        this(dim_x, dim_y, layer, new Random().nextInt());
     }
 
     MainLabyrinth(int dim_x, int dim_y, int layer, int seed){
-        this(dim_x, dim_y, layer, new Random(seed));
-    }
-
-    MainLabyrinth(int dim_x, int dim_y, int layer, Random random){
         super(layer);
+        Random random = new Random(seed);
         labyrinth = new Labyrinth(dim_x, dim_y);
         labyrinth.createLabyrinth(random);
+        this.seed = seed;
+    }
+
+    public Robot addPlayer(Color color){
+        Random random = new Random();
+        int i,j;
+        do{
+            i = random.nextInt(labyrinth.getDim_x());
+            j = random.nextInt(labyrinth.getDim_y());
+        }while (labyrinth.getNodeAt(i,j).getType() == Labyrinth.NodeType.finish);
+        Robot robot = new Robot(0, color);
+        Labyrinth lab = new Labyrinth(labyrinth.getDim_x(), labyrinth.getDim_y());
+        lab.setNodeAt(i,j, Labyrinth.NodeType.normal, labyrinth.getNodeAt(i,j).getEdges());
+        robot.initialize(lab , i, j);
+        attach(robot);
+
+        return robot;
     }
 
     @Override
@@ -54,7 +72,11 @@ public class MainLabyrinth extends GameObject{
                     gc.strokeLine(centerX, centerY, centerX+width/2, centerY);
                 }
 
-                gc.strokeOval(centerX, centerY, 3,3);
+                if(labyrinth.getNodeAt(i,j).getType() == Labyrinth.NodeType.finish){
+                    gc.setStroke(Color.ORANGE);
+                    gc.fillOval(centerX, centerY, 6,6);
+                    gc.setStroke(Color.BLACK);
+                }
             }
         }
 
@@ -64,6 +86,14 @@ public class MainLabyrinth extends GameObject{
     @Override
     public void update() {
         super.update();
+    }
+
+    public Labyrinth.NodeType getTypeAt(int x, int y){
+        return labyrinth.getNodeAt(x,y).getType();
+    }
+
+    public Set<Labyrinth.Direction> getEdgesAt(int x, int y){
+        return  new HashSet<>(labyrinth.getNodeAt(x,y).getEdges());
     }
 
     public int getDimX(){

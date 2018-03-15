@@ -2,14 +2,13 @@ package Game;
 
 import javafx.scene.canvas.GraphicsContext;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.TreeSet;
 
 public abstract class GameObject implements Comparable<GameObject>{
     private GameObject parent;
     private TreeSet<GameObject> children;
     private int layer;
+    protected Main.GameSystem game_system;
 
     GameObject(){
         this(0);
@@ -18,6 +17,7 @@ public abstract class GameObject implements Comparable<GameObject>{
     GameObject(int layer){
         children = new TreeSet<>();
         this.layer = layer;
+        game_system = Main.GameSystem.getInstance();
     }
 
     public void update(){
@@ -33,6 +33,9 @@ public abstract class GameObject implements Comparable<GameObject>{
     }
 
     public void attach(GameObject go){
+        if(go.parent != null){
+            go.parent.detach(go);
+        }
         children.add(go);
         go.parent = this;
     }

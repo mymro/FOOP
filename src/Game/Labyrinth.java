@@ -35,6 +35,10 @@ public class Labyrinth{
             return type;
         }
 
+        public void setType(NodeType type){
+            this.type = type;
+        }
+
         int getX(){
             return x;
         }
@@ -49,6 +53,10 @@ public class Labyrinth{
 
         public LabyrinthNode getNeighbourAt(Direction dir){
             return neighbours.get(dir);
+        }
+
+        public Set<Direction> getEdges(){
+            return neighbours.keySet();
         }
     }
 
@@ -169,12 +177,18 @@ public class Labyrinth{
         HashMap<LabyrinthNode, Integer> f = new HashMap<>();
         HashMap<LabyrinthNode, LabyrinthNode> cameFrom = new HashMap<>();
         g.put(from, 0);
-        f.put(from, Math.abs(from.x-to.x)+Math.abs(from.y-to.y));
+        if(to == null){
+            f.put(from, 0);
+        }else{
+            f.put(from, Math.abs(from.x-to.x)+Math.abs(from.y-to.y));
+        }
         openSet.addFirst(from);
         LabyrinthNode current = from;
         while (openSet.size()>0) {
             current = openSet.getFirst();
             if (current == to) {
+                break;
+            }else if(current.getType() == NodeType.unknwon){
                 break;
             }
             openSet.remove(0);
@@ -184,8 +198,11 @@ public class Labyrinth{
                     continue;
                 }
 
-                int tentativeg = g.get(current) + 1;
-                int tentativef = tentativeg + Math.abs(neighbour.x - to.x) + Math.abs(neighbour.y - to.y);
+                int tentative_g = g.get(current) + 1;
+                int tentative_f = 0;
+                if(to != null){
+                    tentative_f = tentative_g + Math.abs(neighbour.x - to.x) + Math.abs(neighbour.y - to.y);
+                }
 
                 int index = openSet.indexOf(neighbour);
                 if (index == -1) {
@@ -194,7 +211,7 @@ public class Labyrinth{
                     while (it.hasNext()) {
                         int i = it.nextIndex();
                         LabyrinthNode node = it.next();
-                        if (f.get(node) > tentativef) {
+                        if (f.get(node) > tentative_f) {
                             openSet.add(i, neighbour);
                             set = true;
                             break;
@@ -203,17 +220,17 @@ public class Labyrinth{
                     if(!set){
                         openSet.addLast(neighbour);
                     }
-                } else if (g.get(neighbour) < tentativeg) {
+                } else if (g.get(neighbour) < tentative_g) {
                     continue;
                 }
-                g.put(neighbour, tentativeg);
-                f.put(neighbour, tentativef);
+                g.put(neighbour, tentative_g);
+                f.put(neighbour, tentative_f);
                 cameFrom.put(neighbour, current);
             }
         }
         ArrayList<LabyrinthNode> path = new ArrayList<>();
         int i = 0;
-        if(cameFrom.get(current) != null || from == to){
+        if((cameFrom.get(current) != null || from == to) && openSet.size()>0){
             path.add(current);
             while (cameFrom.get(path.get(i)) != null){
                 i = i+1;
@@ -235,9 +252,18 @@ public class Labyrinth{
         }
     }
 
+    public LabyrinthNode changeNode(LabyrinthNode node, NodeType type, Set<Direction> new_connections ) throws ArrayIndexOutOfBoundsException{
+        try{
+            return setNodeAt(node.getX(), node.getY(), type, new_connections);
+        }catch (ArrayIndexOutOfBoundsException e){
+            throw e;
+        }
+    }
+
     public LabyrinthNode setNodeAt(int x, int y, NodeType type, Set<Direction> new_connections) throws  ArrayIndexOutOfBoundsException{
 
         LabyrinthNode node = labyrinth[x][y];
+        new_connections = new HashSet<>(new_connections);
 
         if(node != null && new_connections.size()>0) {
             Set<Direction> dirs = node.neighbours.keySet();
@@ -267,9 +293,11 @@ public class Labyrinth{
                 }
             }
         }else{
-                node = new LabyrinthNode(x,y,type);
+                node = new LabyrinthNode(x,y);
                 labyrinth[x][y] = node;
-            }
+        }
+
+        node.setType(type);
 
         for (Direction dir : new_connections){
             int neighbour_x = x;
