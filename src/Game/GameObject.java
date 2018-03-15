@@ -8,7 +8,7 @@ public abstract class GameObject implements Comparable<GameObject>{
     private GameObject parent;
     private TreeSet<GameObject> children;
     private int layer;
-    protected Main.GameSystem game_system;
+    private Main.GameSystem game_system;
 
     GameObject(){
         this(0);
@@ -55,6 +55,10 @@ public abstract class GameObject implements Comparable<GameObject>{
 
     public GameObject getParent() {
         return parent;
+    }
+
+    public Main.GameSystem getGame_system(){
+        return game_system;
     }
 
     @Override

@@ -13,7 +13,7 @@ public class Labyrinth{
     public enum NodeType{
         finish,
         normal,
-        unknwon,
+        unknown,
     }
 
     public static class LabyrinthNode {
@@ -188,7 +188,7 @@ public class Labyrinth{
             current = openSet.getFirst();
             if (current == to) {
                 break;
-            }else if(current.getType() == NodeType.unknwon){
+            }else if(current.getType() == NodeType.unknown){
                 break;
             }
             openSet.remove(0);
@@ -330,7 +330,7 @@ public class Labyrinth{
             if (neighbour_x < dim_x && neighbour_y < dim_y && neighbour_x >= 0 && neighbour_y >= 0 ){
                 LabyrinthNode neighbour = labyrinth[neighbour_x][neighbour_y];
                 if(neighbour == null){
-                    neighbour = new LabyrinthNode(neighbour_x, neighbour_y, NodeType.unknwon);
+                    neighbour = new LabyrinthNode(neighbour_x, neighbour_y, NodeType.unknown);
                     labyrinth[neighbour_x][neighbour_y] = neighbour;
                 }
 

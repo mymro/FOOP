@@ -55,7 +55,7 @@ public class Robot extends GameObject{
     @Override
     public void update() {
         if(current_pos != null && labyrinth != null){
-            current_delta_time += game_system.deltaTime();
+            current_delta_time += getGame_system().deltaTime();
             if(current_delta_time >= seconds_per_move){
                 current_delta_time = 0;
                 if(current_path_index <= 0 && current_pos.getType() != Labyrinth.NodeType.finish){
@@ -65,7 +65,7 @@ public class Robot extends GameObject{
                 if(current_path_index > 0 ){
                     current_path_index = current_path_index - 1;
                     current_pos = current_path.get(current_path_index);
-                    if(current_pos.getType() == Labyrinth.NodeType.unknwon){
+                    if(current_pos.getType() == Labyrinth.NodeType.unknown){
                         if(getParent() instanceof MainLabyrinth){
                             MainLabyrinth main = (MainLabyrinth) getParent();
                             labyrinth.changeNode(current_pos, main.getTypeAt(current_pos.getX(), current_pos.getY()), main.getEdgesAt(current_pos.getX(), current_pos.getY()));
