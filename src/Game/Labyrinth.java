@@ -1,8 +1,11 @@
 package Game;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 import java.util.*;
 
-public class Labyrinth {
+public class Labyrinth{
     public enum Direction {
         up,
         down,
@@ -54,7 +57,7 @@ public class Labyrinth {
     private int dim_x, dim_y;
     private Node[][] labyrinth;
 
-    Labyrinth(int dim_x, int dim_y) throws IllegalArgumentException{
+    Labyrinth(int dim_x, int dim_y){
         if(dim_x < 1 || dim_y <1){
             throw new IllegalArgumentException("Dimensions have to be greater 0");
         }
@@ -64,8 +67,15 @@ public class Labyrinth {
     }
 
     public void createLabyrinth(){
+        createLabyrinth(new Random());
+    }
 
-        Random random = new Random();
+    public void createLabyrinth(long seed){
+        Random random = new Random(seed);
+        createLabyrinth(random);
+    }
+
+    public void createLabyrinth(Random random){
         int i = 0;
         int j = 0;
 
