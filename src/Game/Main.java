@@ -9,7 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends Application {

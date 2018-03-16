@@ -1,10 +1,8 @@
 package Game;
 
-import javafx.scene.Node;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 

@@ -1,10 +1,9 @@
 package Game;
+
 import javafx.scene.canvas.GraphicsContext;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.TreeSet;
 
 public abstract class GameObject{
     private GameObject parent;
@@ -53,10 +52,6 @@ public abstract class GameObject{
     public void detach(GameObject go){
         children.remove(go);
         go.parent = null;
-    }
-
-    public void setLayer(int layer){
-        this.layer = layer;
     }
 
     public int getLayer(){
