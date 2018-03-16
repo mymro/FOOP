@@ -50,10 +50,10 @@ public class Main extends Application {
         primaryStage.show();
 
         MainLabyrinth labyrinth = new MainLabyrinth(50,50, 0);
-        labyrinth.addPlayer(Color.RED);
-        labyrinth.addPlayer(Color.YELLOW);
-        labyrinth.addPlayer(Color.PINK);
-        labyrinth.addPlayer(Color.PURPLE);
+        labyrinth.addPlayer(Color.RED, -1);
+        labyrinth.addPlayer(Color.YELLOW, 2);
+        labyrinth.addPlayer(Color.PINK, 0);
+        labyrinth.addPlayer(Color.PURPLE, 5);
 
         GameSystem game_system = GameSystem.getInstance();
         TimeUnit.SECONDS.sleep(1);

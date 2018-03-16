@@ -209,10 +209,9 @@ public class Labyrinth{
                     ListIterator<LabyrinthNode> it = openSet.listIterator();
                     boolean set = false;
                     while (it.hasNext()) {
-                        int i = it.nextIndex();
-                        LabyrinthNode node = it.next();
-                        if (f.get(node) > tentative_f) {
-                            openSet.add(i, neighbour);
+                        if (f.get(it.next()) > tentative_f) {
+                            it.previous();
+                            it.add(neighbour);
                             set = true;
                             break;
                         }

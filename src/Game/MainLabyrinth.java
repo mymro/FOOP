@@ -25,14 +25,14 @@ public class MainLabyrinth extends GameObject{
         this.seed = seed;
     }
 
-    public Robot addPlayer(Color color){
+    public Robot addPlayer(Color color, int layer){
         Random random = new Random();
         int i,j;
         do{
             i = random.nextInt(labyrinth.getDim_x());
             j = random.nextInt(labyrinth.getDim_y());
         }while (labyrinth.getNodeAt(i,j).getType() == Labyrinth.NodeType.finish);
-        Robot robot = new Robot(0, color);
+        Robot robot = new Robot(layer, color);
         Labyrinth lab = new Labyrinth(labyrinth.getDim_x(), labyrinth.getDim_y());
         lab.setNodeAt(i,j, Labyrinth.NodeType.normal, labyrinth.getNodeAt(i,j).getEdges());
         robot.initialize(lab , i, j);

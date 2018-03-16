@@ -1,12 +1,14 @@
 package Game;
-
 import javafx.scene.canvas.GraphicsContext;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.TreeSet;
 
-public abstract class GameObject implements Comparable<GameObject>{
+public abstract class GameObject{
     private GameObject parent;
-    private TreeSet<GameObject> children;
+    private LinkedList<GameObject> children;
     private int layer;
     private Main.GameSystem game_system;
 
@@ -15,7 +17,7 @@ public abstract class GameObject implements Comparable<GameObject>{
     }
 
     GameObject(int layer){
-        children = new TreeSet<>();
+        children = new LinkedList<>();
         this.layer = layer;
         game_system = Main.GameSystem.getInstance();
     }
@@ -36,8 +38,16 @@ public abstract class GameObject implements Comparable<GameObject>{
         if(go.parent != null){
             go.parent.detach(go);
         }
-        children.add(go);
         go.parent = this;
+        ListIterator<GameObject> it = children.listIterator();
+        while (it.hasNext()){
+            if (it.next().layer > go.layer){
+                it.previous();
+                it.add(go);
+                return;
+            }
+        }
+        children.add(children.size(), go);
     }
 
     public void detach(GameObject go){
@@ -59,16 +69,5 @@ public abstract class GameObject implements Comparable<GameObject>{
 
     public Main.GameSystem getGame_system(){
         return game_system;
-    }
-
-    @Override
-    public int compareTo(GameObject go){
-        if(layer <= go.getLayer()){
-            return -1;
-        }else if(go == this){
-            return 0;
-        }else {
-            return 1;
-        }
     }
 }
