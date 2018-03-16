@@ -18,7 +18,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    public static class GameSystem {
+    public static final class GameSystem {
         private static GameSystem instance;
         private double delta_time; // in nanoseconds
 
