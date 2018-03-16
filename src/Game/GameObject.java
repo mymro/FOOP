@@ -63,9 +63,9 @@ public abstract class GameObject implements Comparable<GameObject>{
 
     @Override
     public int compareTo(GameObject go){
-        if(layer < go.getLayer()){
+        if(layer <= go.getLayer()){
             return -1;
-        }else if(layer == go.getLayer()){
+        }else if(go == this){
             return 0;
         }else {
             return 1;

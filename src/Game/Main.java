@@ -49,8 +49,11 @@ public class Main extends Application {
         GraphicsContext gc = controller.labyrinth.getGraphicsContext2D();
         primaryStage.show();
 
-        MainLabyrinth labyrinth = new MainLabyrinth(20,20, 0);
+        MainLabyrinth labyrinth = new MainLabyrinth(50,50, 0);
         labyrinth.addPlayer(Color.RED);
+        labyrinth.addPlayer(Color.YELLOW);
+        labyrinth.addPlayer(Color.PINK);
+        labyrinth.addPlayer(Color.PURPLE);
 
         GameSystem game_system = GameSystem.getInstance();
         TimeUnit.SECONDS.sleep(1);
