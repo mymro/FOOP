@@ -46,7 +46,7 @@ public class Robot extends GameObject{
 
     @Override
     public void draw(GraphicsContext gc) {
-        if(current_node != null && labyrinth != null){
+        if(current_pos_x > -1 && current_pos_y > -1 && labyrinth != null){
             drawLabyrinth(gc);
             if(current_path != null){
                 drawPath(current_path, gc, labyrinth);
