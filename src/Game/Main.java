@@ -48,26 +48,23 @@ public class Main extends Application {
         GraphicsContext gc = controller.labyrinth.getGraphicsContext2D();
         primaryStage.show();
 
-        MainLabyrinth labyrinth = new MainLabyrinth(50,50, 0);
+        MainLabyrinth labyrinth = new MainLabyrinth(20,20, 0);
         labyrinth.addPlayer(Color.RED, -1);
-        labyrinth.addPlayer(Color.YELLOW, 2);
-        labyrinth.addPlayer(Color.PINK, 0);
-        labyrinth.addPlayer(Color.PURPLE, 5);
 
         GameSystem game_system = GameSystem.getInstance();
         TimeUnit.SECONDS.sleep(1);
 
         new AnimationTimer(){
 
-            long last_frame = System.nanoTime();
+            long last_frame_time = System.nanoTime();
 
             @Override
             public void handle(long now) {
-                game_system.delta_time = (now-last_frame)/1000000000.0;
-                last_frame = now;
                 gc.clearRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
                 labyrinth.update();
                 labyrinth.draw(gc);
+                game_system.delta_time = (now- last_frame_time)/1000000000.0;
+                last_frame_time = now;
             }
         }.start();
     }
