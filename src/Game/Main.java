@@ -1,6 +1,8 @@
 package Game;
 
+import Game.GameObjects.DontComeNearFlag;
 import Game.GameObjects.MainLabyrinth;
+import Game.GameObjects.SearchHereFlag;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -51,7 +53,10 @@ public class Main extends Application {
 
         MainLabyrinth labyrinth = new MainLabyrinth(50,50, 0);
         labyrinth.addPlayer(Color.RED, -1);
-        labyrinth.addFlag(25,25);
+        SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, 50, 50);
+        DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, 50, 50);
+        labyrinth.addFlag(flag);
+        labyrinth.addFlag(flag2);
 
         GameSystem game_system = GameSystem.getInstance();
         TimeUnit.SECONDS.sleep(1);

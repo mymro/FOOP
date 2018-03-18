@@ -46,8 +46,7 @@ public class MainLabyrinth extends GameObject implements FModifier {
         return robot;
     }
 
-    public Flag addFlag(int x, int y){
-        SearchHereFlag flag = new SearchHereFlag(-30, x, y, labyrinth.getDim_x(), labyrinth.getDim_y());
+    public Flag addFlag(Flag flag){
         attach(flag);
         flags.add(flag);
         return flag;

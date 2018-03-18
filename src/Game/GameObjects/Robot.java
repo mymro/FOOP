@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Robot extends GameObject {
 
-    public static final double seconds_per_field = 0.2;
+    public static final double seconds_per_field = 0.02;
 
     private Labyrinth labyrinth;
     private double current_pos_x, current_pos_y;
