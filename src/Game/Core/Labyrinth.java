@@ -1,7 +1,5 @@
 package Game.Core;
 
-import Game.Core.FModifier;
-
 import java.util.*;
 
 public class Labyrinth{

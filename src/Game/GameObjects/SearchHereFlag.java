@@ -17,7 +17,7 @@ public class SearchHereFlag extends Flag {
         for(int i = 0; i < pos_x; i++){
             gc.setStroke(Color.web("#36e27e", -0.9*getFModifierAt(i,pos_y)/20));
             gc.setLineWidth(step_width);
-            gc.strokeOval(i*step_width, i*step_height, (pos_x-i)*2*step_width, (pos_y-i)*2*step_height);
+            gc.strokeOval(i*step_width, i*step_height, ((pos_x-i)*2+1)*step_width, ((pos_y-i)*2+1)*step_height);
         }
     }
 
