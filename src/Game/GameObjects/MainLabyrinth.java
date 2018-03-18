@@ -84,9 +84,8 @@ public class MainLabyrinth extends GameObject implements FModifier {
                 }
 
                 if(labyrinth.getNodeAt(i,j).getType() == Labyrinth.NodeType.finish){
-                    gc.setStroke(Color.ORANGE);
+                    gc.setFill(Color.ORANGE);
                     gc.fillOval(centerX, centerY, 10,10);
-                    gc.setStroke(Color.BLACK);
                 }
             }
         }
