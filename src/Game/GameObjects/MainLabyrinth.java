@@ -15,7 +15,7 @@ public class MainLabyrinth extends GameObject implements FModifier {
 
     private Labyrinth labyrinth;
     private long seed;
-    private ArrayList<Flag> flags;
+    private ArrayList<FModifier> modifiers;
 
     public MainLabyrinth(int dim_x, int dim_y, int layer){
         this(dim_x, dim_y, layer, new Random().nextInt());
@@ -27,7 +27,7 @@ public class MainLabyrinth extends GameObject implements FModifier {
         labyrinth = new Labyrinth(dim_x, dim_y);
         labyrinth.createLabyrinth(random);
         this.seed = seed;
-        flags = new ArrayList<>();
+        modifiers = new ArrayList<>();
     }
 
     public Robot addPlayer(Color color, int layer){
@@ -48,7 +48,7 @@ public class MainLabyrinth extends GameObject implements FModifier {
 
     public Flag addFlag(Flag flag){
         attach(flag);
-        flags.add(flag);
+        modifiers.add(flag);
         return flag;
     }
 
@@ -118,8 +118,8 @@ public class MainLabyrinth extends GameObject implements FModifier {
     @Override
     public double getFModifierAt(double x, double y) {
         double result=0;
-        for (Flag flag:flags){
-            result += flag.getFModifierAt(x,y);
+        for (FModifier modifier: modifiers){
+            result += modifier.getFModifierAt(x,y);
         }
         return result;
     }
