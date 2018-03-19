@@ -24,7 +24,12 @@ public class ClientThread extends Thread {
 	
 	private String userName;
 	private String rivalName;
-	
+
+	/**
+	 *
+	 * TODO
+	 *
+	 */
 	private Main game;
 	
 	ObjectInputStream ois;

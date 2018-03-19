@@ -71,7 +71,7 @@ public class Client extends Thread {
 			try {
 				Socket socket = clsSocket.accept();
 				if (socket != null) {
-					//System.out.println(userName + "kabul ettim basliyorum: " );
+					System.out.println(userName + "accepted: " );
 					new ClientThread(this, socket, userName, rivalName);
 				}
 			} catch (IOException e) {

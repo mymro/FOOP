@@ -56,7 +56,7 @@ public class ClientGUI {
 
 	private void CreateGUI() {
 		
-		clientFrame = new JFrame("Dama - " + userName);
+		clientFrame = new JFrame("Game Labyrinth - " + userName);
 		clientFrame.setSize(300, 400);
 		clientFrame.setResizable(false);
 		clientFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
