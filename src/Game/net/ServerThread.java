@@ -37,7 +37,7 @@ public class ServerThread extends Thread {
         try {
             while (true) {
                 Message message = (Message) ois.readObject(); // get a message
-                // from client
+                // from Client
                 processClientMessage(message); // handle this message
                 if(message.getType() == Message.CLIENT_DISCONNECT)
                     break;
