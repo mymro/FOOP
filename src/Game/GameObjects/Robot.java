@@ -13,7 +13,6 @@ public class Robot extends GameObject {
     public static final double seconds_per_field = 0.02;
 
     private Labyrinth labyrinth;
-    private double current_pos_x, current_pos_y;
     private Labyrinth.LabyrinthNode current_node, next_node;
     private Color color;
     private ArrayList<Labyrinth.LabyrinthNode> current_path;
@@ -37,12 +36,12 @@ public class Robot extends GameObject {
             }catch (ArrayIndexOutOfBoundsException e){
                 throw e;
             }
-            current_pos_x = current_node.getX();
-            current_pos_y = current_node.getY();
+            setPos_x(current_node.getX());
+            setPos_y(current_node.getY());
         }else {
             current_node = null;
-            current_pos_x = -1;
-            current_pos_y = -1;
+            setPos_x(-1);
+            setPos_y(-1);
         }
         next_node = null;
         current_path = null;
@@ -64,7 +63,7 @@ public class Robot extends GameObject {
 
     @Override
     public void draw(GraphicsContext gc) {
-        if(current_pos_x >= 0 && current_pos_y >= 0 && labyrinth != null){
+        if(getPos_x() >= 0 && getPos_y() >= 0 && labyrinth != null){
             drawLabyrinth(gc);
             if(current_path != null){
                 drawPath(current_path, gc, labyrinth);
@@ -74,8 +73,8 @@ public class Robot extends GameObject {
             int y = labyrinth.getDim_y();
             double step_width = gc.getCanvas().getWidth()/x;
             double step_height = gc.getCanvas().getHeight()/y;
-            double[] points_x = {current_pos_x*step_width, (current_pos_x+1) * step_width, (current_pos_x+0.5) * step_width};
-            double[] points_y = {(current_pos_y+1)*step_height, (current_pos_y+1)*step_height, current_pos_y*step_height};
+            double[] points_x = {getPos_x()*step_width, (getPos_x()+1) * step_width, (getPos_x()+0.5) * step_width};
+            double[] points_y = {(getPos_y()+1)*step_height, (getPos_y()+1)*step_height, getPos_y()*step_height};
             gc.fillPolygon(points_x, points_y, 3);
         }
 
@@ -107,9 +106,8 @@ public class Robot extends GameObject {
                 }else {
                     next_node = null;
                 }
-
-                current_pos_x = current_node.getX();
-                current_pos_y = current_node.getY();
+                setPos_x(current_node.getX());
+                setPos_y(current_node.getY());
 
                 if(current_node.getType() == Labyrinth.NodeType.unknown){
                     if(mainLabyrinth != null){
@@ -118,8 +116,8 @@ public class Robot extends GameObject {
                 }
 
             }else if(next_node != null){
-                current_pos_x = current_node.getX() + (next_node.getX() - current_node.getX()) * current_delta_time/seconds_per_field;
-                current_pos_y = current_node.getY() + (next_node.getY() - current_node.getY()) * current_delta_time/seconds_per_field;
+                setPos_x(current_node.getX() + (next_node.getX() - current_node.getX()) * current_delta_time/seconds_per_field);
+                setPos_y(current_node.getY() + (next_node.getY() - current_node.getY()) * current_delta_time/seconds_per_field);
             }
         }
         super.update();

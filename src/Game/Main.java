@@ -61,8 +61,6 @@ public class Main extends Application {
         labyrinth.addFlag(flag2);
 
         GameSystem game_system = GameSystem.getInstance();
-        TimeUnit.SECONDS.sleep(1);
-
         new AnimationTimer(){
 
             long last_frame_time = System.nanoTime();
