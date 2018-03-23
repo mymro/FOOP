@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 
 public class DontComeNearFlag extends Flag{
 
-    public DontComeNearFlag(int layer, int x, int y, int dim_x, int dim_y )throws IllegalArgumentException{
-        super(layer, x, y, dim_x, dim_y);
+    public DontComeNearFlag(int layer, int x, int y, int dim_x, int dim_y, Robot player )throws IllegalArgumentException{
+        super(layer, x, y, dim_x, dim_y, player);
     }
 
     @Override

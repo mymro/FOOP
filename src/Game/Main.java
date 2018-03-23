@@ -24,6 +24,8 @@ public class Main extends Application {
         private static GameSystem instance;
         private double delta_time; // in nanoseconds
 
+
+
         private GameSystem(){
             delta_time = 0;
         }
