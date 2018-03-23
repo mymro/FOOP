@@ -19,10 +19,12 @@ public class Robot extends GameObject {
     private int current_path_index;
     private double current_delta_time;
     private MainLabyrinth mainLabyrinth;
+    private String player;
 
-    public Robot(int layer, Color color){
+    public Robot(int layer, Color color,String player){
         super(layer);
         this.color = color;
+        this.player = player;
         mainLabyrinth = null;
         initialize(null, 0,0);
     }
@@ -169,4 +171,5 @@ public class Robot extends GameObject {
             }
         }
     }
+
 }
