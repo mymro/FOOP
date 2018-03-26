@@ -54,11 +54,11 @@ public class Main extends Application {
         primaryStage.show();
 
         MainLabyrinth labyrinth = new MainLabyrinth(50,50, 0);
-        labyrinth.addPlayer(Color.RED, -1);
-        labyrinth.addPlayer(Color.YELLOW, -1);
-        labyrinth.addPlayer(Color.BLUE, -1);
-        SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, 50, 50);
-        DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, 50, 50);
+        labyrinth.addPlayer("", Color.RED, -1);
+        labyrinth.addPlayer("",Color.YELLOW, -1);
+        labyrinth.addPlayer("",Color.BLUE, -1);
+        SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, 50, 50, null);
+        DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, 50, 50, null);
         labyrinth.addFlag(flag);
         labyrinth.addFlag(flag2);
 
