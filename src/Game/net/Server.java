@@ -52,10 +52,9 @@ public class Server {
                     String username = InetAddress.getLocalHost().toString() + ":" + ssocket.getLocalPort();
 
                     Player player = new Player(username, Color.RED, InetAddress.getLocalHost().toString(), ssocket.getLocalPort());
-                    labyrinth.addPlayer(player, 0);
+                    Robot robot = labyrinth.addPlayer(player, 0);
 
-                    Robot robot = new Robot(0, player);
-                    Flag fl = new DontComeNearFlag(0, 1, 1, 32, 32,robot);
+                    Flag fl = new DontComeNearFlag(0, -1, -1, 32, 32,robot);
                     labyrinth.addFlag(fl);
 
                     labyrinth.update();
