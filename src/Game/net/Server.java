@@ -53,7 +53,6 @@ public class Server {
                     String username = InetAddress.getLocalHost().toString() + ":" + ssocket.getLocalPort();
 
                     Player player = new Player(username, Color.RED, InetAddress.getLocalHost().toString(), ssocket.getLocalPort());
-                    users.put(player.getName(),player);
                     labyrinth.addPlayer(player, 0);
 
                     Robot robot = new Robot(0, player);
