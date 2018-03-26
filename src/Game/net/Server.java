@@ -17,6 +17,7 @@ public class Server {
 
     private Hashtable<Player, Socket> userList = new Hashtable<Player, Socket>(); // Player-Socket pair list
     private Hashtable<Player, String> userInfoList = new Hashtable<Player, String>();
+    private Hashtable<String, Player> users = new Hashtable<String, Player>();
     private Hashtable<Player, ObjectOutputStream> userOutputStreamList = new Hashtable<Player, ObjectOutputStream>();
 
     private MainLabyrinth labyrinth = null;
@@ -52,19 +53,22 @@ public class Server {
                     String username = InetAddress.getLocalHost().toString() + ":" + ssocket.getLocalPort();
 
                     Player player = new Player(username, Color.RED, InetAddress.getLocalHost().toString(), ssocket.getLocalPort());
+                    users.put(player.getName(),player);
                     labyrinth.addPlayer(player, 0);
 
                     Robot robot = new Robot(0, player);
                     Flag fl = new DontComeNearFlag(0, 1, 1, 32, 32,robot);
                     labyrinth.addFlag(fl);
-
-                    labyrinth.update();
+                    countOfPlayer ++;
 
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
+        }
+        for(Player p : users.values()){
+            labyrinth.update();
         }
 
     }
