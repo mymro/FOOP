@@ -17,28 +17,29 @@ public class MainLabyrinth extends GameObject implements FModifier {
     private long seed;
     private ArrayList<FModifier> modifiers;
 
-    public MainLabyrinth(int dim_x, int dim_y, int layer) {
-        this(dim_x, dim_y, layer, new Random().nextInt());
+    public MainLabyrinth(Dimension dimension, int layer) {
+        this(new MainDimension(dimension.getDim_x(), dimension.getDim_y(), layer, new Random().nextInt()));
+
     }
 
-    public MainLabyrinth(int dim_x, int dim_y, int layer, int seed) {
-        super(layer);
-        Random random = new Random(seed);
-        labyrinth = new Labyrinth(dim_x, dim_y);
+    public MainLabyrinth(MainDimension mainDimension) {
+        super(mainDimension.getLayer());
+        Random random = new Random(mainDimension.getSeed());
+        labyrinth = new Labyrinth(mainDimension);
         labyrinth.createLabyrinth(random);
-        this.seed = seed;
+        this.seed = mainDimension.getSeed();
         modifiers = new ArrayList<>();
     }
 
-    public Robot addPlayer(String player, Color color, int layer) {
+    public Robot addPlayer(Player player, int layer) {
         Random random = new Random();
         int i, j;
         do {
-            i = random.nextInt(labyrinth.getDim_x());
-            j = random.nextInt(labyrinth.getDim_y());
+            i = random.nextInt(labyrinth.getDimension().getDim_x());
+            j = random.nextInt(labyrinth.getDimension().getDim_y());
         } while (labyrinth.getNodeAt(i, j).getType() == Labyrinth.NodeType.finish);
-        Robot robot = new Robot(layer, color, player);
-        Labyrinth lab = new Labyrinth(labyrinth.getDim_x(), labyrinth.getDim_y());
+        Robot robot = new Robot(layer, player);
+        Labyrinth lab = new Labyrinth(labyrinth.getDimension());
         lab.setNodeAt(i, j, Labyrinth.NodeType.normal, labyrinth.getNodeAt(i, j).getEdges());
         robot.initialize(lab, i, j);
         attach(robot);
@@ -60,8 +61,8 @@ public class MainLabyrinth extends GameObject implements FModifier {
         gc.strokeLine(0, 0, 0, gc.getCanvas().getHeight());
         gc.strokeLine(gc.getCanvas().getWidth(), gc.getCanvas().getHeight(), gc.getCanvas().getWidth(), 0);
         gc.strokeLine(gc.getCanvas().getWidth(), gc.getCanvas().getHeight(), 0, gc.getCanvas().getHeight());
-        int x = labyrinth.getDim_x();
-        int y = labyrinth.getDim_y();
+        int x = labyrinth.getDimension().getDim_x();
+        int y = labyrinth.getDimension().getDim_y();
         double step_width = gc.getCanvas().getWidth() / x;
         double step_height = gc.getCanvas().getHeight() / y;
         for (int i = 0; i < x; i++) {
@@ -106,13 +107,7 @@ public class MainLabyrinth extends GameObject implements FModifier {
         return labyrinth.getNodeAt(x, y).getEdges();
     }
 
-    public int getDimX() {
-        return labyrinth.getDim_x();
-    }
 
-    public int getDimY() {
-        return labyrinth.getDim_y();
-    }
 
     @Override
     public double getFModifierAt(double x, double y) {

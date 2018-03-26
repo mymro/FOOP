@@ -21,10 +21,10 @@ public class Robot extends GameObject {
     private MainLabyrinth mainLabyrinth;
     private String player;
 
-    public Robot(int layer, Color color,String player){
+    public Robot(int layer, Player player){
         super(layer);
-        this.color = color;
-        this.player = player;
+        this.color = player.getColor();
+        this.player = player.getName();
         mainLabyrinth = null;
         initialize(null, 0,0);
     }
@@ -71,8 +71,8 @@ public class Robot extends GameObject {
                 drawPath(current_path, gc, labyrinth);
             }
             gc.setFill(color);
-            int x = labyrinth.getDim_x();
-            int y = labyrinth.getDim_y();
+            int x = labyrinth.getDimension().getDim_x();
+            int y = labyrinth.getDimension().getDim_y();
             double step_width = gc.getCanvas().getWidth()/x;
             double step_height = gc.getCanvas().getHeight()/y;
             double[] points_x = {getPos_x()*step_width, (getPos_x()+1) * step_width, (getPos_x()+0.5) * step_width};
@@ -126,8 +126,8 @@ public class Robot extends GameObject {
     }
 
     public void drawPath(ArrayList<Labyrinth.LabyrinthNode> path, GraphicsContext gc, Labyrinth labyrinth){
-        double width = gc.getCanvas().getWidth()/labyrinth.getDim_x();
-        double height = gc.getCanvas().getHeight()/labyrinth.getDim_y();
+        double width = gc.getCanvas().getWidth()/labyrinth.getDimension().getDim_x();
+        double height = gc.getCanvas().getHeight()/labyrinth.getDimension().getDim_y();
         gc.setStroke(Color.RED);
         gc.setLineWidth(2);
         for(int i = 0; i < path.size() -1; i++){
@@ -144,8 +144,8 @@ public class Robot extends GameObject {
     public void drawLabyrinth(GraphicsContext gc){
         gc.setStroke(Color.GREEN);
         gc.setLineWidth(5);
-        int x = labyrinth.getDim_x();
-        int y = labyrinth.getDim_y();
+        int x = labyrinth.getDimension().getDim_x();
+        int y = labyrinth.getDimension().getDim_y();
         double width = gc.getCanvas().getWidth()/x;
         double height = gc.getCanvas().getHeight()/y;
         for (int i = 0; i < x; i++){

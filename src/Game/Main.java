@@ -1,8 +1,6 @@
 package Game;
 
-import Game.GameObjects.DontComeNearFlag;
-import Game.GameObjects.MainLabyrinth;
-import Game.GameObjects.SearchHereFlag;
+import Game.GameObjects.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -53,12 +51,15 @@ public class Main extends Application {
         GraphicsContext gc = controller.labyrinth.getGraphicsContext2D();
         primaryStage.show();
 
-        MainLabyrinth labyrinth = new MainLabyrinth(50,50, 0);
-        labyrinth.addPlayer(Color.RED, -1);
-        labyrinth.addPlayer(Color.YELLOW, -1);
-        labyrinth.addPlayer(Color.BLUE, -1);
-        SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, 50, 50);
-        DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, 50, 50);
+        MainLabyrinth labyrinth = new MainLabyrinth(new Dimension(50,50), 0);
+        Player player1 = new Player("p1",Color.RED, "localhost",2222);
+        Player player2 = new Player("p2",Color.YELLOW, "localhost",3333);
+        Player player3 = new Player("p3",Color.BLUE, "localhost",4444);
+        labyrinth.addPlayer(player1, -1);
+        labyrinth.addPlayer(player1, -1);
+        labyrinth.addPlayer(player1, -1);
+        SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, 50, 50,null);
+        DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, 50, 50,null);
         labyrinth.addFlag(flag);
         labyrinth.addFlag(flag2);
 

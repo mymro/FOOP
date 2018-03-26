@@ -101,10 +101,8 @@ public class ClientGUI {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
-				Message wantMatch = new Message(Message.REQUEST_MATCH, userName); // Firstly send a request
-				rivalName = userList.getSelectedValue().toString();
-				wantMatch.setRivalName(rivalName);
+				/**TODO send Player with host url, name, and Color*/
+				Message wantMatch = new Message(Message.REQUEST_MATCH, null); // Firstly send a request
 				client.makeRequest(wantMatch);
 				//Client.sendToServer(wantMatch);
 			}				

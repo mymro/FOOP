@@ -63,12 +63,12 @@ public class ServerThread extends Thread {
         switch (message.getType()) {
 
             case Message.CLIENT_CONNECT:
-                server.addUser(message.getUserName(), this.clientSocket, this.oos, message.getMessage());
+                server.addUser(message.getPlayer(), this.clientSocket, this.oos, message.getMessage());
                 server.sendUserList();
                 break;
 
             case Message.CLIENT_DISCONNECT:
-                server.removeUser(message.getUserName());
+                server.removeUser(message.getPlayer());
                 sendMessage(new Message(Message.BYE));
                 server.sendUserList();
                 break;
@@ -78,17 +78,12 @@ public class ServerThread extends Thread {
                 break;
 
             case Message.REQUEST_MATCH:
-                message.setMessage(server.getUserInfoList().get(message.getRivalName())); //set message to users adress and port
-
-                sendMessageTo(message, server.getUserOutputStreamList().get(message.getRivalName())); // send request to rival
-                message.setType(Message.USER_INFO);
-                sendMessageTo(message, server.getUserOutputStreamList().get(message.getUserName())); // to special user(request)
-
+                sendMessageTo(message, server.getUserOutputStreamList().get(message.getPlayer().getName())); // to special user(request)
                 break;
 
             case Message.START_MATCH:
-                System.out.println("starting match: "+message.getUserName() +"and" + message.getRivalName());
-                sendMessageTo(message, server.getUserOutputStreamList().get(message.getUserName())); // to special user(request)
+                System.out.println("starting match: "+message.getPlayer().getName());
+                sendMessageTo(message, server.getUserOutputStreamList().get(message.getPlayer().getName())); // to special user(request)
                 break;
 
             default:

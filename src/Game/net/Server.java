@@ -1,5 +1,9 @@
 package Game.net;
 
+import Game.Core.Flag;
+import Game.GameObjects.*;
+import javafx.scene.paint.Color;
+
 import java.io.*;
 import java.net.*;
 import java.util.Hashtable;
@@ -11,13 +15,11 @@ public class Server {
     private ServerSocket ssocket = null;
     private int numConnections = 0;
 
-    private Hashtable<String, Socket> userList = new Hashtable<String, Socket>(); // userName-Socket pair list
-    private Hashtable<String, String> userInfoList = new Hashtable<String, String>();
-    private Hashtable<String, ObjectOutputStream> userOutputStreamList = new Hashtable<String, ObjectOutputStream>();
+    private Hashtable<Player, Socket> userList = new Hashtable<Player, Socket>(); // Player-Socket pair list
+    private Hashtable<Player, String> userInfoList = new Hashtable<Player, String>();
+    private Hashtable<Player, ObjectOutputStream> userOutputStreamList = new Hashtable<Player, ObjectOutputStream>();
 
-    private File inputFile = null;
-    private FileWriter fwriter;
-    private PrintWriter writer;
+    private MainLabyrinth labyrinth = null;
 
     public Server(int port) {
 
@@ -37,34 +39,49 @@ public class Server {
         System.out.println("Server started at "
                 + InetAddress.getLocalHost().toString() + " port "
                 + ssocket.getLocalPort());
-        createLogFile();
+        Dimension dimension= new Dimension(32, 32);
+         labyrinth = new MainLabyrinth(dimension,20);
 
-        while (true) {
+        int countOfPlayer = 0;
+        while (countOfPlayer < 3) {
             try {
                 socket = ssocket.accept();
                 if (socket != null) {
-                    writeToLog(socket, "connected");
+                    System.out.println(socket + " : connected");
                     new ServerThread(socket, this); // create new thread
+                    String username = InetAddress.getLocalHost().toString() + ":" + ssocket.getLocalPort();
+
+                    Player player = new Player(username, Color.RED, InetAddress.getLocalHost().toString(), ssocket.getLocalPort());
+                    labyrinth.addPlayer(player, 0);
+
+                    Robot robot = new Robot(0, player);
+                    Flag fl = new DontComeNearFlag(0, 1, 1, 32, 32,robot);
+                    labyrinth.addFlag(fl);
+
+                    labyrinth.update();
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
+
     }
 
-    public synchronized void addUser(String userName, Socket socket,
+    public synchronized void addUser(Player player, Socket socket,
                                      ObjectOutputStream oos, String info) {
 
         synchronized (userList) {
-            userList.put(userName, socket);
+            userList.put(player, socket);
         }
         synchronized (userOutputStreamList) {
-            userOutputStreamList.put(userName, oos);
+            userOutputStreamList.put(player, oos);
         }
         synchronized (userInfoList) {
-            userInfoList.put(userName, info);
+            userInfoList.put(player, info);
         }
-        System.out.println(userName + " connected ");
+        System.out.println(player + " connected ");
     }
 
     public void sendUserList() {
@@ -86,44 +103,19 @@ public class Server {
         }
     }
 
-    public synchronized void removeUser(String userName) {
+    public synchronized void removeUser(Player player) {
         synchronized (userList) {
-            writeToLog(userList.get(userName), "disconnected");
-            userList.remove(userName);
-            System.out.println(userName + " disconnected");
+            System.out.println(userList.get(player.getName()) + " : disconnected");
+            userList.remove(player);
+            System.out.println(player.getName() + " disconnected");
         }
         synchronized (userOutputStreamList) {
-            userOutputStreamList.remove(userName);
+            userOutputStreamList.remove(player);
         }
         synchronized (userInfoList) {
-            userInfoList.remove(userName);
+            userInfoList.remove(player);
         }
     }
-
-    public void createLogFile() {
-        this.inputFile = new File("server.log");
-        try {
-            this.fwriter = new FileWriter(inputFile, true);
-        } catch (IOException e) {
-            System.out.println("Error creating log file : "
-                    + inputFile.getName());
-        }
-        this.setWriter(new PrintWriter(fwriter));
-        writer.close();
-    }
-
-    private void writeToLog(Socket socket, String cond) {
-        try {
-            writer = new PrintWriter(new FileWriter(this.inputFile, true));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        writer.println(socket.getLocalAddress().getHostAddress() + " "
-                + socket.getLocalPort() + " " + cond);
-        writer.close();
-    }
-
-        /* GET - SET METHODLARI... */
 
     public static void main(String[] args) { // Main program
         try {
@@ -161,51 +153,27 @@ public class Server {
         this.numConnections = numConnections;
     }
 
-    public Hashtable<String, Socket> getUserList() {
+    public Hashtable<Player, Socket> getUserList() {
         return userList;
     }
 
-    public void setUserList(Hashtable<String, Socket> userList) {
+    public void setUserList(Hashtable<Player, Socket> userList) {
         this.userList = userList;
     }
 
-    public Hashtable<String, String> getUserInfoList() {
+    public Hashtable<Player, String> getUserInfoList() {
         return userInfoList;
     }
 
-    public void setUserInfoList(Hashtable<String, String> userInfoList) {
+    public void setUserInfoList(Hashtable<Player, String> userInfoList) {
         this.userInfoList = userInfoList;
     }
 
-    public Hashtable<String, ObjectOutputStream> getUserOutputStreamList() {
+    public Hashtable<Player, ObjectOutputStream> getUserOutputStreamList() {
         return userOutputStreamList;
     }
 
-    public void setUserOutputStreamList(Hashtable<String, ObjectOutputStream> userOutputStreamList) {
+    public void setUserOutputStreamList(Hashtable<Player, ObjectOutputStream> userOutputStreamList) {
         this.userOutputStreamList = userOutputStreamList;
-    }
-
-    public File getInputFile() {
-        return inputFile;
-    }
-
-    public void setInputFile(File inputFile) {
-        this.inputFile = inputFile;
-    }
-
-    public FileWriter getFwriter() {
-        return fwriter;
-    }
-
-    public void setFwriter(FileWriter fwriter) {
-        this.fwriter = fwriter;
-    }
-
-    public PrintWriter getWriter() {
-        return writer;
-    }
-
-    public void setWriter(PrintWriter writer) {
-        this.writer = writer;
     }
 }

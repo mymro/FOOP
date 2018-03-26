@@ -1,5 +1,7 @@
 package Game.Core;
 
+import Game.GameObjects.Dimension;
+
 import java.util.*;
 
 public class Labyrinth{
@@ -60,16 +62,15 @@ public class Labyrinth{
         }
     }
 
-    private int dim_x, dim_y;
+    private Dimension dimension;
     private LabyrinthNode[][] labyrinth;
 
-    public Labyrinth(int dim_x, int dim_y){
-        if(dim_x < 1 || dim_y <1){
+    public Labyrinth(Dimension dimension){
+        if(dimension.getDim_x() < 1 || dimension.getDim_x() <1){
             throw new IllegalArgumentException("Dimensions have to be greater 0");
         }
-        this.dim_x = dim_x;
-        this.dim_y = dim_y;
-        labyrinth = new LabyrinthNode[dim_x][dim_y];
+        this.dimension = dimension;
+        labyrinth = new LabyrinthNode[dimension.getDim_x()][dimension.getDim_y()];
     }
 
     public void createLabyrinth(){
@@ -88,23 +89,23 @@ public class Labyrinth{
         switch (random.nextInt(4)){
             case 0:
                 i = 0;
-                j = random.nextInt(dim_y);
+                j = random.nextInt(dimension.getDim_y());
                 break;
             case 1:
-                i = dim_x-1;
-                j = random.nextInt(dim_y);
+                i = dimension.getDim_x()-1;
+                j = random.nextInt(dimension.getDim_y());
                 break;
             case 2:
-                i = random.nextInt(dim_x);
+                i = random.nextInt(dimension.getDim_x());
                 j = 0;
                 break;
             case 3:
-                i = random.nextInt(dim_x);
-                j = dim_y-1;
+                i = random.nextInt(dimension.getDim_x());
+                j = dimension.getDim_y()-1;
         }
 
         ArrayList<LabyrinthNode> frontier = new ArrayList<LabyrinthNode>();
-        boolean[][] frontierMatrix = new boolean[dim_x][dim_y];
+        boolean[][] frontierMatrix = new boolean[dimension.getDim_x()][dimension.getDim_y()];
         LabyrinthNode current = new LabyrinthNode(i, j, NodeType.finish);
         labyrinth[current.x][current.y] = current;
         int rand = 0;
@@ -114,7 +115,7 @@ public class Labyrinth{
                 frontier.add(new LabyrinthNode(current.x, current.y-1));
                 frontierMatrix[current.x][current.y-1] = true;
             }
-            if(current.y+1 < dim_y && labyrinth[current.x][current.y+1] == null && frontierMatrix[current.x][current.y+1] != true){
+            if(current.y+1 < dimension.getDim_y() && labyrinth[current.x][current.y+1] == null && frontierMatrix[current.x][current.y+1] != true){
                 frontier.add(new LabyrinthNode(current.x, current.y+1));
                 frontierMatrix[current.x][current.y+1] = true;
             }
@@ -122,7 +123,7 @@ public class Labyrinth{
                 frontier.add(new LabyrinthNode(current.x-1, current.y));
                 frontierMatrix[current.x-1][current.y] = true;
             }
-            if(current.x+1 < dim_x && labyrinth[current.x+1][current.y] == null && frontierMatrix[current.x+1][current.y] != true){
+            if(current.x+1 < dimension.getDim_x() && labyrinth[current.x+1][current.y] == null && frontierMatrix[current.x+1][current.y] != true){
                 frontier.add(new LabyrinthNode(current.x+1, current.y));
                 frontierMatrix[current.x+1][current.y] = true;
             }
@@ -137,13 +138,13 @@ public class Labyrinth{
             if(current.y-1 >= 0 && labyrinth[current.x][current.y-1] != null){
                 possibleConnections.add(labyrinth[current.x][current.y-1]);
             }
-            if(current.y+1 < dim_y && labyrinth[current.x][current.y+1] != null){
+            if(current.y+1 < dimension.getDim_y() && labyrinth[current.x][current.y+1] != null){
                 possibleConnections.add(labyrinth[current.x][current.y+1]);
             }
             if(current.x-1 >= 0 && labyrinth[current.x-1][current.y] != null){
                 possibleConnections.add(labyrinth[current.x-1][current.y]);
             }
-            if(current.x+1 < dim_x && labyrinth[current.x+1][current.y] != null){
+            if(current.x+1 < dimension.getDim_x() && labyrinth[current.x+1][current.y] != null){
                 possibleConnections.add(labyrinth[current.x+1][current.y]);
             }
 
@@ -337,7 +338,7 @@ public class Labyrinth{
                     break;
             }
 
-            if (neighbour_x < dim_x && neighbour_y < dim_y && neighbour_x >= 0 && neighbour_y >= 0 ){
+            if (neighbour_x < dimension.getDim_x()&& neighbour_y < dimension.getDim_x() && neighbour_x >= 0 && neighbour_y >= 0 ){
                 LabyrinthNode neighbour = labyrinth[neighbour_x][neighbour_y];
                 if(neighbour == null){
                     neighbour = new LabyrinthNode(neighbour_x, neighbour_y, NodeType.unknown);
@@ -352,11 +353,11 @@ public class Labyrinth{
         return node;
     }
 
-    public int getDim_x(){
-        return dim_x;
+    public Dimension getDimension() {
+        return dimension;
     }
 
-    public int getDim_y(){
-        return dim_y;
+    public void setDimension(Dimension dimension) {
+        this.dimension = dimension;
     }
 }

@@ -1,5 +1,7 @@
 package Game.net;
 
+import Game.GameObjects.Player;
+
 import java.util.Vector;
 
 public class Message implements java.io.Serializable {
@@ -20,8 +22,7 @@ public class Message implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     private int type;
-    private String userName;
-    private String rivalName;
+    private Player player;
     private String message;
     private int from;
     private int to;
@@ -36,27 +37,26 @@ public class Message implements java.io.Serializable {
         this.type = type;
     }
 
-    public Message(int type, String userName) {
+    public Message(int type,Player player) {
         this.type = type;
-        this.userName = userName;
+        this.player = player;
     }
 
-    public Message(int type, String userName, String message) {
+    public Message(int type, Player player, String message) {
         this.type = type;
-        this.userName = userName;
+        this.player  = player;
         this.message = message;
     }
 
-    public Message(int type, String userName, int from, int to) {
+    public Message(int type, Player player, int from, int to) {
         this.type = type;
-        this.userName = userName;
         this.from = from;
         this.to = to;
     }
 
-    public Message(int type, String userName, int from, int to, int take) {
+    public Message(int type, Player player, int from, int to, int take) {
         this.type = type;
-        this.userName = userName;
+        this.player = player;
         this.from = from;
         this.to = to;
         this.setTaken(take);
@@ -72,21 +72,12 @@ public class Message implements java.io.Serializable {
 
 	/* GET - SET Methodları */
 
-
-    public String getUserName() {
-        return userName;
+    public Player getPlayer() {
+        return player;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getRivalName() {
-        return rivalName;
-    }
-
-    public void setRivalName(String rivalName) {
-        this.rivalName = rivalName;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public String getMessage() {
