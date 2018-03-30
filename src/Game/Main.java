@@ -45,19 +45,21 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
         Parent root = loader.load();
-        primaryStage.setTitle("FOOP");
-        primaryStage.setScene(new Scene(root, 500, 500));
         Controller controller = loader.getController();
-        GraphicsContext gc = controller.labyrinth.getGraphicsContext2D();
+        primaryStage.setTitle("FOOP");
+        primaryStage.setResizable(false);
+        primaryStage.setScene(new Scene(root));
+        GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
         primaryStage.show();
 
         MainLabyrinth labyrinth = new MainLabyrinth(new Dimension(50,50), 0);
+        controller.setLabyrinth(labyrinth);
         Player player1 = new Player("p1",Color.RED, "localhost",2222);
         Player player2 = new Player("p2",Color.YELLOW, "localhost",3333);
         Player player3 = new Player("p3",Color.BLUE, "localhost",4444);
         labyrinth.addPlayer(player1, -1);
-        labyrinth.addPlayer(player1, -1);
-        labyrinth.addPlayer(player1, -1);
+        labyrinth.addPlayer(player2, -1);
+        labyrinth.addPlayer(player3, -1);
         SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, 50, 50,null);
         DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, 50, 50,null);
         labyrinth.addFlag(flag);
@@ -71,6 +73,8 @@ public class Main extends Application {
             @Override
             public void handle(long now) {
                 gc.clearRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                gc.setFill(Color.BLACK);
+                gc.fillRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
                 labyrinth.update();
                 labyrinth.draw(gc);
                 game_system.delta_time = (now- last_frame_time)/1000000000.0;

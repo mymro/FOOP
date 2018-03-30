@@ -17,6 +17,10 @@ public class MainLabyrinth extends GameObject implements FModifier {
     private long seed;
     private ArrayList<FModifier> modifiers;
 
+    public Labyrinth getLabyrinth() {
+        return labyrinth;
+    }
+
     public MainLabyrinth(Dimension dimension, int layer) {
         this(new MainDimension(dimension.getDim_x(), dimension.getDim_y(), layer, new Random().nextInt()));
 
@@ -55,16 +59,22 @@ public class MainLabyrinth extends GameObject implements FModifier {
 
     @Override
     public void draw(GraphicsContext gc) {
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(4);
-        gc.strokeLine(0, 0, gc.getCanvas().getWidth(), 0);
-        gc.strokeLine(0, 0, 0, gc.getCanvas().getHeight());
-        gc.strokeLine(gc.getCanvas().getWidth(), gc.getCanvas().getHeight(), gc.getCanvas().getWidth(), 0);
-        gc.strokeLine(gc.getCanvas().getWidth(), gc.getCanvas().getHeight(), 0, gc.getCanvas().getHeight());
         int x = labyrinth.getDimension().getDim_x();
         int y = labyrinth.getDimension().getDim_y();
         double step_width = gc.getCanvas().getWidth() / x;
         double step_height = gc.getCanvas().getHeight() / y;
+        double lineWidth = step_width-2;
+        double xFinish = 0d;
+        double yFinish = 0d;
+
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(lineWidth);
+        gc.strokeLine(0, 0, gc.getCanvas().getWidth(), 0);
+        gc.strokeLine(0, 0, 0, gc.getCanvas().getHeight());
+        gc.strokeLine(gc.getCanvas().getWidth(), gc.getCanvas().getHeight(), gc.getCanvas().getWidth(), 0);
+        gc.strokeLine(gc.getCanvas().getWidth(), gc.getCanvas().getHeight(), 0, gc.getCanvas().getHeight());
+        gc.setStroke(Color.WHITE);
+
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
                 Labyrinth.LabyrinthNode current = labyrinth.getNodeAt(i, j);
@@ -85,11 +95,14 @@ public class MainLabyrinth extends GameObject implements FModifier {
                 }
 
                 if (labyrinth.getNodeAt(i, j).getType() == Labyrinth.NodeType.finish) {
-                    gc.setFill(Color.ORANGE);
-                    gc.fillOval(centerX, centerY, 10, 10);
+                    xFinish = centerX;
+                    yFinish = centerY;
                 }
             }
         }
+
+        gc.setFill(Color.ORANGE);
+        gc.fillOval(xFinish-lineWidth/2, yFinish-lineWidth/2, lineWidth, lineWidth);
 
         super.draw(gc);
     }

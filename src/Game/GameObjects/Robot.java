@@ -66,10 +66,10 @@ public class Robot extends GameObject {
     @Override
     public void draw(GraphicsContext gc) {
         if(getPos_x() >= 0 && getPos_y() >= 0 && labyrinth != null){
-            drawLabyrinth(gc);
-            if(current_path != null){
-                drawPath(current_path, gc, labyrinth);
-            }
+            //drawLabyrinth(gc);
+            //if(current_path != null){
+               // drawPath(current_path, gc, labyrinth);
+            //a}
             gc.setFill(color);
             int x = labyrinth.getDimension().getDim_x();
             int y = labyrinth.getDimension().getDim_y();
