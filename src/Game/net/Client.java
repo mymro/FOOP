@@ -1,7 +1,6 @@
 package Game.net;
 
 import Game.GameObjects.Player;
-import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,12 +25,12 @@ public class Client extends Thread {
 
     public static ClientGUI clientGUI;
 
-    public Client(String serverIP, int port, String userName) {
+    public Client(String serverIP, int port, String color, String userName) {
         this.serverIP = serverIP;
         this.port = port;
         this.userName = userName;
-        player = new Player(userName, Color.color(Math.random(), Math.random(), Math.random()), serverIP.toString(), port);
-        clientGUI = new ClientGUI(Client.this, Client.this.userName);
+        player = new Player(userName, color, serverIP.toString(), port);
+        clientGUI = new ClientGUI();
     }
 
     public void startClient() {
@@ -43,7 +42,7 @@ public class Client extends Thread {
                 handleMessage(message);
             }
         } catch (SocketException e) {
-            clientGUI.showMessage("Server : " + e.getMessage());
+           // clientGUI.showMessage("Server : " + e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -94,12 +93,12 @@ public class Client extends Thread {
         switch (message.getType()) {
 
             case Message.USERS_LIST:
-                clientGUI.updateUserList(message.getUserList());
+              //  clientGUI.updateUserList(message.getUserList());
                 break;
 
             case Message.BYE:
                 run = false;
-                clientGUI.showMessage("Server : BYE");
+               // clientGUI.showMessage("Server : BYE");
                 break;
 
             case Message.USER_INFO:
@@ -149,10 +148,10 @@ public class Client extends Thread {
             sendToServer(connectMessage); // send connect info to server
 
         } catch (UnknownHostException e) {
-            clientGUI.showMessage("Unable to connect server\n" + e.getMessage());
+            //clientGUI.showMessage("Unable to connect server\n" + e.getMessage());
             System.exit(0);
         } catch (IOException e) {
-            clientGUI.showMessage("Unable to connect server\n" + e.getMessage());
+           // clientGUI.showMessage("Unable to connect server\n" + e.getMessage());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -173,22 +172,10 @@ public class Client extends Thread {
             oos.writeObject(message);
             oos.flush();
         } catch (IOException e) {
-            clientGUI.showMessage("IO Error:\n" + e.getMessage());
+            //clientGUI.showMessage("IO Error:\n" + e.getMessage());
         }
     }
 
-    public static void main(final String[] args) {
 
-        Client client = null;
-        try {
-            client = new Client(args[0], Integer.parseInt(args[1]), args[2]);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("missing parameter!");
-        }
-        client.start();
-        client.startClient();
-    }
 
 }

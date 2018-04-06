@@ -2,13 +2,15 @@ package Game.GameObjects;
 
 import javafx.scene.paint.Color;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable{
     private String name;
     private String url;
     private int port;
-    private Color color;
+    private String color;
 
-    public Player(String name, Color color, String url, int port){
+    public Player(String name, String color, String url, int port){
         this.name = name;
         this.color = color;
         this.url = url;
@@ -40,11 +42,21 @@ public class Player {
         this.name = name;
     }
 
-    public Color getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(String color) {
         this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", port=" + port +
+                ", color='" + color + '\'' +
+                '}';
     }
 }

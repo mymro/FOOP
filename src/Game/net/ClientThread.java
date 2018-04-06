@@ -1,7 +1,9 @@
 package Game.net;
 
+import Game.Core.Labyrinth;
 import Game.GameObjects.Player;
 import Game.Main;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -65,15 +67,20 @@ public class ClientThread extends Thread {
 		this.socket = socket;
 		this.client = client;
 
-		/** TODO
+
 		SwingUtilities.invokeLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				game = new GameGUI(ClientThread.this, ClientThread.this.userName, ClientThread.this.rivalName, GameGUI.RED_PIECE);			
+				game = new Main(player) ;
+				try {
+					game.start(new Stage());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
-		 **/
+
 		start();
 	}
 

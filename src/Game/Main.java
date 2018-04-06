@@ -17,6 +17,11 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    public Player player;
+
+    public Main(Player player) {
+       this.player = player;
+    }
 
     public static final class GameSystem {
         private static GameSystem instance;
@@ -54,12 +59,15 @@ public class Main extends Application {
 
         MainLabyrinth labyrinth = new MainLabyrinth(new Dimension(50,50), 0);
         controller.setLabyrinth(labyrinth);
-        Player player1 = new Player("p1",Color.RED, "localhost",2222);
-        Player player2 = new Player("p2",Color.YELLOW, "localhost",3333);
-        Player player3 = new Player("p3",Color.BLUE, "localhost",4444);
-        labyrinth.addPlayer(player1, -1);
-        labyrinth.addPlayer(player2, -1);
-        labyrinth.addPlayer(player3, -1);
+        if(this.player ==null) {
+            this.player = new Player("p1", "RED", "localhost", 2222);
+        }
+
+        //Player player2 = new Player("p2",Color.YELLOW, "localhost",3333);
+        //Player player3 = new Player("p3",Color.BLUE, "localhost",4444);
+        labyrinth.addPlayer(this.player, -1);
+       // labyrinth.addPlayer(player2, -1);
+        //labyrinth.addPlayer(player3, -1);
         SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, 50, 50,null);
         DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, 50, 50,null);
         labyrinth.addFlag(flag);

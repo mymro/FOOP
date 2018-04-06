@@ -50,15 +50,8 @@ public class Server {
                 if (socket != null) {
                     System.out.println(socket + " : connected");
                     new ServerThread(socket, this); // create new thread
-                    String username = InetAddress.getLocalHost().toString() + ":" + ssocket.getLocalPort();
-
-                    Player player = new Player(username, Color.RED, InetAddress.getLocalHost().toString(), ssocket.getLocalPort());
-                    labyrinth.addPlayer(player, 0);
-
-                    Robot robot = new Robot(0, player);
-                    Flag fl = new DontComeNearFlag(0, 1, 1, 32, 32,robot);
-                    labyrinth.addFlag(fl);
                     countOfPlayer ++;
+                    System.out.println("Waiting three Person to play ......");
 
                 }
             } catch (IOException e) {
@@ -66,10 +59,16 @@ public class Server {
             }
 
         }
-        for(Player p : users.values()){
+        System.out.println("The game can be started we are three person");
+        for(Player player : users.values()){
+            System.out.println("Name of Players" + player);
+            labyrinth.addPlayer(player, 0);
+            users.put(player.getName(),player);
+            Robot robot = new Robot(0, player);
+            Flag fl = new DontComeNearFlag(0, 1, 1, 32, 32,robot);
+            labyrinth.addFlag(fl);
             labyrinth.update();
         }
-
     }
 
     public synchronized void addUser(Player player, Socket socket,
