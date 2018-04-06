@@ -1,7 +1,14 @@
 package Game.net;
 
+import Game.Controller;
 import Game.Core.Flag;
 import Game.GameObjects.*;
+import Game.Main;
+import javafx.animation.AnimationTimer;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.io.*;
@@ -14,6 +21,7 @@ public class Server {
     private int port;
     private ServerSocket ssocket = null;
     private int numConnections = 0;
+
 
     private Hashtable<Player, Socket> userList = new Hashtable<Player, Socket>(); // Player-Socket pair list
     private Hashtable<Player, String> userInfoList = new Hashtable<Player, String>();
@@ -69,6 +77,32 @@ public class Server {
             labyrinth.addFlag(fl);
             labyrinth.update();
         }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+        try {
+            Parent root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Controller controller = loader.getController();
+
+        GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
+
+        Main.GameSystem game_system = Main.GameSystem.getInstance();
+        new AnimationTimer(){
+
+            long last_frame_time = System.nanoTime();
+
+            @Override
+            public void handle(long now) {
+                gc.clearRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                gc.setFill(Color.BLACK);
+                gc.fillRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                labyrinth.update();
+                labyrinth.draw(gc);
+
+                last_frame_time = now;
+            }
+        }.start();
     }
 
     public synchronized void addUser(Player player, Socket socket,
