@@ -70,7 +70,7 @@ public class Server {
 
     }
 
-    public  void startGame() {
+    public synchronized void startGame() {
         Dimension dimension = new Dimension(50, 50);
         labyrinth = new MainLabyrinth(dimension, 0);
         System.out.println("The game can be started we are three persons");
@@ -127,8 +127,7 @@ public class Server {
         sendToClients(msg);
     }
 
-    public void sendToClients(Message message) {
-        System.out.println(message.getUserList());
+    public void sendToClients(Object message) {
         for (ObjectOutputStream oos : userOutputStreamList.values()) {
             try {
                 oos.writeObject(message);
