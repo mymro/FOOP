@@ -19,7 +19,7 @@ public class Robot extends GameObject {
     private int current_path_index;
     private double current_delta_time;
     private MainLabyrinth mainLabyrinth;
-    private String player;
+
 
     public Robot(int layer, Player player) {
         super(layer);
@@ -32,7 +32,6 @@ public class Robot extends GameObject {
         if (player.getColor().equalsIgnoreCase("YELLOW")) {
             this.color = Color.YELLOW;
         }
-        this.player = player.getName();
         mainLabyrinth = null;
         initialize(null, 0, 0);
     }
