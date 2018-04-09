@@ -60,7 +60,7 @@ public class ClientGUI extends Application {
     private Integer port;
 
 
-    private static List<Color> colorList = new ArrayList<>();
+
 
 
     @Override
@@ -84,11 +84,13 @@ public class ClientGUI extends Application {
         grid.add(userTextField, 1, 1);
 
         TextField hostTextField = new TextField();
+        hostTextField.setText("localhost");
         grid.add(hostTextField, 1, 2);
         Label hostName = new Label("Host Name:");
         grid.add(hostName, 0, 2);
 
         TextField portTextField = new TextField();
+        portTextField.setText("8000");
         Label port = new Label("Port:");
         grid.add(portTextField, 1, 3);
         grid.add(port, 0, 3);
@@ -134,13 +136,8 @@ public class ClientGUI extends Application {
     }
 
     public static void main(String[] args) {
-        colorList.add(Color.RED);
-        colorList.add(Color.YELLOW);
-        colorList.add(Color.GREEN);
         launch(args);
     }
 
-    public Color getColor() {
-        return colorList.get(0);
-    }
+
 }

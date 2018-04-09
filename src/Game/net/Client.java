@@ -162,9 +162,7 @@ public class Client extends Thread {
     }
 
     public void disconnectFromServer() { // disconnect procedure
-        /**TOOD Abbas ** send player disconnect player//
-         sendToServer(new Message(Message.CLIENT_DISCONNECT, userName));
-         **/
+         sendToServer(new Message(Message.CLIENT_DISCONNECT, player));
     }
 
     public void sendToServer(Message message) {

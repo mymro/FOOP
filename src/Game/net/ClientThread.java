@@ -1,12 +1,8 @@
 package Game.net;
 
-import Game.Core.Labyrinth;
 import Game.GameObjects.Player;
 import Game.Main;
-import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,7 +10,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import javax.swing.SwingUtilities;
 
 public class ClientThread extends Thread {
 	
@@ -68,18 +63,7 @@ public class ClientThread extends Thread {
 		this.client = client;
 
 
-		SwingUtilities.invokeLater(new Runnable() {
 
-			@Override
-			public void run() {
-				game = new Main(player) ;
-				try {
-					game.start(new Stage());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
 
 		start();
 	}

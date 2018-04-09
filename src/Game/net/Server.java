@@ -1,19 +1,15 @@
 package Game.net;
 
-import Game.Controller;
-import Game.Core.Flag;
 import Game.GameObjects.*;
 import Game.Main;
 import javafx.animation.AnimationTimer;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.application.Application;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 public class Server {
@@ -29,9 +25,12 @@ public class Server {
     private Hashtable<Player, ObjectOutputStream> userOutputStreamList = new Hashtable<Player, ObjectOutputStream>();
 
     private MainLabyrinth labyrinth = null;
+    private List<String> colorList = new ArrayList<>();
 
     public Server(int port) {
-
+        colorList.add("RED");
+        colorList.add("YELLOW");
+        colorList.add("GREEN");
         this.port = port;
         try {
             this.ssocket = new ServerSocket(port);
@@ -48,11 +47,10 @@ public class Server {
         System.out.println("Server started at "
                 + InetAddress.getLocalHost().toString() + " port "
                 + ssocket.getLocalPort());
-        Dimension dimension = new Dimension(32, 32);
-        labyrinth = new MainLabyrinth(dimension, 20);
+
 
         int countOfPlayer = 0;
-        while (countOfPlayer < 3) {
+        while (countOfPlayer < 2) {
             try {
                 socket = ssocket.accept();
                 if (socket != null) {
@@ -67,28 +65,46 @@ public class Server {
             }
 
         }
-        System.out.println("The game can be started we are three person");
+        Dimension dimension = new Dimension(50, 50);
+        labyrinth = new MainLabyrinth(dimension, 0);
+        System.out.println("The game can be started we are three persons");
+
+        for(Player player : userList.keySet()) {
+            users.put(player.getName(),player);
+        }
+        int i = 0;
+        int j = 5;
         for (Player player : users.values()) {
             System.out.println("Name of Players" + player);
-            labyrinth.addPlayer(player, 0);
-            users.put(player.getName(), player);
+            player.setColor(colorList.get(i));
+            i++;
+            labyrinth.addPlayer(player, -i);
             Robot robot = new Robot(0, player);
-            Flag fl = new DontComeNearFlag(0, 1, 1, 32, 32, robot);
-            labyrinth.addFlag(fl);
+            SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, dimension.getDim_x(),dimension.getDim_y(), robot);
+            DontComeNearFlag flag2 = new DontComeNearFlag(-30 +j, 40 - j, 40 + j, dimension.getDim_x(),dimension.getDim_y(),robot);
+            labyrinth.addFlag(flag);
+            labyrinth.addFlag(flag2);
             labyrinth.update();
         }
 
+        startGame();
 
+
+    }
+
+    public synchronized void startGame() {
         Main.GameSystem game_system = Main.GameSystem.getInstance();
+        game_system.setLabyrinth(labyrinth);
         new AnimationTimer() {
             long last_frame_time = System.nanoTime();
 
             @Override
             public void handle(long now) {
-                labyrinth.update();
+                game_system.labyrinth.update();
                 last_frame_time = now;
             }
         }.start();
+        Application.launch(Main.class);
     }
 
     public synchronized void addUser(Player player, Socket socket,
