@@ -48,8 +48,8 @@ public class Server {
         System.out.println("Server started at "
                 + InetAddress.getLocalHost().toString() + " port "
                 + ssocket.getLocalPort());
-        Dimension dimension= new Dimension(32, 32);
-         labyrinth = new MainLabyrinth(dimension,20);
+        Dimension dimension = new Dimension(32, 32);
+        labyrinth = new MainLabyrinth(dimension, 20);
 
         int countOfPlayer = 0;
         while (countOfPlayer < 3) {
@@ -58,7 +58,7 @@ public class Server {
                 if (socket != null) {
                     System.out.println(socket + " : connected");
                     new ServerThread(socket, this); // create new thread
-                    countOfPlayer ++;
+                    countOfPlayer++;
                     System.out.println("Waiting three Person to play ......");
 
                 }
@@ -68,38 +68,24 @@ public class Server {
 
         }
         System.out.println("The game can be started we are three person");
-        for(Player player : users.values()){
+        for (Player player : users.values()) {
             System.out.println("Name of Players" + player);
             labyrinth.addPlayer(player, 0);
-            users.put(player.getName(),player);
+            users.put(player.getName(), player);
             Robot robot = new Robot(0, player);
-            Flag fl = new DontComeNearFlag(0, 1, 1, 32, 32,robot);
+            Flag fl = new DontComeNearFlag(0, 1, 1, 32, 32, robot);
             labyrinth.addFlag(fl);
             labyrinth.update();
         }
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
-        try {
-            Parent root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Controller controller = loader.getController();
 
-        GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
 
         Main.GameSystem game_system = Main.GameSystem.getInstance();
-        new AnimationTimer(){
-
+        new AnimationTimer() {
             long last_frame_time = System.nanoTime();
 
             @Override
             public void handle(long now) {
-                gc.clearRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-                gc.setFill(Color.BLACK);
-                gc.fillRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
                 labyrinth.update();
-                labyrinth.draw(gc);
-
                 last_frame_time = now;
             }
         }.start();
