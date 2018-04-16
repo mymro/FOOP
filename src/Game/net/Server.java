@@ -65,23 +65,23 @@ public class Server {
 
         }
 
-        startGame();
+        //startGame();
 
 
     }
 
-    public synchronized void startGame() {
+    public synchronized void startGame(Hashtable<Player, Socket> userList) {
         Dimension dimension = new Dimension(50, 50);
         labyrinth = new MainLabyrinth(dimension, 0);
         System.out.println("The game can be started we are three persons");
 
-        int i = 0;
+
         int j = 5;
         for (Player player : userList.keySet()) {
-            i++;
-            labyrinth.addPlayer(player, -i);
-            System.out.println("Player: " + i + player);
-            Robot robot = new Robot(i, player);
+
+            labyrinth.addPlayer(player, 0);
+            System.out.println("Player: " +   player);
+            Robot robot = new Robot(0, player);
             SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, dimension.getDim_x(),dimension.getDim_y(), robot);
             DontComeNearFlag flag2 = new DontComeNearFlag(-30 +j, 40 - j, 40 + j, dimension.getDim_x(),dimension.getDim_y(),robot);
             labyrinth.addFlag(flag);
@@ -111,6 +111,9 @@ public class Server {
         synchronized (userList) {
 
             userList.put(player, socket);
+            if(userList.size()> 2) {
+                startGame(userList);
+            }
         }
         synchronized (userOutputStreamList) {
             userOutputStreamList.put(player, oos);

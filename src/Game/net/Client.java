@@ -35,7 +35,6 @@ public class Client extends Thread {
 
     public void startClient() {
         connectToServer();
-
         try {
             while (run) {
                 Message message = (Message) ois.readObject();
