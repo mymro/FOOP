@@ -108,7 +108,9 @@ public class Server {
         synchronized (userList) {
 
             userList.put(player, socket);
+
             if(userList.size()> 2) {
+                startGame();
                 startGame(userList);
             }
         }
@@ -124,6 +126,11 @@ public class Server {
     public void sendUserList() {
         Message msg = new Message(Message.USERS_LIST);
         msg.setUserList(new Vector(userInfoList.keySet()));
+        sendToClients(msg);
+    }
+
+    public void startGame() {
+        Message msg = new Message(Message.START_MATCH);
         sendToClients(msg);
     }
 
