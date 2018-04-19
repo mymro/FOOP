@@ -28,7 +28,7 @@ public class Server {
 
     public Server(int port) {
         colorList.add("RED");
-        colorList.add("YELLOW");
+        colorList.add("BLUE");
         colorList.add("GREEN");
         this.port = port;
         try {
@@ -64,8 +64,6 @@ public class Server {
             }
 
         }
-
-        //startGame();
 
 
     }
@@ -129,6 +127,8 @@ public class Server {
         msg.setUserList(new Vector(userInfoList.keySet()));
         sendToClients(msg);
     }
+
+
 
     public void sendToClients(Object message) {
         for (ObjectOutputStream oos : userOutputStreamList.values()) {

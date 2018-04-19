@@ -1,23 +1,32 @@
 package Game.net;
 
+import Game.Controller;
+import Game.GameObjects.MainLabyrinth;
 import Game.GameObjects.Player;
+import Game.Main;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import javafx.application.Platform;
 
 
 public class ClientGUI extends Application {
@@ -60,9 +69,6 @@ public class ClientGUI extends Application {
     private Integer port;
 
 
-
-
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         GridPane grid = new GridPane();
@@ -71,8 +77,8 @@ public class ClientGUI extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Scene scene = new Scene(grid, 300, 275);
-        primaryStage.setScene(scene);
+        Scene firstScene = new Scene(grid, 300, 275);
+        primaryStage.setScene(firstScene);
         Text gameTitle = new Text("Welcome to Game");
         gameTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(gameTitle, 0, 0, 2, 1);
@@ -124,19 +130,92 @@ public class ClientGUI extends Application {
 
                 Player player = new Player(gui.getUserName(), null, gui.getHostName(), gui.getPort());
                 Message wantMatch = new Message(Message.REQUEST_MATCH, player); // Firstly send a request
+                goToPlay(primaryStage,gui.getUserName(), gui.getHostName() +":" +gui.getPort());
                 client = new Client(gui.getHostName(), gui.getPort(), "RED", gui.getUserName());
                 client.start();
                 client.startClient();
+                System.out.println(client.getCurrentMessage().getType());
                 client.makeRequest(wantMatch);
+                System.out.println(client.getCurrentMessage().getType());
+
+
+
 
             }
         });
 
         primaryStage.show();
     }
+   public void goToPlay(Stage primaryStage, String username, String hostName) {
+       FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+       Parent root = null;
+       try {
+           root = loader.load();
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+       Controller controller = loader.getController();
+       primaryStage.setTitle(username + ", " + hostName);
+       primaryStage.setResizable(false);
 
+       Label lbl = new Label("Waiting for Three Person");
+       lbl.setFont(Font.font("Amble CN", FontWeight.BOLD, 24));
+       ((VBox) root).getChildren().add(lbl);
+
+       primaryStage.setScene(new Scene(root));
+       GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
+       Main.GameSystem game_system = Main.GameSystem.getInstance();
+       controller.setLabyrinth(game_system.getLabyrinth());
+       new AnimationTimer(){
+
+           long last_frame_time = System.nanoTime();
+
+           @Override
+           public void handle(long now) {
+               gc.clearRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+               gc.setFill(Color.BLACK);
+               gc.fillRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+               game_system.getLabyrinth().update();
+               game_system.getLabyrinth().draw(gc);
+               game_system.setDelta_time((now- last_frame_time)/1000000000.0);
+               last_frame_time = now;
+           }
+       }.start();
+
+   }
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static final class GameSystem {
+        private static Main.GameSystem instance;
+        private double delta_time; // in nanoseconds
+        public MainLabyrinth labyrinth;
+
+
+
+        private GameSystem(){
+            delta_time = 0;
+        }
+
+        public static Main.GameSystem getInstance(){
+            if (instance == null){
+                instance = Main.GameSystem.getInstance();
+            }
+            return instance;
+        }
+
+        public double deltaTime(){
+            return delta_time;
+        }
+
+        public MainLabyrinth getLabyrinth() {
+            return labyrinth;
+        }
+
+        public void setLabyrinth(MainLabyrinth labyrinth) {
+            this.labyrinth = labyrinth;
+        }
     }
 
 

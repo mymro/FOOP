@@ -29,8 +29,8 @@ public class Robot extends GameObject {
         if (player.getColor().equalsIgnoreCase("GREEN")) {
             this.color = Color.GREEN;
         }
-        if (player.getColor().equalsIgnoreCase("YELLOW")) {
-            this.color = Color.YELLOW;
+        if (player.getColor().equalsIgnoreCase("BLUE")) {
+            this.color = Color.BLUE;
         }
         mainLabyrinth = null;
         initialize(null, 0, 0);

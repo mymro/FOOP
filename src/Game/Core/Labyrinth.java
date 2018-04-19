@@ -360,4 +360,12 @@ public class Labyrinth{
     public void setDimension(Dimension dimension) {
         this.dimension = dimension;
     }
+
+    @Override
+    public String toString() {
+        return "Labyrinth{" +
+                "dimension=" + dimension +
+                ", labyrinth=" + Arrays.toString(labyrinth) +
+                '}';
+    }
 }

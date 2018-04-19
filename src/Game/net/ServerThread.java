@@ -82,8 +82,8 @@ public class ServerThread extends Thread {
                 break;
 
             case Message.START_MATCH:
-                System.out.println("starting match: "+message.getPlayer().getName());
-                sendMessageTo(message, server.getUserOutputStreamList().get(message.getPlayer().getName())); // to special user(request)
+                message.setMessage("Start_GAME");
+                sendMessage(new Message(Message.START_MATCH));; // to special user(request)
                 break;
 
             default:

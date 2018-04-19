@@ -46,6 +46,10 @@ public class Main extends Application {
             return delta_time;
         }
 
+        public void setDelta_time(double delta_time) {
+            this.delta_time = delta_time;
+        }
+
         public MainLabyrinth getLabyrinth() {
             return labyrinth;
         }

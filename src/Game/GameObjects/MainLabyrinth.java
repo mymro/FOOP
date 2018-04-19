@@ -7,11 +7,12 @@ import Game.Core.Labyrinth;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
 
-public class MainLabyrinth extends GameObject implements FModifier {
+public class MainLabyrinth extends GameObject implements FModifier ,Serializable {
 
     private Labyrinth labyrinth;
     private long seed;
@@ -129,5 +130,14 @@ public class MainLabyrinth extends GameObject implements FModifier {
             result += modifier.getFModifierAt(x, y);
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MainLabyrinth{" +
+                "labyrinth=" + labyrinth +
+                ", seed=" + seed +
+                ", modifiers=" + modifiers +
+                '}';
     }
 }

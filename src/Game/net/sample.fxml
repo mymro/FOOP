@@ -1,0 +1,30 @@
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox  fx:controller="Game.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="top_left">
+    <MenuBar fx:id="menuBar">
+        <menus>
+            <Menu text="Connection Options">
+                <items>
+                    <MenuItem text="Connect" onAction="#connectToServer"/>
+                </items>
+            </Menu>
+            <Menu text="Flags">
+                <items>
+                    <MenuItem text="Attraction Flag" onAction="#chooseAttractionFlag"/>
+                    <MenuItem text="Repel Flag" onAction="#chooseRepelFlag"/>
+                </items>
+            </Menu>
+            <Menu text="Help">
+                <items>
+                    <MenuItem text="About" onAction="#handleAbout"/>
+                </items>
+            </Menu>
+        </menus>
+    </MenuBar>
+
+    <Canvas fx:id="labyrinthCanvas" height="500" width="500" onMouseClicked="#handleClickEvent"></Canvas>
+
+</VBox >
