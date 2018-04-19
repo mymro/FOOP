@@ -65,7 +65,6 @@ public class Server {
 
         }
 
-
     }
 
     public synchronized void startGame(Hashtable<Player, Socket> userList) {

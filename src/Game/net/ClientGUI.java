@@ -67,7 +67,8 @@ public class ClientGUI extends Application {
     private String userName;
     private String hostName;
     private Integer port;
-
+    private Main.GameSystem game_system = Main.GameSystem.getInstance();
+    private Controller controller=null;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -130,13 +131,14 @@ public class ClientGUI extends Application {
 
                 Player player = new Player(gui.getUserName(), null, gui.getHostName(), gui.getPort());
                 Message wantMatch = new Message(Message.REQUEST_MATCH, player); // Firstly send a request
-                goToPlay(primaryStage,gui.getUserName(), gui.getHostName() +":" +gui.getPort());
+
                 client = new Client(gui.getHostName(), gui.getPort(), "RED", gui.getUserName());
                 client.start();
-                client.startClient();
-                System.out.println(client.getCurrentMessage().getType());
-                client.makeRequest(wantMatch);
-                System.out.println(client.getCurrentMessage().getType());
+
+                goToPlay(primaryStage,gui.getUserName(), gui.getHostName() +":" +gui.getPort(),client);
+
+               // client.makeRequest(wantMatch);
+               // System.out.println(client.getCurrentMessage().getType());
 
 
 
@@ -146,7 +148,41 @@ public class ClientGUI extends Application {
 
         primaryStage.show();
     }
-   public void goToPlay(Stage primaryStage, String username, String hostName) {
+   public void goToPlay(Stage primaryStage, String username, String hostName,Client client) {
+       Label lbl = new Label("Waiting for Three Person");
+       Task<Void> task = new Task<Void>() {
+           @Override
+           protected Void call() throws Exception {
+               client.startClient();
+               return null;
+           }
+
+           @Override
+           protected void succeeded() {
+               System.out.println("work done!");
+               new AnimationTimer(){
+
+                   long last_frame_time = System.nanoTime();
+
+                   @Override
+                   public void handle(long now) {
+                       GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
+
+                       controller.setLabyrinth(game_system.getLabyrinth());
+                       gc.clearRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                       gc.setFill(Color.BLACK);
+                       gc.fillRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                       game_system.getLabyrinth().update();
+                       game_system.getLabyrinth().draw(gc);
+                       game_system.setDelta_time((now- last_frame_time)/1000000000.0);
+                       last_frame_time = now;
+                   }
+               }.start();
+           }
+       };
+
+       new Thread(task).start();
+
        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
        Parent root = null;
        try {
@@ -158,29 +194,13 @@ public class ClientGUI extends Application {
        primaryStage.setTitle(username + ", " + hostName);
        primaryStage.setResizable(false);
 
-       Label lbl = new Label("Waiting for Three Person");
+
        lbl.setFont(Font.font("Amble CN", FontWeight.BOLD, 24));
        ((VBox) root).getChildren().add(lbl);
 
        primaryStage.setScene(new Scene(root));
-       GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
-       Main.GameSystem game_system = Main.GameSystem.getInstance();
-       controller.setLabyrinth(game_system.getLabyrinth());
-       new AnimationTimer(){
 
-           long last_frame_time = System.nanoTime();
 
-           @Override
-           public void handle(long now) {
-               gc.clearRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-               gc.setFill(Color.BLACK);
-               gc.fillRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-               game_system.getLabyrinth().update();
-               game_system.getLabyrinth().draw(gc);
-               game_system.setDelta_time((now- last_frame_time)/1000000000.0);
-               last_frame_time = now;
-           }
-       }.start();
 
    }
     public static void main(String[] args) {

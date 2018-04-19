@@ -131,9 +131,6 @@ public class Client extends Thread {
                 this.currentMessage = message;
                 System.out.println("Ich bin in CLIENT in Type" + "START_MATCH ");
                 try {
-                    Main.GameSystem game_system = Main.GameSystem.getInstance();
-                    System.out.println("mLabrint" + game_system.getLabyrinth());
-                    startGame();
                     new ClientThread(this, this.currentMessage).join();
 
                 } catch (InterruptedException e) {
@@ -146,22 +143,6 @@ public class Client extends Thread {
         }
     }
 
-    private MainLabyrinth labyrinth = null;
-
-    public synchronized void startGame() {
-        Main.GameSystem game_system = Main.GameSystem.getInstance();
-        game_system.setLabyrinth(labyrinth);
-        new AnimationTimer() {
-            long last_frame_time = System.nanoTime();
-
-            @Override
-            public void handle(long now) {
-                game_system.labyrinth.update();
-                last_frame_time = now;
-            }
-        }.start();
-        Application.launch(Main.class);
-    }
 
     private void connectToServer() { // connect to server
 
