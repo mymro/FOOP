@@ -35,6 +35,7 @@ public class Client extends Thread {
         this.port = port;
         this.userName = userName;
         player = new Player(userName, color, serverIP.toString(), port);
+        clientGUI = new ClientGUI();
 
     }
 
@@ -193,5 +194,21 @@ public class Client extends Thread {
 
     public void setCurrentMessage(Message currentMessage) {
         this.currentMessage = currentMessage;
+    }
+
+    public String getServerIP() {
+        return serverIP;
+    }
+
+    public void setServerIP(String serverIP) {
+        this.serverIP = serverIP;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

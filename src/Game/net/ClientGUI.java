@@ -26,7 +26,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import javafx.application.Platform;
 
 
 public class ClientGUI extends Application {
@@ -205,6 +204,10 @@ public class ClientGUI extends Application {
    }
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void updateGame() {
+        game_system.getLabyrinth().update();
     }
 
     public static final class GameSystem {

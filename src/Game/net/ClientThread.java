@@ -22,23 +22,17 @@ public class ClientThread extends Thread {
 	
 	private Player player;
 
-	/**
-	 *
-	 * TODO
-	 *
-	 */
-	private Main game;
 	
 	ObjectInputStream ois;
 	ObjectOutputStream oos;
+	private ClientGUI clientGui;
 	
 	public ClientThread(Client client, Message message) { // first constructer calling by match requester
 		this.client = client;
 		this.player = message.getPlayer();
-		params = message.getMessage().split(":");
-		
-		socketIP = params[0];
-		port = Integer.parseInt(params[1]);
+		socketIP = client.getServerIP();
+		port = client.getPort();
+		clientGui = new ClientGUI();
 		
 		try {
 			this.socket = new Socket(InetAddress.getByName(socketIP), port);
@@ -47,13 +41,7 @@ public class ClientThread extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		/**TODO
-		SwingUtilities.invokeLater(new Runnable() {	
-			@Override
-			public void run() {
-				game = new GameGUI(ClientThread.this, userName, rivalName, GameGUI.BLUE_PIECE);			
-			}
-		}); **/
+
 		start();
 
 	}
@@ -61,10 +49,6 @@ public class ClientThread extends Thread {
 	public ClientThread(Client client, Socket socket, Player player) {
 		this.socket = socket;
 		this.client = client;
-
-
-
-
 		start();
 	}
 
@@ -83,26 +67,8 @@ public class ClientThread extends Thread {
 		try {
 			while (true) {
 				Message message = (Message) ois.readObject();
-				if(message.getType() == Message.MOVE) {
-					// TODO game.move(message.getFrom(), message.getTo());
-				}
-				else if(message.getType() == Message.TAKE) {
-					//TODO	game.takePiece(message.getTaken());
-					/** TODO
-					writer.println(message.getUserName() + " - " + "move " + game.indexToPos(message.getFrom()) + " to "
-							+ game.indexToPos(message.getTo()) + ", piece at " + game.indexToPos(message.getTaken()) + 
-									" is taken");
-					game.move(message.getFrom(), message.getTo());
-					 **/
-				}
-				else if(message.getType() == Message.KING) {
-					/** TODO
-					if(message.getTo() == 1)
-
-						game.makeKingAt(message.getFrom(), GameGUI.BLUE_KING);
-					else
-						game.makeKingAt(message.getFrom(), GameGUI.RED_KING);
-					 **/
+				if(message.getType() == Message.START_MATCH) {
+					clientGui.updateGame();
 				}
 			}
 
@@ -120,7 +86,9 @@ public class ClientThread extends Thread {
 			}
 		}
 	}
-	
+
+
+
 	public PrintWriter getWriter() {
 		return writer;
 	}
