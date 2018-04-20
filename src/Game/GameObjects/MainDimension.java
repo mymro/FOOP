@@ -1,10 +1,15 @@
 package Game.GameObjects;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class MainDimension extends Dimension {
+public class MainDimension extends Dimension implements Serializable {
     private int layer;
     private int seed;
+
+    public MainDimension(){
+        super();
+    }
     public MainDimension(int dim_x, int  dim_y, int layer, int seed) {
         super(dim_x,dim_y);
         this.layer = layer;

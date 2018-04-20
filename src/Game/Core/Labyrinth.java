@@ -2,9 +2,10 @@ package Game.Core;
 
 import Game.GameObjects.Dimension;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Labyrinth{
+public class Labyrinth implements Serializable{
     public enum Direction {
         up,
         down,
@@ -18,7 +19,7 @@ public class Labyrinth{
         unknown,
     }
 
-    public static class LabyrinthNode {
+    public static class LabyrinthNode implements  Serializable {
         private NodeType type;
         private int x,y;
         private HashMap<Direction, LabyrinthNode> neighbours = new HashMap<>();

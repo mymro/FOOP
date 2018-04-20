@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Main extends Application {
 
+
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -28,9 +30,6 @@ public class Main extends Application {
         private static GameSystem instance;
         private double delta_time; // in nanoseconds
         public MainLabyrinth labyrinth;
-
-
-
         private GameSystem(){
             delta_time = 0;
         }

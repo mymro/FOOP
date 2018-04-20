@@ -29,6 +29,8 @@ public class Client extends Thread {
     private Socket socket;
 
     public static ClientGUI clientGUI;
+    private MainLabyrinth mainLabyrinth = null;
+    private Dimension dimension = null;
 
     public Client(String serverIP, int port, String color, String userName) {
         this.serverIP = serverIP;
@@ -43,7 +45,7 @@ public class Client extends Thread {
         connectToServer();
         try {
             while (run) {
-                Message  message = (Message) ois.readObject();
+                Message message = (Message) ois.readObject();
                 handleMessage(message);
 
             }
@@ -98,6 +100,28 @@ public class Client extends Thread {
         }
     }
 
+    public void startGame(Vector<Player> userList) {
+
+        System.out.println("The game can be started we are three persons");
+        dimension = new Dimension(50, 50);
+        mainLabyrinth = new MainLabyrinth(dimension, 0);
+
+        int j = 5;
+        for (Player player : userList) {
+
+            mainLabyrinth.addPlayer(player, 0);
+            System.out.println("Player: " + player);
+            Robot robot = new Robot(0, player);
+            SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, dimension.getDim_x(), dimension.getDim_y(), robot);
+            DontComeNearFlag flag2 = new DontComeNearFlag(-30 + j, 40 - j, 40 + j, dimension.getDim_x(), dimension.getDim_y(), robot);
+            mainLabyrinth.addFlag(flag);
+            mainLabyrinth.addFlag(flag2);
+            mainLabyrinth.update();
+
+        }
+
+    }
+
     private void handleMessage(Message message) {
 
         switch (message.getType()) {
@@ -105,10 +129,8 @@ public class Client extends Thread {
             case Message.USERS_LIST:
                 this.currentMessage = message;
                 System.out.println("Ich bin in CLIENT in Type" + "USERS_LIST");
-                if (message.getUserList().size() > 2) {
-                    message.setType(6);
-                    sendToServer(message);
-                }
+                startGame(message.getUserList());
+
                 break;
 
             case Message.BYE:
@@ -131,6 +153,7 @@ public class Client extends Thread {
             case Message.START_MATCH:
                 this.currentMessage = message;
                 System.out.println("Ich bin in CLIENT in Type" + "START_MATCH ");
+
                 try {
                     new ClientThread(this, this.currentMessage).join();
 
@@ -210,5 +233,13 @@ public class Client extends Thread {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public MainLabyrinth getMainLabyrinth() {
+        return mainLabyrinth;
+    }
+
+    public void setMainLabyrinth(MainLabyrinth mainLabyrinth) {
+        this.mainLabyrinth = mainLabyrinth;
     }
 }

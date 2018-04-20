@@ -1,5 +1,6 @@
 package Game.net;
 
+import Game.GameObjects.MainLabyrinth;
 import Game.GameObjects.Player;
 
 import java.util.Vector;
@@ -28,7 +29,7 @@ public class Message implements java.io.Serializable {
     private int to;
     private int taken;
 
-    private Vector<String> userList;
+    private Vector<Player> userList;
 
     public Message() {
     }
@@ -112,11 +113,12 @@ public class Message implements java.io.Serializable {
         this.taken = taken;
     }
 
-    public Vector<String> getUserList() {
+    public Vector<Player> getUserList() {
         return userList;
     }
 
-    public void setUserList(Vector<String> userList) {
+    public void setUserList(Vector<Player> userList) {
         this.userList = userList;
     }
+
 }

@@ -125,7 +125,7 @@ public class Server {
 
     public void sendUserList() {
         Message msg = new Message(Message.USERS_LIST);
-        msg.setUserList(new Vector(userInfoList.keySet()));
+        msg.setUserList(new Vector(userList.keySet()));
         sendToClients(msg);
     }
 

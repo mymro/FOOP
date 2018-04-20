@@ -35,9 +35,9 @@ public abstract class GameObject{
         }
     }
 
-    public void draw(GraphicsContext gc){
+    public void draw(GraphicsContext graphicsContext){
         for(GameObject go : children){
-            go.draw(gc);
+            go.draw(graphicsContext);
         }
     }
 

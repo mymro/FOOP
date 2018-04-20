@@ -16,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,6 +27,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.HashSet;
+
+import static java.awt.image.ImageObserver.HEIGHT;
+import static java.awt.image.ImageObserver.WIDTH;
 
 
 public class ClientGUI extends Application {
@@ -66,8 +71,9 @@ public class ClientGUI extends Application {
     private String userName;
     private String hostName;
     private Integer port;
-    private Main.GameSystem game_system = Main.GameSystem.getInstance();
-    private Controller controller=null;
+    private static Main.GameSystem game_system = Main.GameSystem.getInstance();
+    private static Controller controller = null;
+    private MainLabyrinth mainLabyrinth;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -134,12 +140,10 @@ public class ClientGUI extends Application {
                 client = new Client(gui.getHostName(), gui.getPort(), "RED", gui.getUserName());
                 client.start();
 
-                goToPlay(primaryStage,gui.getUserName(), gui.getHostName() +":" +gui.getPort(),client);
+                goToPlay(primaryStage, gui.getUserName(), gui.getHostName() + ":" + gui.getPort(), client);
 
-               // client.makeRequest(wantMatch);
-               // System.out.println(client.getCurrentMessage().getType());
-
-
+                // client.makeRequest(wantMatch);
+                // System.out.println(client.getCurrentMessage().getType());
 
 
             }
@@ -147,61 +151,122 @@ public class ClientGUI extends Application {
 
         primaryStage.show();
     }
-   public void goToPlay(Stage primaryStage, String username, String hostName,Client client) {
-       Label lbl = new Label("Waiting for Three Person");
-       Task<Void> task = new Task<Void>() {
-           @Override
-           protected Void call() throws Exception {
-               client.startClient();
-               return null;
-           }
 
-           @Override
-           protected void succeeded() {
-               System.out.println("work done!");
-               new AnimationTimer(){
+    static HashSet<String> currentlyActiveKeys;
+    private static Scene gameScene = null;
+    static GraphicsContext graphicsContext = null;
 
-                   long last_frame_time = System.nanoTime();
+    public void goToPlay(Stage primaryStage, String username, String hostName, Client client) {
 
-                   @Override
-                   public void handle(long now) {
-                       GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
+        Label lbl = new Label("Waiting for Three Person");
 
-                       controller.setLabyrinth(game_system.getLabyrinth());
-                       gc.clearRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-                       gc.setFill(Color.BLACK);
-                       gc.fillRect(0,0,gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-                       game_system.getLabyrinth().update();
-                       game_system.getLabyrinth().draw(gc);
-                       game_system.setDelta_time((now- last_frame_time)/1000000000.0);
-                       last_frame_time = now;
-                   }
-               }.start();
-           }
-       };
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                client.startClient();
+                return null;
+            }
 
-       new Thread(task).start();
+            @Override
+            protected void succeeded() {
+                System.out.println("work done!");
 
-       FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
-       Parent root = null;
-       try {
-           root = loader.load();
-       } catch (IOException e) {
-           e.printStackTrace();
-       }
-       Controller controller = loader.getController();
-       primaryStage.setTitle(username + ", " + hostName);
-       primaryStage.setResizable(false);
+                new AnimationTimer() {
+
+                    long last_frame_time = System.nanoTime();
+
+                    @Override
+                    public void handle(long now) {
+                        GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
+
+                        controller.setLabyrinth(game_system.getLabyrinth());
+                        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                        gc.setFill(Color.BLACK);
+                        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                        game_system.getLabyrinth().update();
+                        game_system.getLabyrinth().draw(gc);
+                        game_system.setDelta_time((now - last_frame_time) / 1000000000.0);
+                        last_frame_time = now;
+                    }
+                }.start();
+            }
+        };
+
+        new Thread(task).start();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        controller = loader.getController();
+        primaryStage.setTitle(username + ", " + hostName);
+        primaryStage.setResizable(false);
+
+        lbl.setFont(Font.font("Amble CN", FontWeight.BOLD, 24));
+        ((VBox) root).getChildren().add(lbl);
+        Scene gameScene = new Scene(root);
+        prepareActionHandlers(gameScene);
+        graphicsContext = controller.labyrinthCanvas.getGraphicsContext2D();
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
+                tickAndRender(client);
+            }
+        }.start();
+        primaryStage.setScene(gameScene);
 
 
-       lbl.setFont(Font.font("Amble CN", FontWeight.BOLD, 24));
-       ((VBox) root).getChildren().add(lbl);
+    }
 
-       primaryStage.setScene(new Scene(root));
+    private static void tickAndRender(Client client) {
+        // clear canvas
+        graphicsContext.clearRect(0, 0, WIDTH, HEIGHT);
 
+        if (currentlyActiveKeys.contains("LEFT")) {
 
+            new AnimationTimer() {
 
-   }
+                long last_frame_time = System.nanoTime();
+
+                @Override
+                public void handle(long now) {
+                    GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
+
+                    controller.setLabyrinth(client.getMainLabyrinth());
+                    gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                    gc.setFill(Color.BLACK);
+                    gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                    client.getMainLabyrinth().update();
+                    client.getMainLabyrinth().draw(gc);
+                    game_system.setDelta_time((now - last_frame_time) / 1000000000.0);
+
+                    last_frame_time = now;
+                }
+            }.start();
+        } else {
+            GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
+            gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        }
+    }
+
+    private static void prepareActionHandlers(Scene gameScene) {
+        // use a set so duplicates are not possible
+        currentlyActiveKeys = new HashSet<String>();
+        gameScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                currentlyActiveKeys.add(event.getCode().toString());
+            }
+        });
+        gameScene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                currentlyActiveKeys.remove(event.getCode().toString());
+            }
+        });
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -210,36 +275,7 @@ public class ClientGUI extends Application {
         game_system.getLabyrinth().update();
     }
 
-    public static final class GameSystem {
-        private static Main.GameSystem instance;
-        private double delta_time; // in nanoseconds
-        public MainLabyrinth labyrinth;
-
-
-
-        private GameSystem(){
-            delta_time = 0;
-        }
-
-        public static Main.GameSystem getInstance(){
-            if (instance == null){
-                instance = Main.GameSystem.getInstance();
-            }
-            return instance;
-        }
-
-        public double deltaTime(){
-            return delta_time;
-        }
-
-        public MainLabyrinth getLabyrinth() {
-            return labyrinth;
-        }
-
-        public void setLabyrinth(MainLabyrinth labyrinth) {
-            this.labyrinth = labyrinth;
-        }
+    public static Main.GameSystem getGame_system() {
+        return game_system;
     }
-
-
 }
