@@ -27,8 +27,8 @@ feature {ANY}
 			arr: ARRAY[EV_COORDINATE]
 		do
 			create arr.make_empty
-			arr.force (create {EV_COORDINATE}.make (0, 0), 1)
-			arr.force (create {EV_COORDINATE}.make (400, 400), 2)
+			arr.force (create {EV_COORDINATE}.make (x_from, y_from), 1)
+			arr.force (create {EV_COORDINATE}.make (x_to, y_to), 2)
 			current.draw_polyline (arr, is_closed)
 		end
 end

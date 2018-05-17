@@ -47,7 +47,7 @@ feature {NONE}
 			pixmap.fill_rectangle (0, 0, pixmap.width, pixmap.height)
 			pixmap.set_foreground_color_rgb(1,0,0)
 			pixmap.set_line_width (10)
-			pixmap.draw_line(0,0,pixmap.width, pixmap.height,false)
+			pixmap.draw_line(0,0,200, 200,false)
 		end
 
 feature {ANY}
