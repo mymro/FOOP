@@ -48,6 +48,8 @@ feature {NONE}
 			pixmap.set_foreground_color_rgb(1,0,0)
 			pixmap.set_line_width (10)
 			pixmap.draw_line(0,0,200, 200,false)
+			pixmap.set_foreground_color_rgb(0,0,1)
+			pixmap.draw_triangle (200, 200, 30)
 		end
 
 feature {ANY}

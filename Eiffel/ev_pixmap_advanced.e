@@ -31,4 +31,18 @@ feature {ANY}
 			arr.force (create {EV_COORDINATE}.make (x_to, y_to), 2)
 			current.draw_polyline (arr, is_closed)
 		end
+
+	draw_triangle(x_center, y_center, triangle_height:INTEGER)
+		local
+			arr: ARRAY[EV_COORDINATE]
+			h_half : INTEGER_32
+		do
+			h_half := (triangle_height/2).truncated_to_integer
+			create arr.make_filled (create {EV_COORDINATE}.make (0, 0), 1, 3)
+			arr.enter (create {EV_COORDINATE}.make (x_center, y_center - h_half), 1)
+			arr.enter (create {EV_COORDINATE}.make (x_center-h_half, y_center + h_half), 2)
+			arr.enter (create {EV_COORDINATE}.make (x_center+h_half, y_center + h_half), 3)
+			current.fill_polygon (arr)
+		end
+
 end
