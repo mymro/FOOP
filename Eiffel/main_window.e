@@ -28,9 +28,6 @@ create
 	default_create
 
 feature {NONE} -- Initialization
-	pixmap: EV_PIXMAP_ADVANCED
-	game: separate GAME
-	game_state: GAME_STATE
 
 	create_objects
 			-- <Precursor>
@@ -49,9 +46,7 @@ feature {NONE} -- Initialization
 
 			create pixmap.make_with_size (board_width, board_height)
 
-			create game_state.make
-
-			create game.make (Current, pixmap, game_state)
+			create current_game.make
 		end
 
 	initialize
@@ -82,9 +77,14 @@ feature {NONE} -- Initialization
 			set_title (Window_title)
 
 				-- Set the initial size of the window.
+				-- it is donw that way, because the actual size is
+				-- undetermined before all containers are added,
+				-- because the height of all bars on the top are unknown
+				-- Especially the one with the x
+				-- Also there is some margin, which makes the window also wider
 			Window_width := current.width
 			Window_height := current.height
-			launch_game(game)
+			launch_game(current_game)
 		end
 
 	is_in_default_state: BOOLEAN
@@ -96,9 +96,18 @@ feature {NONE} -- Initialization
 				(title.is_equal (Window_title))
 		end
 
+feature {NONE} -- al functions concerning the state of the game
+
 	launch_game(arg: separate GAME)
+		--sets up the variables and launches the game
 		do
+			arg.attach_needed_objects (pixmap, Current)
 			arg.launch
+		end
+
+	shut_down_game(game: separate GAME)
+		do
+			game.shut_down
 		end
 
 feature {NONE} -- Menu Implementation
@@ -232,14 +241,6 @@ feature {NONE} -- About Dialog Implementation
 			about_dialog.show_modal_to_window (Current)
 		end
 
-feature {ANY} -- draw to pixmap functions
-
-	fill_rectangle (x, y, a_width, a_height:INTEGER_32; r, g, b: REAL_32)
-		do
-			pixmap.set_foreground_color (create {EV_COLOR}.make_with_rgb (r, g, b))
-			pixmap.fill_rectangle (x, y, a_width, a_height)
-		end
-
 feature {NONE} -- Implementation, Close event
 
 	request_close_window
@@ -257,7 +258,8 @@ feature {NONE} -- Implementation, Close event
 					-- End the application.
 					--| TODO: Remove next instruction if you don't want the application
 					--|       to end when the first window is closed..
-					game_state.state:=0
+					-- set game_state.state to 0 indicating the game has ended
+					shut_down_game(current_game)
 				if attached (create {EV_ENVIRONMENT}).application as a then
 					a.destroy
 				end
@@ -274,7 +276,6 @@ feature {NONE} -- Implementation
 		local
 			container: EV_VERTICAL_BOX
 		do
-			--main_container.extend (create {EV_TEXT})
 			pixmap.set_foreground_color (create {EV_COLOR}.make_with_rgb(1,0,0))
 			pixmap.fill_rectangle (0, 0, board_width, board_height)
 			pixmap.pointer_enter_actions.extend (agent enter)
@@ -287,6 +288,8 @@ feature {NONE} -- Implementation
 		ensure
 			main_container_created: main_container /= Void
 		end
+
+feature {NONE} --functions for mouse interaction testing
 
 	enter
 		do
@@ -306,14 +309,16 @@ feature {NONE} -- Implementation
 			pixmap.fill_rectangle (x, y, 10, 10)
 		end
 
-feature {NONE} -- Implementation / Constants
+feature {NONE} -- variables
 
 	Window_title: STRING = "my_vision2_application_1"
 
 	Window_width: INTEGER
-
 	Window_height: INTEGER
+
 	board_width: INTEGER = 400
 	board_height: INTEGER = 400
 
+	pixmap: EV_PIXMAP_ADVANCED
+	current_game: separate GAME
 end

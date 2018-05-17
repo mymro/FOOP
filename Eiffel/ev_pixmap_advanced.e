@@ -1,8 +1,8 @@
 note
-	description: "Summary description for {EV_PIXMAP_ADVANCED}."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "adds a few useful functions for multithreading and the game"
+	author: "Constantin Budin"
+	date: "17.05.18"
+	revision: "0.1"
 
 class
 	EV_PIXMAP_ADVANCED
@@ -16,13 +16,19 @@ create
 	make_with_pointer_style,
 	make_with_pixel_buffer
 
-feature {ANY}
-	set_foreground_color_rgb (r,g,b:REAL_32)--add require
+feature {ANY} -- useful drawing funcions
+	set_foreground_color_rgb (r,g,b:REAL_32)
+		-- sets the foreground color
+		require
+			r >= 0 and r <= 1
+			g >= 0 and g<= 1
+			b >= 0 and b <= 1
 		do
 			current.set_foreground_color (create{EV_COLOR}.make_with_rgb (r, g, b))
 		end
 
 	draw_line(x_from, y_from, x_to, y_to:INTEGER_32; is_closed:BOOLEAN)
+		-- draws a line between two points
 		local
 			arr: ARRAY[EV_COORDINATE]
 		do
@@ -33,6 +39,10 @@ feature {ANY}
 		end
 
 	draw_triangle(x_center, y_center, triangle_height:INTEGER)
+		-- draws a filled triangle with (x_center, y_center - height/2)
+		--(x_center-height/2, y_center + height/2) and (x_center+height/2, y_center + height/2)
+		require
+			triangle_height >0
 		local
 			arr: ARRAY[EV_COORDINATE]
 			h_half : INTEGER_32

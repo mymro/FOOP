@@ -1,8 +1,8 @@
 note
-	description: "Summary description for {GAME}."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "Main game Loop and communication with GUI"
+	author: "Constantin Budin"
+	date: "17.05.2018"
+	revision: "0.1"
 
 class
 	GAME
@@ -14,21 +14,26 @@ class
 create
 	make
 
-feature {NONE}
-	main_window: separate MAIN_WINDOW
+feature{NONE}
 	rand: RANDOM
-	game_state : separate GAME_STATE
-	display: separate EV_PIXMAP_ADVANCED
 
-	make(window: separate MAIN_WINDOW; pixmap: separate EV_PIXMAP_ADVANCED state: separate GAME_STATE)
-		require
-			window /= void
-			state /= void
+feature{ANY}
+	display: detachable separate EV_PIXMAP_ADVANCED
+	main_window: detachable separate MAIN_WINDOW
+	game_state: INTEGER
+		--0 game shut down
+		--1 checking everything is fine for game start
+		--2 game running
+
+feature {NONE}
+
+	make
+		local
+			time:TIME
 		do
-			main_window := window
-			game_state := state
-			display := pixmap
-			create rand.make
+			create time.make_now
+			create rand.set_seed (time.seconds)
+			game_state := 0
 		end
 
 	draw_display(pixmap: separate EV_PIXMAP_ADVANCED)
@@ -53,33 +58,65 @@ feature {NONE}
 		end
 
 feature {ANY}
+
+	shut_down
+	-- ends the game
+		do
+			game_state := 0
+		end
+
+	attach_needed_objects(pixmap: separate EV_PIXMAP_ADVANCED; window: separate MAIN_WINDOW)
+	--attaches nedded objects for game
+	require
+		pixmap /= void
+		window /= void
+	do
+		display := pixmap
+		main_window := window
+	end
+
 	launch
+	--launches the game
+		require
+			game_state = 0
+			attached display
+			attached main_window
+			attached game_state
 		local
 			time: TIME
 		do
-			from
-			until
-				is_running(game_state, main_window)
-			loop
+			if attached display as pixmap and
+				attached main_window as window then
 
-			end
+				game_state := 1
 
-			from
-			until
-			 	not is_running(game_state, main_window)
-			loop
-				sleep(1000000000)
-				create time.make_now
-				print(time.fine_seconds)
-				print("%N")
-				draw_display(display)
+				from
+				until
+					is_running(window)
+				loop
+
+				end
+
+				game_state := 2
+
+				from
+				until
+				 	not is_running(window)
+				loop
+					sleep(1000000000)
+					create time.make_now
+					--print(time.fine_seconds)
+					--print("%N")
+					draw_display(pixmap)
+				end
+				game_state := 0
 			end
 		end
 
 feature {NONE}
 
-	is_running(state: separate GAME_STATE; window: separate MAIN_WINDOW):BOOLEAN
+	is_running(window: separate MAIN_WINDOW):BOOLEAN
 		do
-			Result:= (state.state /= 0) and (not window.is_destroyed)
+			Result:= (game_state /= 0) and (not window.is_destroyed)
 		end
 end
