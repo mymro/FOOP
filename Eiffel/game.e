@@ -44,10 +44,10 @@ feature {NONE}
 			b:= ((rand.item\\10+1)/10).truncated_to_real
 			rand.forth
 			pixmap.set_foreground_color_rgb(r,g,b)
-			pixmap.fill_rectangle (0, 0, 400, 400)
+			pixmap.fill_rectangle (0, 0, pixmap.width, pixmap.height)
 			pixmap.set_foreground_color_rgb(1,0,0)
 			pixmap.set_line_width (10)
-			pixmap.draw_line(0,0,400,400,false)
+			pixmap.draw_line(0,0,pixmap.width, pixmap.height,false)
 		end
 
 feature {ANY}
