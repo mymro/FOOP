@@ -12,7 +12,7 @@ create
 
 feature {NONE}
 	labyrinth: LABYRINTH
-	tile_count: VECTOR_2
+	dimension: VECTOR_2
 	buffer_index: INTEGER
 	pos: VECTOR_2
 	game: GAME
@@ -21,13 +21,13 @@ feature {NONE}
 
 feature {NONE}
 
-	create_new_labyrinth(a_game: GAME; a_parent: detachable GAME_OBJECT; a_tile_count, a_pos:VECTOR_2; a_buffer_index:INTEGER)
+	create_new_labyrinth(a_game: GAME; a_parent: detachable GAME_OBJECT; a_dimension, a_pos:VECTOR_2; a_buffer_index:INTEGER)
 		require
-			a_tile_count.x >=1
-			a_tile_count.y >=1
+			a_dimension.x >=1
+			a_dimension.y >=1
 		do
-			tile_count := a_tile_count
-			create labyrinth.make (tile_count)
+			dimension := a_dimension
+			create labyrinth.make (dimension)
 			buffer_index := a_buffer_index
 			pos:= a_pos
 			game:= a_game
@@ -49,9 +49,9 @@ feature {NONE}
 			center_x: INTEGER_32
 			center_y: INTEGER_32
 		do
-			step_width := (buffer.width/tile_count.x).truncated_to_integer
+			step_width := (buffer.width/dimension.x).truncated_to_integer
 			step_width_half := (step_width/2).truncated_to_integer
-			step_height := (buffer.height/tile_count.y).truncated_to_integer
+			step_height := (buffer.height/dimension.y).truncated_to_integer
 			step_height_half := (step_height/2).truncated_to_integer
 			x_finish := 0
 			y_finish:= 0
@@ -61,10 +61,10 @@ feature {NONE}
 			buffer.set_foreground_color_rgb (1, 1, 1)
 
 			across
-				1 |..| tile_count.x as i
+				1 |..| dimension.x as i
 			loop
 				across
-					 1 |..| tile_count.y as j
+					 1 |..| dimension.y as j
 				loop
 					current_node := labyrinth[i.item,j.item]
 					center_x := (current_node.x - 1) * step_width + step_width_half
