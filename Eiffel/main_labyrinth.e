@@ -3,45 +3,41 @@ note
 	author: "Constantin Budin"
 	date: "18.05.2018"
 	revision: "0.1"
---sloppy implementation missing a lot of features from the java version. Just for testing.
---Has to be redone completely
+--missing a lot of features from the java version
 class
 	MAIN_LABYRINTH
 
-inherit
-	GAME_OBJECT
-		redefine
-			draw,
-			make
-		end
-
 create
-	make,
-	make_with_dimension
+	create_new_labyrinth
 
 feature {NONE}
 	labyrinth: LABYRINTH
-	dimension: DIMENSION
+	tile_count: VECTOR_2
+	buffer_index: INTEGER
+	pos: VECTOR_2
+	game: GAME
+	parent: detachable GAME_OBJECT
+
 
 feature {NONE}
-	make(x,y:REAL_64; a_layer:INTEGER)
+
+	create_new_labyrinth(a_game: GAME; a_parent: detachable GAME_OBJECT; a_tile_count, a_pos:VECTOR_2; a_buffer_index:INTEGER)
+		require
+			a_tile_count.x >=1
+			a_tile_count.y >=1
 		do
-			create dimension.default_create
-			create labyrinth.make (dimension)
+			tile_count := a_tile_count
+			create labyrinth.make (tile_count)
+			buffer_index := a_buffer_index
+			pos:= a_pos
+			game:= a_game
+			parent:= a_parent
 			labyrinth.create_labyrinth
-			PRECURSOR(x,y,a_layer)
-		end
-	make_with_dimension(a_dimension:DIMENSION)
-		do
-			dimension := a_dimension
-			create labyrinth.make (dimension)
-			labyrinth.create_labyrinth
-			initialize(1,1,1)
+			reset_buffer
 		end
 
-feature {ANY}
-	draw(display: separate EV_PIXMAP_ADVANCED)-- already the same as java version just cant draw children yet
-	-- draws the object and children
+	fill_buffer(buffer: separate EV_PIXMAP_ADVANCED)
+	--draws labyrinth to a buffer
 		local
 			step_width: INTEGER_32
 			step_width_half: INTEGER_32
@@ -53,36 +49,38 @@ feature {ANY}
 			center_x: INTEGER_32
 			center_y: INTEGER_32
 		do
-			step_width := (display.width/dimension.width).truncated_to_integer
+			step_width := (buffer.width/tile_count.x).truncated_to_integer
 			step_width_half := (step_width/2).truncated_to_integer
-			step_height := (display.height/dimension.height).truncated_to_integer
+			step_height := (buffer.height/tile_count.y).truncated_to_integer
 			step_height_half := (step_height/2).truncated_to_integer
 			x_finish := 0
 			y_finish:= 0
-			display.set_line_width (step_width-2)
-			display.set_foreground_color_rgb (1, 1, 1)
+			buffer.set_line_width (step_width-2)
+			buffer.set_foreground_color_rgb (0,0,0)
+			buffer.fill_rectangle (0, 0, buffer.width, buffer.height)
+			buffer.set_foreground_color_rgb (1, 1, 1)
 
 			across
-				1 |..| dimension.width as i
+				1 |..| tile_count.x as i
 			loop
 				across
-					 1 |..| dimension.height as j
+					 1 |..| tile_count.y as j
 				loop
 					current_node := labyrinth[i.item,j.item]
 					center_x := (current_node.x - 1) * step_width + step_width_half
 					center_y := (current_node.y - 1) * step_height + step_height_half
 
 					if current_node.neighbours.at ("up") /= void then
-						display.draw_line (center_x, center_y, center_x, center_y - step_height_half)
+						buffer.draw_segment (center_x, center_y, center_x, center_y - step_height_half)
 					end
 					if current_node.neighbours.at ("down") /= void then
-						display.draw_line (center_x, center_y, center_x, center_y + step_height_half)
+						buffer.draw_segment (center_x, center_y, center_x, center_y + step_height_half)
 					end
 					if current_node.neighbours.at ("left") /= void then
-						display.draw_line (center_x, center_y, center_x - step_width_half, center_y)
+						buffer.draw_segment (center_x, center_y, center_x - step_width_half, center_y)
 					end
 					if current_node.neighbours.at ("right") /= void then
-						display.draw_line (center_x, center_y, center_x + step_width_half, center_y)
+						buffer.draw_segment (center_x, center_y, center_x + step_width_half, center_y)
 					end
 
 					if current_node.type = 0 then
@@ -92,13 +90,30 @@ feature {ANY}
 				end
 			end
 
-			display.set_foreground_color_rgb (1, 0, 0)
+			buffer.set_foreground_color_rgb (1, 0, 0)
 			if step_width < step_height then
-				display.fill_ellipse (x_finish, y_finish, step_width, step_width)
+				buffer.fill_ellipse (x_finish, y_finish, step_width, step_width)
 			else
-				display.fill_ellipse (x_finish, y_finish, step_height, step_height)
+				buffer.fill_ellipse (x_finish, y_finish, step_height, step_height)
 			end
+		end
 
-			PRECURSOR(display)
+
+feature {ANY}
+
+	reset_buffer
+	-- redraws the buffer
+		do
+			if attached game.get_buffer (buffer_index) as buffer_pixmap then
+				fill_buffer(buffer_pixmap)
+			else
+				print("buffer not attached in main labyrinth")
+			end
+		end
+
+	draw
+	-- draw to display
+		do
+			game.draw_buffer_to_display (buffer_index, pos)
 		end
 end

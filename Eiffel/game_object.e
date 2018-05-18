@@ -1,11 +1,12 @@
 note
-	description: "Summary description for {GAME_OBJECT}."
-	author: ""
-	date: "$Date$"
-	revision: "$Revision$"
+	description: "basic game_object functionality"
+	author: "Constantin Budin"
+	date: "18.05.2018"
+	revision: "0.1"
 
 class
-	GAME_OBJECT
+	GAME_OBJECT-- has to be redone completely
+	--not yet implemented
 
 create
 	make

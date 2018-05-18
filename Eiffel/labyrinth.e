@@ -11,22 +11,25 @@ create
 	make
 
 feature {ANY}
-	dimension: DIMENSION
+	dimension: VECTOR_2
 
 feature {NONE}
 	labyrinth: ARRAY2[LABYRINTH_NODE]
 
 feature {NONE}
 
-	make(a_dimension: DIMENSION)
+	make(a_dimension: VECTOR_2)
+		require
+			a_dimension.x >=1
+			a_dimension.y >=1
 		do
 			dimension:=a_dimension
-			create labyrinth.make_filled (create {LABYRINTH_NODE}.make (1, 1, 2), dimension.height, dimension.width)
+			create labyrinth.make_filled (create {LABYRINTH_NODE}.make (1, 1, 2), dimension.y, dimension.x)
 			across
-				1 |..| dimension.width as  i
+				1 |..| dimension.x as  i
 			loop
 				across
-					1 |..| dimension.height as j
+					1 |..| dimension.y as j
 				loop
 					labyrinth.put (create{LABYRINTH_NODE}.make (i.item, j.item, 2), i.item, j.item)
 				end
@@ -37,8 +40,8 @@ feature {ANY}
 
 	get_node_at alias "[]" (x,y: INTEGER):LABYRINTH_NODE
 		require
-			x>=1 and x <= dimension.width
-			y>=1 and y <= dimension.height
+			x>=1 and x <= dimension.x
+			y>=1 and y <= dimension.y
 		do
 			RESULT:= labyrinth[x,y]
 		end
@@ -66,26 +69,26 @@ feature {ANY}
 			when 0 then
 				i := 1
 				rand.forth
-				j := (rand.item\\dimension.width) + 1
+				j := (rand.item\\dimension.x) + 1
 			when 1 then
-				i := dimension.height
+				i := dimension.y
 				rand.forth
-				j := (rand.item\\dimension.width) + 1
+				j := (rand.item\\dimension.x) + 1
 			when 2 then
 				rand.forth
-				i := (rand.item\\dimension.height) + 1
+				i := (rand.item\\dimension.y) + 1
 				j := 1
 			when 3 then
 				rand.forth
-				i := (rand.item\\dimension.height) + 1
-				j := dimension.width
+				i := (rand.item\\dimension.y) + 1
+				j := dimension.x
 			end
 
 			labyrinth[i,j].set_type (0)
 
 			-- create the rest of the labyrinth
 			create frontier.make (0)
-			create frontier_matrix.make_filled (FALSE, dimension.height, dimension.width)
+			create frontier_matrix.make_filled (FALSE, dimension.y, dimension.x)
 			current_node:=labyrinth[i,j]
 			frontier_matrix[i,j]:= TRUE
 
@@ -99,7 +102,7 @@ feature {ANY}
 						frontier.extend (labyrinth[current_node.x, current_node.y-1])
 						frontier_matrix[current_node.x, current_node.y-1] := true;
 					end
-				if current_node.y+1 <= dimension.height and (not frontier_matrix[current_node.x, current_node.y+1]) then
+				if current_node.y+1 <= dimension.y and (not frontier_matrix[current_node.x, current_node.y+1]) then
 						frontier.extend (labyrinth[current_node.x, current_node.y+1])
 						frontier_matrix[current_node.x, current_node.y+1] := true;
 					end
@@ -107,7 +110,7 @@ feature {ANY}
 						frontier.extend (labyrinth[current_node.x-1, current_node.y])
 						frontier_matrix[current_node.x-1, current_node.y] := true;
 					end
-				if current_node.x+1 <= dimension.width and (not frontier_matrix[current_node.x+1, current_node.y]) then
+				if current_node.x+1 <= dimension.x and (not frontier_matrix[current_node.x+1, current_node.y]) then
 						frontier.extend (labyrinth[current_node.x+1, current_node.y])
 						frontier_matrix[current_node.x+1, current_node.y] := true;
 					end
@@ -123,13 +126,13 @@ feature {ANY}
 				if current_node.y-1>=1 and (labyrinth[current_node.x, current_node.y-1].type /= 2) then
 					possible_connections.extend (labyrinth[current_node.x, current_node.y-1])
 				end
-				if current_node.y+1 <= dimension.height and (labyrinth[current_node.x, current_node.y+1].type /= 2) then
+				if current_node.y+1 <= dimension.y and (labyrinth[current_node.x, current_node.y+1].type /= 2) then
 					possible_connections.extend (labyrinth[current_node.x, current_node.y+1])
 				end
 				if current_node.x-1>=1 and (labyrinth[current_node.x-1, current_node.y].type /= 2) then
 					possible_connections.extend (labyrinth[current_node.x-1, current_node.y])
 				end
-				if current_node.x+1 <= dimension.width and (labyrinth[current_node.x+1, current_node.y].type /= 2) then
+				if current_node.x+1 <= dimension.x and (labyrinth[current_node.x+1, current_node.y].type /= 2) then
 					possible_connections.extend (labyrinth[current_node.x+1, current_node.y])
 				end
 

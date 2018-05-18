@@ -1,11 +1,11 @@
 note
-	description: "essentialla a 2 dimensional named vector"
+	description: "a 2 dimensional vector"
 	author: "Constantin Budin"
 	date: "18.05.2018"
 	revision: "0.1"
 
 class
-	DIMENSION
+	VECTOR_2
 inherit
 	ANY
 		redefine
@@ -14,33 +14,30 @@ inherit
 
 create
 	default_create,
-	make_with_dimensions
+	make_with_pos
 
 feature{ANY}
-	width: INTEGER
-	height: INTEGER
+	x: INTEGER
+	y: INTEGER
 
 feature {NONE}
 	default_create
-	--creates dimension with 1,1
+	--creates vector_2 with 1,1
 		do
-			width:=1
-			height:=1
+			x:=1
+			y:=1
 		ensure then
-			width = 1
-			height = 1
+			x = 1
+			y = 1
 		end
 
-	make_with_dimensions(a_width, a_height:INTEGER)
-		require
-			a_width >=1
-			a_height >=1
+	make_with_pos(a_x, a_y:INTEGER)
 		do
-			width := a_width
-			height := a_height
+			x := a_x
+			y := a_y
 		ensure
-			width = a_width
-			height = a_height
+			x = a_x
+			y = a_y
 		end
 
 end

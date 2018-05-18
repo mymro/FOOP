@@ -44,7 +44,11 @@ feature {NONE} -- Initialization
 				-- Create a toolbar.
 			create standard_toolbar
 
-			create pixmap.make_with_size (board_width, board_height)
+			create diplay_area.make_with_size (board_width, board_height)
+
+			create pixmap_buffers.make (0)
+
+			buffer_index:=0
 
 			create current_game.make
 		end
@@ -102,13 +106,44 @@ feature {NONE} -- al functions concerning the state of the game
 	launch_game(arg: separate GAME)
 		--sets up the variables and launches the game
 		do
-			arg.attach_needed_objects (pixmap, Current)
+			arg.attach_needed_objects (diplay_area, Current)
 			arg.launch
 		end
 
 	shut_down_game(game: separate GAME)
+	-- shuts down the game
 		do
 			game.shut_down
+		end
+
+feature {ANY}-- interfaces for GAMe
+
+	create_pixmap_buffer(a_width, a_height: INTEGER_32):INTEGER
+	-- creates a buffer and returns the index
+		local
+			buffer: EV_PIXMAP_ADVANCED
+		do
+			buffer_index := buffer_index + 1
+			create buffer.make_with_size (a_width, a_height)
+			pixmap_buffers.put (buffer, buffer_index)
+			RESULT:=buffer_index
+		end
+
+	draw_buffer_to_display(i: INTEGER; pos:separate VECTOR_2)
+	-- draws a buffer at top left position pos
+		do
+			if attached get_pixmap_buffer(i) as buffer then
+				diplay_area.draw_pixmap (pos.x, pos.y, buffer)
+			else
+				print(i.out + " buffer not existing in draw buffer")
+			end
+		end
+
+
+	get_pixmap_buffer(i:INTEGER):detachable EV_PIXMAP_ADVANCED
+	-- returns a buffer if it exists otherwhise void
+		do
+			RESULT:=pixmap_buffers.at (i)
 		end
 
 feature {NONE} -- Menu Implementation
@@ -277,14 +312,14 @@ feature {NONE} -- Implementation
 		local
 			container: EV_VERTICAL_BOX
 		do
-			pixmap.set_foreground_color (create {EV_COLOR}.make_with_rgb(0,0,0))
-			pixmap.fill_rectangle (0, 0, board_width, board_height)
+			diplay_area.set_foreground_color (create {EV_COLOR}.make_with_rgb(0,0,0))
+			diplay_area.fill_rectangle (0, 0, board_width, board_height)
 			--pixmap.pointer_enter_actions.extend (agent enter)
 			--pixmap.pointer_leave_actions.extend (agent leave)
 			--pixmap.pointer_button_press_actions.extend (agent press)
 			create container
 			container.set_minimum_size (board_width, board_height)
-			container.extend (pixmap)
+			container.extend (diplay_area)
 			main_container.extend (container)
 		ensure
 			main_container_created: main_container /= Void
@@ -294,20 +329,20 @@ feature {NONE} --functions for mouse interaction testing
 
 	enter
 		do
-			pixmap.set_foreground_color(create {EV_COLOR}.make_with_rgb(1,0,0))
-			pixmap.fill_rectangle (0, 0, board_width, board_height)
+			diplay_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(1,0,0))
+			diplay_area.fill_rectangle (0, 0, board_width, board_height)
 		end
 
 	leave
 		do
-			pixmap.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,1,0))
-			pixmap.fill_rectangle (0, 0, board_width, board_height)
+			diplay_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,1,0))
+			diplay_area.fill_rectangle (0, 0, board_width, board_height)
 		end
 
 	press(x: INTEGER_32; y: INTEGER_32; button: INTEGER_32; x_tilt: REAL_64; y_tilt: REAL_64; pressure: REAL_64; x_screen: INTEGER_32; y_screen: INTEGER_32)
 		do
-			pixmap.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,0,1))
-			pixmap.fill_rectangle (x, y, 10, 10)
+			diplay_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,0,1))
+			diplay_area.fill_rectangle (x, y, 10, 10)
 		end
 
 feature {NONE} -- variables
@@ -317,9 +352,11 @@ feature {NONE} -- variables
 	Window_width: INTEGER
 	Window_height: INTEGER
 
-	board_width: INTEGER = 400
-	board_height: INTEGER = 400
+	board_width: INTEGER = 1000
+	board_height: INTEGER = 1000
 
-	pixmap: EV_PIXMAP_ADVANCED
+	diplay_area: EV_PIXMAP_ADVANCED
 	current_game: separate GAME
+	pixmap_buffers: HASH_TABLE[EV_PIXMAP_ADVANCED, INTEGER]
+	buffer_index: INTEGER
 end

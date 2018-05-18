@@ -49,11 +49,13 @@ feature {ANY}
 	end
 
 	is_type_valid(a_type:INTEGER):BOOLEAN
+	-- checks if type is valid
 		do
 			RESULT:= a_type >=0 and a_type <=2
 		end
 
 	set_pos(a_x, a_y:INTEGER)
+	-- changes the position
 		require
 			a_x >= 1
 			a_y >= 1

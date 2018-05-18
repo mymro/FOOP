@@ -16,11 +16,14 @@ create
 
 feature{NONE}
 	rand: RANDOM
-	game_root: MAIN_LABYRINTH -- change to GAME_OBJECT once available
+	game_root: detachable MAIN_LABYRINTH -- change to GAME_OBJECT once available
 
 feature{ANY}
+	-- the display area
 	display: detachable separate EV_PIXMAP_ADVANCED
+	-- the main window
 	main_window: detachable separate MAIN_WINDOW
+
 	game_state: INTEGER
 		--0 game shut down
 		--1 checking everything is fine for game start
@@ -29,23 +32,63 @@ feature{ANY}
 feature {NONE}
 
 	make
+	-- eeding random number generator
+	-- and resetting state
 		local
 			time:TIME
 		do
 			create time.make_now
 			create rand.set_seed (time.seconds)
 			game_state := 0
-			create game_root.make_with_dimension(create{DIMENSION}.make_with_dimensions (10, 10))
 		end
 
 	draw_display(pixmap: separate EV_PIXMAP_ADVANCED)
+	-- the main draw funcrion
+	-- clears screen and calls draw on root object
 		do
 			pixmap.set_foreground_color_rgb (0,0,0)
 			pixmap.fill_rectangle (0, 0, pixmap.width, pixmap.height)
-			game_root.draw (pixmap)
+			if attached game_root as root then
+				root.draw
+			else
+				print("root object not attached in game")
+			end
+		end
+
+	get_buffer_i(i:INTEGER; window: separate MAIN_WINDOW): detachable separate EV_PIXMAP_ADVANCED
+	--implementation of get_buffer
+		do
+			RESULT:=window.get_pixmap_buffer(i)
+		end
+
+	draw_buffer_to_display_i(i: INTEGER; pos: separate VECTOR_2; window: separate MAIN_WINDOW)
+	--implementation of draw_buffer_to_display
+		do
+			window.draw_buffer_to_display (i, pos)
 		end
 
 feature {ANY}
+
+	get_buffer(i:INTEGER): detachable separate EV_PIXMAP_ADVANCED
+	-- returns the requested buffer. If it doesnt exist void
+		do
+			if attached main_window as window then
+				RESULT:= get_buffer_i(i, window)
+			else
+				print("main_window not attached in game")
+				RESULT:= void
+			end
+		end
+
+	draw_buffer_to_display(i: INTEGER; pos:VECTOR_2)
+	-- draws a buffer to display with top left corner position of pos
+		do
+			if attached main_window as window then
+				draw_buffer_to_display_i(i, pos, window)
+			else
+				print("main_window not attached in game draw_bufer_to_display")
+			end
+		end
 
 	shut_down
 	-- ends the game
@@ -55,16 +98,22 @@ feature {ANY}
 
 	attach_needed_objects(pixmap: separate EV_PIXMAP_ADVANCED; window: separate MAIN_WINDOW)
 	--attaches nedded objects for game
+	--creates all game objects
 	require
 		pixmap /= void
 		window /= void
+	local
+		buffer_index: INTEGER
 	do
 		display := pixmap
 		main_window := window
+		buffer_index:= window.create_pixmap_buffer(pixmap.height, pixmap.width)
+		create game_root.create_new_labyrinth(Current, void, create{VECTOR_2}.make_with_pos (100, 100), create{VECTOR_2}.make_with_pos (0, 0), buffer_index)
 	end
 
 	launch
 	--launches the game
+	-- the main game loop
 		require
 			game_state = 0
 			attached display

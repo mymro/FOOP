@@ -27,17 +27,6 @@ feature {ANY} -- useful drawing funcions
 			current.set_foreground_color (create{EV_COLOR}.make_with_rgb (r, g, b))
 		end
 
-	draw_line(x_from, y_from, x_to, y_to:INTEGER_32)
-		-- draws a line between two points
-		local
-			arr: ARRAY[EV_COORDINATE]
-		do
-			create arr.make_empty
-			arr.force (create {EV_COORDINATE}.make (x_from, y_from), 1)
-			arr.force (create {EV_COORDINATE}.make (x_to, y_to), 2)
-			current.draw_polyline (arr, false)
-		end
-
 	draw_triangle(x_center, y_center, triangle_height:INTEGER_32)
 		-- draws a filled triangle with (x_center, y_center - height/2)
 		--(x_center-height/2, y_center + height/2) and (x_center+height/2, y_center + height/2)
