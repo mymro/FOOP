@@ -305,7 +305,7 @@ feature {NONE} -- al functions concerning the state of the game
 	launch_game(arg: separate GAME)
 		--sets up the variables and launches the game
 		do
-			arg.attach_needed_objects (Current, board_width, board_height)
+			arg.set_up (Current, board_width, board_height)
 			arg.launch
 		end
 

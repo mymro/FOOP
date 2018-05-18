@@ -92,7 +92,7 @@ feature {ANY}
 			game_state := 0
 		end
 
-	attach_needed_objects(window: separate MAIN_WINDOW; drawing_area_height, drawing_area_width:INTEGER)
+	set_up(window: separate MAIN_WINDOW; drawing_area_height, drawing_area_width:INTEGER)
 	--attaches nedded objects for game
 	--creates all game objects
 	require
