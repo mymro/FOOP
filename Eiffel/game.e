@@ -19,8 +19,6 @@ feature{NONE}
 	game_root: detachable MAIN_LABYRINTH -- change to GAME_OBJECT once available
 
 feature{ANY}
-	-- the display area
-	display: detachable separate EV_PIXMAP_ADVANCED
 	-- the main window
 	main_window: detachable separate MAIN_WINDOW
 
@@ -42,12 +40,10 @@ feature {NONE}
 			game_state := 0
 		end
 
-	draw_display(pixmap: separate EV_PIXMAP_ADVANCED)
+	draw_display
 	-- the main draw funcrion
-	-- clears screen and calls draw on root object
+	-- calls draw on root object
 		do
-			pixmap.set_foreground_color_rgb (0,0,0)
-			pixmap.fill_rectangle (0, 0, pixmap.width, pixmap.height)
 			if attached game_root as root then
 				root.draw
 			else
@@ -61,10 +57,10 @@ feature {NONE}
 			RESULT:=window.get_pixmap_buffer(i)
 		end
 
-	draw_buffer_to_display_i(i: INTEGER; pos: separate VECTOR_2; window: separate MAIN_WINDOW)
+	draw_buffer_to_display_i(i: INTEGER; pos_x, pos_y:INTEGER; window: separate MAIN_WINDOW)
 	--implementation of draw_buffer_to_display
 		do
-			window.draw_buffer_to_display (i, pos)
+			window.draw_buffer_to_display (i, pos_x, pos_y)
 		end
 
 feature {ANY}
@@ -84,7 +80,7 @@ feature {ANY}
 	-- draws a buffer to display with top left corner position of pos
 		do
 			if attached main_window as window then
-				draw_buffer_to_display_i(i, pos, window)
+				draw_buffer_to_display_i(i, pos.x, pos.y, window)
 			else
 				print("main_window not attached in game draw_bufer_to_display")
 			end
@@ -96,18 +92,18 @@ feature {ANY}
 			game_state := 0
 		end
 
-	attach_needed_objects(pixmap: separate EV_PIXMAP_ADVANCED; window: separate MAIN_WINDOW)
+	attach_needed_objects(window: separate MAIN_WINDOW; drawing_area_height, drawing_area_width:INTEGER)
 	--attaches nedded objects for game
 	--creates all game objects
 	require
-		pixmap /= void
 		window /= void
 	local
 		buffer_index: INTEGER
 	do
-		display := pixmap
-		main_window := window
-		buffer_index:= window.create_pixmap_buffer(pixmap.height, pixmap.width)
+		main_window:=window
+		-- create buffers
+		buffer_index:= window.create_pixmap_buffer(drawing_area_height, drawing_area_width)
+		--buffer_index:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
 		create game_root.create_new_labyrinth(Current, void, create{VECTOR_2}.make_with_pos (100, 100), create{VECTOR_2}.make_with_pos (0, 0), buffer_index)
 	end
 
@@ -116,16 +112,13 @@ feature {ANY}
 	-- the main game loop
 		require
 			game_state = 0
-			attached display
 			attached main_window
-			attached game_state
 		local
 			time: TIME
 			last_time: REAL_64
 			current_time: REAL_64
 		do
-			if attached display as pixmap and
-				attached main_window as window then
+			if	attached main_window as window then
 
 				game_state := 1
 
@@ -147,7 +140,7 @@ feature {ANY}
 					current_time:= time.fine_seconds
 					print((1/(current_time-last_time)).out + " FPS%N")
 					last_time:=current_time
-					draw_display(pixmap)
+					draw_display
 				end
 				game_state := 0
 			end

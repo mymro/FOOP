@@ -100,52 +100,6 @@ feature {NONE} -- Initialization
 				(title.is_equal (Window_title))
 		end
 
-feature {NONE} -- al functions concerning the state of the game
-
-
-	launch_game(arg: separate GAME)
-		--sets up the variables and launches the game
-		do
-			arg.attach_needed_objects (diplay_area, Current)
-			arg.launch
-		end
-
-	shut_down_game(game: separate GAME)
-	-- shuts down the game
-		do
-			game.shut_down
-		end
-
-feature {ANY}-- interfaces for GAMe
-
-	create_pixmap_buffer(a_width, a_height: INTEGER_32):INTEGER
-	-- creates a buffer and returns the index
-		local
-			buffer: EV_PIXMAP_ADVANCED
-		do
-			buffer_index := buffer_index + 1
-			create buffer.make_with_size (a_width, a_height)
-			pixmap_buffers.put (buffer, buffer_index)
-			RESULT:=buffer_index
-		end
-
-	draw_buffer_to_display(i: INTEGER; pos:separate VECTOR_2)
-	-- draws a buffer at top left position pos
-		do
-			if attached get_pixmap_buffer(i) as buffer then
-				diplay_area.draw_pixmap (pos.x, pos.y, buffer)
-			else
-				print(i.out + " buffer not existing in draw buffer")
-			end
-		end
-
-
-	get_pixmap_buffer(i:INTEGER):detachable EV_PIXMAP_ADVANCED
-	-- returns a buffer if it exists otherwhise void
-		do
-			RESULT:=pixmap_buffers.at (i)
-		end
-
 feature {NONE} -- Menu Implementation
 
 	standard_menu_bar: EV_MENU_BAR
@@ -312,8 +266,8 @@ feature {NONE} -- Implementation
 		local
 			container: EV_VERTICAL_BOX
 		do
-			diplay_area.set_foreground_color (create {EV_COLOR}.make_with_rgb(0,0,0))
-			diplay_area.fill_rectangle (0, 0, board_width, board_height)
+			--diplay_area.set_foreground_color (create {EV_COLOR}.make_with_rgb(1,0,0))
+			--diplay_area.fill_rectangle (0, 0, board_width, board_height)
 			--pixmap.pointer_enter_actions.extend (agent enter)
 			--pixmap.pointer_leave_actions.extend (agent leave)
 			--pixmap.pointer_button_press_actions.extend (agent press)
@@ -343,6 +297,66 @@ feature {NONE} --functions for mouse interaction testing
 		do
 			diplay_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,0,1))
 			diplay_area.fill_rectangle (x, y, 10, 10)
+		end
+
+feature {NONE} -- al functions concerning the state of the game
+
+
+	launch_game(arg: separate GAME)
+		--sets up the variables and launches the game
+		do
+			arg.attach_needed_objects (Current, board_width, board_height)
+			arg.launch
+		end
+
+	shut_down_game(game: separate GAME)
+	-- shuts down the game
+		do
+			game.shut_down
+		end
+
+feature {ANY}-- interfaces for GAME
+
+	create_pixmap_buffer(a_width, a_height: INTEGER_32):INTEGER
+	-- creates a buffer and returns the index
+		local
+			buffer: EV_PIXMAP_ADVANCED
+		do
+			buffer_index := buffer_index + 1
+			create buffer.make_with_size (a_width, a_height)
+			pixmap_buffers.put (buffer, buffer_index)
+			RESULT:=buffer_index
+		end
+
+	create_pixmap_buffer_from_image(image: separate STRING):INTEGER
+		local
+			buffer: EV_PIXMAP_ADVANCED
+			path_to_image: STRING
+		do
+			buffer_index := buffer_index + 1
+			create buffer
+			create path_to_image.make_from_separate (image)
+			buffer.set_with_named_file (path_to_image)
+			buffer.height.do_nothing
+			pixmap_buffers.put (buffer, buffer_index)
+			RESULT:=buffer_index
+		end
+
+	draw_buffer_to_display(i: INTEGER; pos_x, pos_y: INTEGER)
+	-- draws a buffer at top left position pos
+		do
+			if attached get_pixmap_buffer(i) as buffer then
+				diplay_area.draw_pixmap (pos_x, pos_y, buffer)
+			else
+				print(i.out + " buffer not existing in draw buffer")
+			end
+		end
+
+
+	get_pixmap_buffer(i:INTEGER):detachable EV_PIXMAP_ADVANCED
+	-- returns a buffer if it exists otherwhise void
+		do
+			RESULT:=pixmap_buffers.at (i)
 		end
 
 feature {NONE} -- variables
