@@ -11,17 +11,17 @@ create
 	make
 
 feature {ANY}
-	pos_x: INTEGER
-	pos_y: INTEGER
+	pos_x: REAL_64
+	pos_y: REAL_64
 	layer: INTEGER
 
 feature {NONE}
-	make(x,y,a_layer:INTEGER)
+	make(x,y:REAL_64; a_layer:INTEGER)
 		do
 			initialize(x,y,a_layer)
 		end
 
-	initialize(x,y,a_layer:INTEGER)
+	initialize(x,y:REAL_64; a_layer:INTEGER)
 	require
 		x>=1
 		y>=1
@@ -33,6 +33,6 @@ feature {NONE}
 feature {ANY}
 	draw(display: separate EV_PIXMAP_ADVANCED)
 		do
-			print("test%N")
+			--print("test%N")
 		end
 end

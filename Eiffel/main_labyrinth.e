@@ -24,7 +24,7 @@ feature {NONE}
 	dimension: DIMENSION
 
 feature {NONE}
-	make(x,y,a_layer:INTEGER)
+	make(x,y:REAL_64; a_layer:INTEGER)
 		do
 			create dimension.default_create
 			create labyrinth.make (dimension)

@@ -72,6 +72,8 @@ feature {ANY}
 			attached game_state
 		local
 			time: TIME
+			last_time: REAL_64
+			current_time: REAL_64
 		do
 			if attached display as pixmap and
 				attached main_window as window then
@@ -93,7 +95,9 @@ feature {ANY}
 				loop
 					--sleep(1000000000)
 					create time.make_now
-					print(time.fine_seconds.out + "%N")
+					current_time:= time.fine_seconds
+					print((1/(current_time-last_time)).out + " FPS%N")
+					last_time:=current_time
 					draw_display(pixmap)
 				end
 				game_state := 0

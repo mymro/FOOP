@@ -98,6 +98,7 @@ feature {NONE} -- Initialization
 
 feature {NONE} -- al functions concerning the state of the game
 
+
 	launch_game(arg: separate GAME)
 		--sets up the variables and launches the game
 		do
