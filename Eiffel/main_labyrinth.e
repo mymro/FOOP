@@ -38,6 +38,9 @@ feature {NONE}
 
 	fill_buffer(buffer: separate EV_PIXMAP_ADVANCED)
 	--draws labyrinth to a buffer
+		require
+			(buffer.width/dimension.x).truncated_to_integer > 2
+			(buffer.height/dimension.y).truncated_to_integer > 2
 		local
 			step_width: INTEGER_32
 			step_width_half: INTEGER_32
