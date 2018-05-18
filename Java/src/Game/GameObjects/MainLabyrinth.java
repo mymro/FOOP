@@ -1,9 +1,6 @@
 package Game.GameObjects;
 
-import Game.Core.FModifier;
-import Game.Core.Flag;
-import Game.Core.GameObject;
-import Game.Core.Labyrinth;
+import Game.Core.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

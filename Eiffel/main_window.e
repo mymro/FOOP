@@ -276,11 +276,11 @@ feature {NONE} -- Implementation
 		local
 			container: EV_VERTICAL_BOX
 		do
-			pixmap.set_foreground_color (create {EV_COLOR}.make_with_rgb(1,0,0))
+			pixmap.set_foreground_color (create {EV_COLOR}.make_with_rgb(0,0,0))
 			pixmap.fill_rectangle (0, 0, board_width, board_height)
-			pixmap.pointer_enter_actions.extend (agent enter)
-			pixmap.pointer_leave_actions.extend (agent leave)
-			pixmap.pointer_button_press_actions.extend (agent press)
+			--pixmap.pointer_enter_actions.extend (agent enter)
+			--pixmap.pointer_leave_actions.extend (agent leave)
+			--pixmap.pointer_button_press_actions.extend (agent press)
 			create container
 			container.set_minimum_size (board_width, board_height)
 			container.extend (pixmap)

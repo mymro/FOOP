@@ -16,6 +16,7 @@ create
 
 feature{NONE}
 	rand: RANDOM
+	game_root: MAIN_LABYRINTH -- change to GAME_OBJECT once available
 
 feature{ANY}
 	display: detachable separate EV_PIXMAP_ADVANCED
@@ -34,27 +35,14 @@ feature {NONE}
 			create time.make_now
 			create rand.set_seed (time.seconds)
 			game_state := 0
+			create game_root.make_with_dimension(create{DIMENSION}.make_with_dimensions (10, 10))
 		end
 
 	draw_display(pixmap: separate EV_PIXMAP_ADVANCED)
-		local
-			r: REAL_32
-			g: REAL_32
-			b: REAL_32
 		do
-			r:= ((rand.item\\10+1)/10).truncated_to_real
-			rand.forth
-			g:= ((rand.item\\10+1)/10).truncated_to_real
-			rand.forth
-			b:= ((rand.item\\10+1)/10).truncated_to_real
-			rand.forth
-			pixmap.set_foreground_color_rgb(r,g,b)
+			pixmap.set_foreground_color_rgb (0,0,0)
 			pixmap.fill_rectangle (0, 0, pixmap.width, pixmap.height)
-			pixmap.set_foreground_color_rgb(1,0,0)
-			pixmap.set_line_width (10)
-			pixmap.draw_line(0,0,200, 200,false)
-			pixmap.set_foreground_color_rgb(0,0,1)
-			pixmap.draw_triangle (200, 200, 30)
+			game_root.draw (pixmap)
 		end
 
 feature {ANY}
@@ -103,10 +91,9 @@ feature {ANY}
 				until
 				 	not is_running(window)
 				loop
-					sleep(1000000000)
+					--sleep(1000000000)
 					create time.make_now
-					--print(time.fine_seconds)
-					--print("%N")
+					print(time.fine_seconds.out + "%N")
 					draw_display(pixmap)
 				end
 				game_state := 0

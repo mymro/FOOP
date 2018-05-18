@@ -1,7 +1,5 @@
 package Game.Core;
 
-import Game.GameObjects.Dimension;
-
 import java.io.Serializable;
 import java.util.*;
 

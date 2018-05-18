@@ -1,17 +1,13 @@
 package Game.net;
 
+import Game.Core.Dimension;
 import Game.GameObjects.*;
-import Game.Main;
-import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
-import java.util.Hashtable;
 import java.util.Vector;
-import javax.swing.JOptionPane;
 
 public class Client extends Thread {
 

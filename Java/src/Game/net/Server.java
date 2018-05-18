@@ -1,5 +1,6 @@
 package Game.net;
 
+import Game.Core.Dimension;
 import Game.GameObjects.*;
 import Game.Main;
 import javafx.animation.AnimationTimer;

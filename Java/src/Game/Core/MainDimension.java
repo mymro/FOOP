@@ -1,4 +1,6 @@
-package Game.GameObjects;
+package Game.Core;
+
+import Game.Core.Dimension;
 
 import java.io.Serializable;
 import java.util.Random;
