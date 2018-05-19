@@ -1,8 +1,8 @@
 note
 	description: "a 2 dimensional vector"
 	author: "Constantin Budin"
-	date: "18.05.2018"
-	revision: "0.1"
+	date: "19.05.2018"
+	revision: "0.8"
 
 class
 	VECTOR_2
@@ -14,7 +14,7 @@ inherit
 
 create
 	default_create,
-	make_with_pos
+	make_with_xy
 
 feature{ANY}
 	x: INTEGER
@@ -31,13 +31,20 @@ feature {NONE}
 			y = 1
 		end
 
-	make_with_pos(a_x, a_y:INTEGER)
+	make_with_xy(a_x, a_y:INTEGER)
 		do
 			x := a_x
 			y := a_y
 		ensure
 			x = a_x
 			y = a_y
+		end
+
+feature {ANY}
+
+	add alias "+" (other: VECTOR_2): VECTOR_2
+		do
+			Result:= create{VECTOR_2}.make_with_xy (current.x + other.x, current.y + other.y)
 		end
 
 end

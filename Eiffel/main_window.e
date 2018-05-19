@@ -322,24 +322,44 @@ feature {ANY}-- interfaces for GAME
 		local
 			buffer: EV_PIXMAP_ADVANCED
 		do
-			buffer_index := buffer_index + 1
+			from
+			until
+				pixmap_buffers.at (buffer_index) = void
+			loop
+				buffer_index := buffer_index + 1
+			end
 			create buffer.make_with_size (a_width, a_height)
 			pixmap_buffers.put (buffer, buffer_index)
 			RESULT:=buffer_index
 		end
 
-	create_pixmap_buffer_from_image(image: separate STRING):INTEGER
+	create_pixmap_buffer_from_image(image: separate READABLE_STRING_8):INTEGER
+	-- creates a buffer from an image
+	-- loads missing_image.png, if image not found
 		local
 			buffer: EV_PIXMAP_ADVANCED
 			path_to_image: STRING
+			rescue_path: STRING
 		do
-			buffer_index := buffer_index + 1
+			from
+			until
+				pixmap_buffers.at (buffer_index) = void
+			loop
+				buffer_index := buffer_index + 1
+			end
 			create buffer
-			create path_to_image.make_from_separate (image)
+			if attached rescue_path as rescue_image then
+				create path_to_image.make_from_string (rescue_image)
+			else
+				create path_to_image.make_from_separate (image)
+			end
 			buffer.set_with_named_file (path_to_image)
 			buffer.height.do_nothing
 			pixmap_buffers.put (buffer, buffer_index)
 			RESULT:=buffer_index
+		rescue
+			rescue_path:="images\missing_image.png"
+			retry
 		end
 
 	draw_buffer_to_display(i: INTEGER; pos_x, pos_y: INTEGER)

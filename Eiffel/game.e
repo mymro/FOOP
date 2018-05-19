@@ -16,7 +16,7 @@ create
 
 feature{NONE}
 	rand: RANDOM
-	game_root: detachable MAIN_LABYRINTH -- change to GAME_OBJECT once available
+	game_root: detachable MAIN_LABYRINTH
 
 feature{ANY}
 	-- the main window
@@ -47,7 +47,7 @@ feature {NONE}
 			if attached game_root as root then
 				root.draw
 			else
-				print("root object not attached in game")
+				print("root object not attached in game in draw_display%N")
 			end
 		end
 
@@ -98,13 +98,22 @@ feature {ANY}
 	require
 		window /= void
 	local
-		buffer_index: INTEGER
+		buffer_indices: ARRAY[INTEGER]
+		flag: FLAG
 	do
 		main_window:=window
 		-- create buffers
-		buffer_index:= window.create_pixmap_buffer(drawing_area_height, drawing_area_width)
+		create buffer_indices.make_filled (0, 1, 1)
+		buffer_indices[1]:= window.create_pixmap_buffer(drawing_area_height, drawing_area_width)
 		--buffer_index:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
-		create game_root.create_new_labyrinth(Current, void, create{VECTOR_2}.make_with_pos (100, 100), create{VECTOR_2}.make_with_pos (0, 0), buffer_index)
+		create game_root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (100, 100), create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
+		create buffer_indices.make_filled (0, 1, 1)
+		buffer_indices[1]:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
+		create flag.make (current, create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
+		if attached game_root as root then
+			root.add_child (flag)
+		end
+
 	end
 
 	launch
