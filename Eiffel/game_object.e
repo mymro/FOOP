@@ -13,11 +13,11 @@ create
 feature {ANY}
 	layer: INTEGER
 	parent: detachable GAME_OBJECT assign set_parent
+	game: GAME
 
 feature {NONE}
 	pos_relative_to_parent: VECTOR_2
 	buffer_indices:ARRAY[INTEGER]
-	game: GAME
 	dimension: VECTOR_2
 	children: ARRAYED_LIST[GAME_OBJECT]
 
@@ -118,14 +118,43 @@ feature {ANY}
 			current.parent = a_parent
 		end
 
+	is_visible_in_drawing_area:BOOLEAN
+	-- is a part of object visible in the drawing_are
+	-- checks based on current dimension and absolute position
+		local
+			pos:VECTOR_2
+		do
+			pos:=get_absolute_pos
+			if 	pos.x > game.draw_area_width or
+				pos.y > game.draw_area_height or
+				pos.x < -dimension.x or
+				pos.y < -dimension.y then
+				RESULT:= FALSE
+			else
+				RESULT:= TRUE
+			end
+		end
+
 	draw
-	-- draws the object to screen
+	-- draws the object to screen and its children
 		do
 			if children.count > 0 then
 				across
 					children.new_cursor as cursor
 				loop
 					cursor.item.draw
+				end
+			end
+		end
+
+	update
+	-- updates object and its children
+		do
+			if children.count > 0 then
+				across
+					children.new_cursor as cursor
+				loop
+					cursor.item.update
 				end
 			end
 		end

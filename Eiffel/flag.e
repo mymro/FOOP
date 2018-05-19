@@ -12,7 +12,8 @@ inherit
 		rename
 			make as game_object_make
 		redefine
-			draw
+			draw,
+			update
 		end
 
 create
@@ -30,6 +31,12 @@ feature {ANY}
 	draw
 		do
 			draw_buffer_at_index(1)
+			PRECURSOR{GAME_OBJECT}
+		end
+
+	update
+		do
+			print("update FLAG%N")
 			PRECURSOR{GAME_OBJECT}
 		end
 

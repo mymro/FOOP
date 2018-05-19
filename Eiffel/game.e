@@ -16,14 +16,14 @@ create
 
 feature{NONE}
 	rand: RANDOM
-	game_root: detachable MAIN_LABYRINTH
+	game_root_objects: ARRAYED_LIST[GAME_OBJECT]
+	main_window: detachable separate MAIN_WINDOW
 
 feature{ANY}
-	-- the main window
+	time_diff: REAL_64
 	labyrinth_nodes_x: INTEGER = 10
 	labyrinth_nodes_y: INTEGER = 10
 	fps_limit: INTEGER = 60
-	main_window: detachable separate MAIN_WINDOW
 	draw_area_height: INTEGER
 	draw_area_width: INTEGER
 	game_state: INTEGER
@@ -44,17 +44,8 @@ feature {NONE}
 			game_state := 0
 			draw_area_height:= 0
 			draw_area_width:=0
-		end
-
-	draw_display
-	-- the main draw funcrion
-	-- calls draw on root object
-		do
-			if attached game_root as root then
-				root.draw
-			else
-				print("root object not attached in game in draw_display%N")
-			end
+			time_diff:=0
+			create game_root_objects.make (0)
 		end
 
 	get_buffer_i(i:INTEGER; window: separate MAIN_WINDOW): detachable separate EV_PIXMAP_ADVANCED
@@ -70,6 +61,32 @@ feature {NONE}
 		end
 
 feature {ANY}
+
+	add_root(root:GAME_OBJECT)
+	-- adds root object
+		require
+			root.game = current
+		do
+			if game_root_objects.count = 0 then
+				game_root_objects.extend (root)
+			elseif game_root_objects.occurrences (root) = 0 then
+				from
+					game_root_objects.start
+				until
+					game_root_objects.item_for_iteration.layer > root.layer or game_root_objects.islast
+				loop
+					game_root_objects.forth
+				end
+
+				if game_root_objects.item.layer > root.layer then
+					game_root_objects.put_left (root)
+				else
+					game_root_objects.put_right (root)
+				end
+			end
+		ensure
+			game_root_objects.occurrences (root) = 1
+		end
 
 	get_buffer(i:INTEGER): detachable separate EV_PIXMAP_ADVANCED
 	-- returns the requested buffer. If it doesnt exist void
@@ -101,11 +118,14 @@ feature {ANY}
 	set_up(window: separate MAIN_WINDOW; drawing_area_height, drawing_area_width:INTEGER)
 	--attaches nedded objects for game
 	--creates all game objects
+	-- prepares for launch
 	require
 		window /= void
+		game_state = 0
 	local
 		buffer_indices: ARRAY[INTEGER]
 		flag: FLAG
+		root: MAIN_LABYRINTH
 	do
 		main_window:=window
 		draw_area_height:= drawing_area_height
@@ -114,14 +134,12 @@ feature {ANY}
 		create buffer_indices.make_filled (0, 1, 1)
 		buffer_indices[1]:= window.create_pixmap_buffer(drawing_area_height, drawing_area_width)
 		--buffer_index:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
-		create game_root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
+		create root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
 		create buffer_indices.make_filled (0, 1, 1)
 		buffer_indices[1]:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
 		create flag.make (current, create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
-		if attached game_root as root then
-			root.add_child (flag)
-		end
-
+		root.add_child (flag)
+		add_root(root)
 	end
 
 	launch-- TODO needs frame limiter
@@ -129,15 +147,17 @@ feature {ANY}
 	-- the main game loop
 		require
 			game_state = 0
-			attached main_window
 		local
 			time: TIME
 			last_time: REAL_64
 			current_time: REAL_64
-			time_diff: REAL_64
 			frame_time: REAL_64
 		do
 			frame_time:= 1/fps_limit
+			last_time:= 0
+			current_time:= 0
+			time_diff:= 0
+
 			if	attached main_window as window then
 
 				game_state := 1
@@ -165,10 +185,25 @@ feature {ANY}
 						current_time:= time.fine_seconds
 					end
 
+					time_diff:= current_time-last_time
+					print((1/time_diff).out + "%N")
 					last_time:=current_time
-					draw_display
+
+					across
+						game_root_objects.new_cursor as cursor
+					loop
+						cursor.item.update
+					end
+
+					across
+						game_root_objects.new_cursor as cursor
+					loop
+						cursor.item.draw
+					end
 				end
 				game_state := 0
+			else
+				print("main_window not attched in main_loop")
 			end
 		end
 
