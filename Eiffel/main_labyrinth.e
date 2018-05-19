@@ -57,7 +57,11 @@ feature {NONE}
 			step_height_half := (step_height/2).truncated_to_integer
 			x_finish := 0
 			y_finish:= 0
-			buffer.set_line_width (step_width-2)
+			if step_width < step_height then
+				buffer.set_line_width (step_width-2)
+			else
+				buffer.set_line_width (step_height-2)
+			end
 			buffer.set_foreground_color_rgb (0,0,0)
 			buffer.fill_rectangle (0, 0, buffer.width, buffer.height)
 			buffer.set_foreground_color_rgb (1, 1, 1)
@@ -88,6 +92,11 @@ feature {NONE}
 					if current_node.type = 0 then
 						x_finish := (current_node.x-1) * step_width
 						y_finish := (current_node.y-1) * step_height
+						if step_width < step_height then
+							y_finish := y_finish + step_height_half - step_width_half
+						elseif step_width > step_height then
+							x_finish := x_finish + step_width_half - step_height_half
+						end
 					end
 				end
 			end

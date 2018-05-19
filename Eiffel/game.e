@@ -20,6 +20,9 @@ feature{NONE}
 
 feature{ANY}
 	-- the main window
+	labyrinth_nodes_x: INTEGER = 10
+	labyrinth_nodes_y: INTEGER = 10
+	fps_limit: INTEGER = 60
 	main_window: detachable separate MAIN_WINDOW
 	draw_area_height: INTEGER
 	draw_area_width: INTEGER
@@ -111,7 +114,7 @@ feature {ANY}
 		create buffer_indices.make_filled (0, 1, 1)
 		buffer_indices[1]:= window.create_pixmap_buffer(drawing_area_height, drawing_area_width)
 		--buffer_index:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
-		create game_root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (100, 100), create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
+		create game_root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
 		create buffer_indices.make_filled (0, 1, 1)
 		buffer_indices[1]:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
 		create flag.make (current, create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
@@ -121,7 +124,7 @@ feature {ANY}
 
 	end
 
-	launch
+	launch-- TODO needs frame limiter
 	--launches the game
 	-- the main game loop
 		require
@@ -131,7 +134,10 @@ feature {ANY}
 			time: TIME
 			last_time: REAL_64
 			current_time: REAL_64
+			time_diff: REAL_64
+			frame_time: REAL_64
 		do
+			frame_time:= 1/fps_limit
 			if	attached main_window as window then
 
 				game_state := 1
@@ -149,10 +155,16 @@ feature {ANY}
 				until
 				 	not is_running(window)
 				loop
-					--sleep(1000000000)
 					create time.make_now
 					current_time:= time.fine_seconds
-					print((1/(current_time-last_time)).out + " FPS%N")
+					time_diff:= current_time-last_time
+					-- frame limiter
+					if time_diff < frame_time then
+						sleep(((frame_time-time_diff)*1000000000).truncated_to_integer_64)
+						create time.make_now
+						current_time:= time.fine_seconds
+					end
+
 					last_time:=current_time
 					draw_display
 				end

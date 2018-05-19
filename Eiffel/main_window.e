@@ -386,8 +386,8 @@ feature {NONE} -- variables
 	Window_width: INTEGER
 	Window_height: INTEGER
 
-	board_width: INTEGER = 1000
-	board_height: INTEGER = 1000
+	board_width: INTEGER = 500
+	board_height: INTEGER = 500
 
 	diplay_area: EV_PIXMAP_ADVANCED
 	current_game: separate GAME
