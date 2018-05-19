@@ -114,6 +114,8 @@ feature {ANY}
 					new_parent.add_child (current)
 				end
 			end
+		ensure
+			current.parent = a_parent
 		end
 
 	draw

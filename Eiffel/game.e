@@ -21,7 +21,8 @@ feature{NONE}
 feature{ANY}
 	-- the main window
 	main_window: detachable separate MAIN_WINDOW
-
+	draw_area_height: INTEGER
+	draw_area_width: INTEGER
 	game_state: INTEGER
 		--0 game shut down
 		--1 checking everything is fine for game start
@@ -38,6 +39,8 @@ feature {NONE}
 			create time.make_now
 			create rand.set_seed (time.seconds)
 			game_state := 0
+			draw_area_height:= 0
+			draw_area_width:=0
 		end
 
 	draw_display
@@ -102,6 +105,8 @@ feature {ANY}
 		flag: FLAG
 	do
 		main_window:=window
+		draw_area_height:= drawing_area_height
+		draw_area_width:= drawing_area_width
 		-- create buffers
 		create buffer_indices.make_filled (0, 1, 1)
 		buffer_indices[1]:= window.create_pixmap_buffer(drawing_area_height, drawing_area_width)
