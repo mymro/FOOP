@@ -9,57 +9,46 @@ class
 
 inherit
 	HASHABLE
+		undefine
+			default_create
 		redefine
 			is_hashable,
 			hash_code
 		end
 
 create
-	make
+	make,
+	default_create
 
 feature {ANY}
 	x: INTEGER
 	y: INTEGER
-	--0 finish
-	--1 normal
-	--2 unknown
-	type: INTEGER assign set_type
+	type: NODE_TYPE
 	neighbours: HASH_TABLE[detachable LABYRINTH_NODE, STRING]
 
 feature {NONE}
 
+	default_create
+		do
+			make(1,1, (create {NODE_TYPE_BASE}).type_unknown)
+		end
+
 	make(a_x, a_y, a_type:INTEGER)
 		require
-			is_type_valid(a_type)
+			a_x >= 1
+			a_y >= 1
 		do
 			set_pos(a_x, a_y)
-			type := a_type
+			create type.make(a_type)
 			create neighbours.make (4)
 		ensure
-			type = a_type
+			type.is_of_type (a_type)
+			x = a_x
+			y = a_y
 		end
 
 
 feature {ANY}
-
-	set_type(new_type: INTEGER)
-	--changes the type of the node
-	--0 finish
-	--1 normal
-	--2 unknown
-	require
-		is_type_valid(new_type)
-	do
-		type:= new_type
-	ensure
-		type = new_type
-	end
-
-	is_type_valid(a_type:INTEGER):BOOLEAN
-	-- checks if type is valid
-		do
-			RESULT:= a_type >=0 and a_type <=2
-		end
 
 	set_pos(a_x, a_y:INTEGER)
 	-- changes the position
@@ -72,6 +61,18 @@ feature {ANY}
 		ensure
 			x = a_x
 			y = a_y
+		end
+
+	set_type(a_type:INTEGER)
+		require
+			type.is_type_valid (a_type)
+		do
+			type.set_type (a_type)
+		end
+
+	is_of_type(a_type: INTEGER):BOOLEAN
+		do
+			RESULT:=type.is_of_type (a_type)
 		end
 
 feature {ANY}

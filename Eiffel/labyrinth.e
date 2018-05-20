@@ -12,6 +12,7 @@ create
 
 feature {ANY}
 	dimension: VECTOR_2
+	node_type_helper: NODE_TYPE_BASE
 
 feature {NONE}
 	labyrinth: ARRAY2[LABYRINTH_NODE]
@@ -24,14 +25,15 @@ feature {NONE}
 			a_dimension.y >=1
 		do
 			dimension:=a_dimension
-			create labyrinth.make_filled (create {LABYRINTH_NODE}.make (1, 1, 2), dimension.x, dimension.y)
+			create node_type_helper
+			create labyrinth.make_filled (create {LABYRINTH_NODE}, dimension.x, dimension.y)
 			across
 				1 |..| dimension.x as  i
 			loop
 				across
 					1 |..| dimension.y as j
 				loop
-					labyrinth.put (create{LABYRINTH_NODE}.make (i.item, j.item, 2), i.item, j.item)
+					labyrinth.put (create{LABYRINTH_NODE}.make (i.item, j.item, node_type_helper.type_unknown), i.item, j.item)
 				end
 			end
 		end
@@ -45,6 +47,7 @@ feature {ANY}
 		do
 			RESULT:= labyrinth[x,y]
 		end
+
 	create_labyrinth
 	-- creates a random labyrinth
 		local
@@ -84,7 +87,7 @@ feature {ANY}
 				j := dimension.y
 			end
 
-			labyrinth[i,j].set_type (0)
+			labyrinth[i,j].set_type (node_type_helper.type_finish)
 
 			-- create the rest of the labyrinth
 			create frontier.make (0)
@@ -117,22 +120,22 @@ feature {ANY}
 
 				rand.forth
 				current_node := frontier[(rand.item\\frontier.count) + 1]
-				current_node.set_type (1)
+				current_node.set_type (node_type_helper.type_normal)
 				frontier.go_i_th ((rand.item\\frontier.count) + 1)
 				frontier.remove
 
 				create possible_connections.make (0)
 
-				if current_node.y-1>=1 and (labyrinth[current_node.x, current_node.y-1].type /= 2) then
+				if current_node.y-1>=1 and not (labyrinth[current_node.x, current_node.y-1].is_of_type (node_type_helper.type_unknown)) then
 					possible_connections.extend (labyrinth[current_node.x, current_node.y-1])
 				end
-				if current_node.y+1 <= dimension.y and (labyrinth[current_node.x, current_node.y+1].type /= 2) then
+				if current_node.y+1 <= dimension.y and not (labyrinth[current_node.x, current_node.y+1].is_of_type (node_type_helper.type_unknown)) then
 					possible_connections.extend (labyrinth[current_node.x, current_node.y+1])
 				end
-				if current_node.x-1>=1 and (labyrinth[current_node.x-1, current_node.y].type /= 2) then
+				if current_node.x-1>=1 and not (labyrinth[current_node.x-1, current_node.y].is_of_type (node_type_helper.type_unknown)) then
 					possible_connections.extend (labyrinth[current_node.x-1, current_node.y])
 				end
-				if current_node.x+1 <= dimension.x and (labyrinth[current_node.x+1, current_node.y].type /= 2) then
+				if current_node.x+1 <= dimension.x and not (labyrinth[current_node.x+1, current_node.y].is_of_type (node_type_helper.type_unknown)) then
 					possible_connections.extend (labyrinth[current_node.x+1, current_node.y])
 				end
 
@@ -159,26 +162,34 @@ feature {ANY}
 
 				has_run_once := TRUE
 			end
-			labyrinth[5,5].set_type (2)
-		end
-
-	get_path_to_nearest_unknwon(from_node: LABYRINTH_NODE):ARRAYED_LIST[LABYRINTH_NODE]
-		require
-			get_node_at(from_node.x, from_node.y) = from_node
-		do
-			RESULT:=get_path(from_node, void, void)
 		end
 
 	get_path_from_to(from_node, to_node: LABYRINTH_NODE):ARRAYED_LIST[LABYRINTH_NODE]
+	-- returns path between two nodes, if one is available.
+	-- The first entry is the start. The last the finish
 		require
 			get_node_at(from_node.x, from_node.y) = from_node
 			get_node_at(to_node.x, to_node.y) = to_node
 		do
-			RESULT:=get_path(from_node, to_node, void)
+			RESULT:=get_path(from_node, to_node, -1, void)
+		end
+
+	get_path_from_to_nearest_node_with_type(from_node: LABYRINTH_NODE; stop_at_type: INTEGER):ARRAYED_LIST[LABYRINTH_NODE]
+	-- returns path to nearest node with give type
+	-- The first entry is the start. The last the finish
+		require
+			get_node_at(from_node.x, from_node.y) = from_node
+			node_type_helper.is_type_valid (stop_at_type)
+		do
+			RESULT:=get_path(from_node, void, stop_at_type, void)
 		end
 
 feature {NONE}
-	get_path(from_node: LABYRINTH_NODE; to_node: detachable LABYRINTH_NODE; f_modifier: detachable ANY):ARRAYED_LIST[LABYRINTH_NODE]
+
+	get_path(from_node: LABYRINTH_NODE; to_node: detachable LABYRINTH_NODE; stop_at_type:INTEGER; f_modifier: detachable ANY):ARRAYED_LIST[LABYRINTH_NODE]
+	-- returns path between two nodes, if one is available.
+	-- returns path to an stop_at_type node, if it stumbles upon one or to_node is void
+	-- The first entry is the start. The last the finish
 		local
 			open_set: ARRAYED_LIST[LABYRINTH_NODE]
 			closed_set: ARRAYED_LIST[LABYRINTH_NODE]
@@ -190,6 +201,7 @@ feature {NONE}
 			tentative_f: INTEGER
 			path: ARRAYED_LIST[LABYRINTH_NODE]
 		do
+
 			create open_set.make (0)
 			create closed_set.make (0)
 			create g.make (0)
@@ -220,7 +232,7 @@ feature {NONE}
 			until
 				open_set.count = 0 or
 				current_node = to_node or
-				current_node.type = 2 -- type unknown	
+				current_node.is_of_type (stop_at_type)
 			loop
 				open_set.start
 				open_set.remove
@@ -277,7 +289,7 @@ feature {NONE}
 
 			create path.make (0)
 
-			if from_node = to_node then
+			if from_node = to_node  or from_node.is_of_type (stop_at_type)then
 				path.extend (from_node)
 			elseif attached came_from.at (current_node) and closed_set.count > 0 then
 				path.extend (current_node)

@@ -19,6 +19,7 @@ create
 feature {NONE}
 	labyrinth: LABYRINTH
 	labyrinth_dimension: VECTOR_2
+	node_type_helper: NODE_TYPE_BASE
 
 
 feature {NONE}
@@ -30,6 +31,7 @@ feature {NONE}
 			some_buffer_indices.count>=1
 		do
 			make(a_game, a_pos, a_layer, some_buffer_indices)
+			create node_type_helper
 			labyrinth_dimension := a_labyrinth_dimension
 			create labyrinth.make (labyrinth_dimension)
 			labyrinth.create_labyrinth
@@ -90,7 +92,7 @@ feature {NONE}
 						buffer.draw_segment (center_x, center_y, center_x + step_width_half, center_y)
 					end
 
-					if current_node.type = 0 then
+					if current_node.is_of_type (node_type_helper.type_finish)  then
 						x_finish := (current_node.x-1) * step_width
 						y_finish := (current_node.y-1) * step_height
 						if step_width < step_height then
@@ -132,6 +134,7 @@ feature {ANY}
 
 	update
 		do
+			print(labyrinth.get_path_from_to_nearest_node_with_type (labyrinth[1,1], node_type_helper.type_finish))
 			print("update labyrinth%N")
 			PRECURSOR{GAME_OBJECT}
 		end
