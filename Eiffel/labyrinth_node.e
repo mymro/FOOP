@@ -7,6 +7,13 @@ note
 class
 	LABYRINTH_NODE
 
+inherit
+	HASHABLE
+		redefine
+			is_hashable,
+			hash_code
+		end
+
 create
 	make
 
@@ -65,5 +72,20 @@ feature {ANY}
 		ensure
 			x = a_x
 			y = a_y
+		end
+
+feature {ANY}
+	is_hashable:BOOLEAN
+		do
+			RESULT:= TRUE
+		end
+
+	hash_code:INTEGER_32
+		do
+			if x >= y then
+				RESULT:= x*x+x+y
+			else
+				RESULT:=y*y+x
+			end
 		end
 end
