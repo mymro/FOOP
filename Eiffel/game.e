@@ -18,12 +18,13 @@ feature{NONE}
 	rand: RANDOM
 	game_root_objects: ARRAYED_LIST[GAME_OBJECT]
 	main_window: detachable separate MAIN_WINDOW
+	fps_limit: INTEGER = 60
+	labyrinth_node_size: INTEGER = 20
 
 feature{ANY}
 	time_diff: REAL_64
-	labyrinth_nodes_x: INTEGER = 10
-	labyrinth_nodes_y: INTEGER = 10
-	fps_limit: INTEGER = 60
+	labyrinth_nodes_x: INTEGER
+	labyrinth_nodes_y: INTEGER
 	draw_area_height: INTEGER
 	draw_area_width: INTEGER
 	game_state: INTEGER
@@ -44,6 +45,8 @@ feature {NONE}
 			game_state := 0
 			draw_area_height:= 0
 			draw_area_width:=0
+			labyrinth_nodes_x:= 0
+			labyrinth_nodes_y:= 0
 			time_diff:=0
 			create game_root_objects.make (0)
 		end
@@ -58,6 +61,11 @@ feature {NONE}
 	--implementation of draw_buffer_to_display
 		do
 			window.draw_buffer_to_display (i, pos_x, pos_y)
+		end
+
+	set_mask_i(index_target, index_mask:INTEGER; window: separate MAIN_WINDOW)
+		do
+			window.set_mask (index_target, index_mask)
 		end
 
 feature {ANY}
@@ -88,11 +96,11 @@ feature {ANY}
 			game_root_objects.occurrences (root) = 1
 		end
 
-	get_buffer(i:INTEGER): detachable separate EV_PIXMAP_ADVANCED
+	get_buffer(index:INTEGER): detachable separate EV_PIXMAP_ADVANCED
 	-- returns the requested buffer. If it doesnt exist void
 		do
 			if attached main_window as window then
-				RESULT:= get_buffer_i(i, window)
+				RESULT:= get_buffer_i(index, window)
 			else
 				print("main_window not attached in game")
 				RESULT:= void
@@ -109,13 +117,22 @@ feature {ANY}
 			end
 		end
 
+	set_mask(index_target, index_mask:INTEGER)
+		do
+			if attached main_window as window then
+				set_mask_i(index_target, index_mask, window)
+			else
+				print("main_window not attached in game set_mask")
+			end
+		end
+
 	shut_down
 	-- ends the game
 		do
 			game_state := 0
 		end
 
-	set_up(window: separate MAIN_WINDOW; drawing_area_height, drawing_area_width:INTEGER)
+	set_up(window: separate MAIN_WINDOW; drawing_area_width, drawing_area_height:INTEGER)
 	--attaches nedded objects for game
 	--creates all game objects
 	-- prepares for launch
@@ -126,20 +143,30 @@ feature {ANY}
 		buffer_indices: ARRAY[INTEGER]
 		flag: FLAG
 		root: MAIN_LABYRINTH
+		robot: ROBOT
 	do
 		main_window:=window
 		draw_area_height:= drawing_area_height
 		draw_area_width:= drawing_area_width
-		-- create buffers
+		labyrinth_nodes_x:= (draw_area_width/labyrinth_node_size).truncated_to_integer
+		labyrinth_nodes_y:= (draw_area_height/labyrinth_node_size).truncated_to_integer
+
+		-- game_objects
 		create buffer_indices.make_filled (0, 1, 1)
-		buffer_indices[1]:= window.create_pixmap_buffer(drawing_area_height, drawing_area_width)
-		--buffer_index:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
+		buffer_indices[1]:= window.create_pixmap_buffer(drawing_area_width, drawing_area_height)
 		create root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
+		add_root(root)
+
 		create buffer_indices.make_filled (0, 1, 1)
 		buffer_indices[1]:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
-		create flag.make (current, create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
+		create flag.make (current, create{VECTOR_2}.make_with_xy (1000, 0), 0, buffer_indices)
 		root.add_child (flag)
-		add_root(root)
+
+		create buffer_indices.make_filled (0, 1, 2)
+		buffer_indices[1]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
+		buffer_indices[2]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
+		create robot.make_robot (current, create{VECTOR_2}.make_with_xy (500, 500), -1, buffer_indices)
+		root.add_child (robot)
 	end
 
 	launch-- TODO needs frame limiter
@@ -183,9 +210,8 @@ feature {ANY}
 						sleep(((frame_time-time_diff)*1000000000).truncated_to_integer_64)
 						create time.make_now
 						current_time:= time.fine_seconds
+						time_diff:= current_time-last_time
 					end
-
-					time_diff:= current_time-last_time
 					print((1/time_diff).out + "%N")
 					last_time:=current_time
 

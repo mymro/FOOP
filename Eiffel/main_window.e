@@ -44,11 +44,13 @@ feature {NONE} -- Initialization
 				-- Create a toolbar.
 			create standard_toolbar
 
-			create diplay_area.make_with_size (board_width, board_height)
+			create display_area.make_with_size (1, 1)
 
 			create pixmap_buffers.make (0)
 
 			buffer_index:=0
+			board_width:=1
+			board_height:= 1
 
 			create current_game.make
 		end
@@ -57,7 +59,7 @@ feature {NONE} -- Initialization
 			-- Build the interface for this window.
 		do
 			Precursor {EV_TITLED_WINDOW}
-
+			current.maximize
 				-- Create and add the menu bar.
 			build_standard_menu_bar
 			set_menu_bar (standard_menu_bar)
@@ -70,9 +72,7 @@ feature {NONE} -- Initialization
 			main_container.disable_item_expand (standard_toolbar)
 
 			build_main_container
-			extend (main_container)
-
-
+			current.extend (main_container)
 				-- Execute `request_close_window' when the user clicks
 				-- on the cross in the title bar.
 			close_request_actions.extend (agent request_close_window)
@@ -88,6 +88,9 @@ feature {NONE} -- Initialization
 				-- Also there is some margin, which makes the window also wider
 			Window_width := current.width
 			Window_height := current.height
+			--current.restore
+			--current.set_size (Window_width, Window_height)
+			--current.set_position (0, 0)
 			launch_game(current_game)
 		end
 
@@ -186,9 +189,9 @@ feature {NONE} -- ToolBar Implementation
 			-- Populate the standard toolbar.
 		do
 				-- Initialize the toolbar.
-			standard_toolbar.extend (new_toolbar_item ("New", "new.png"))
-			standard_toolbar.extend (new_toolbar_item ("Open", "open.png"))
-			standard_toolbar.extend (new_toolbar_item ("Save", "save.png"))
+			standard_toolbar.extend (new_toolbar_item ("New", "images/new.png"))
+			standard_toolbar.extend (new_toolbar_item ("Open", "images/open.png"))
+			standard_toolbar.extend (new_toolbar_item ("Save", "images/save.png"))
 		ensure
 			toolbar_initialized: not standard_toolbar.is_empty
 		end
@@ -264,17 +267,24 @@ feature {NONE} -- Implementation
 	build_main_container
 			-- Populate `main_container'.
 		local
-			container: EV_VERTICAL_BOX
+			drawing_area_container: EV_VERTICAL_BOX
 		do
 			--diplay_area.set_foreground_color (create {EV_COLOR}.make_with_rgb(1,0,0))
 			--diplay_area.fill_rectangle (0, 0, board_width, board_height)
 			--pixmap.pointer_enter_actions.extend (agent enter)
 			--pixmap.pointer_leave_actions.extend (agent leave)
 			--pixmap.pointer_button_press_actions.extend (agent press)
-			create container
-			container.set_minimum_size (board_width, board_height)
-			container.extend (diplay_area)
-			main_container.extend (container)
+			create drawing_area_container.default_create
+			drawing_area_container.set_minimum_size (current.client_width, current.client_height - main_container.height)
+			drawing_area_container.set_padding (display_area_padding)
+			drawing_area_container.set_background_color (create {EV_COLOR}.make_with_rgb(0,0,0))
+
+			board_width:= current.client_width - display_area_padding * 2
+			board_height:= current.client_height - main_container.height - display_area_padding * 2
+			display_area.reset_for_buffering (board_width, board_height)
+			drawing_area_container.extend (display_area)
+
+			main_container.extend (drawing_area_container)
 		ensure
 			main_container_created: main_container /= Void
 		end
@@ -283,20 +293,20 @@ feature {NONE} --functions for mouse interaction testing
 
 	enter
 		do
-			diplay_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(1,0,0))
-			diplay_area.fill_rectangle (0, 0, board_width, board_height)
+			display_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(1,0,0))
+			display_area.fill_rectangle (0, 0, board_width, board_height)
 		end
 
 	leave
 		do
-			diplay_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,1,0))
-			diplay_area.fill_rectangle (0, 0, board_width, board_height)
+			display_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,1,0))
+			display_area.fill_rectangle (0, 0, board_width, board_height)
 		end
 
 	press(x: INTEGER_32; y: INTEGER_32; button: INTEGER_32; x_tilt: REAL_64; y_tilt: REAL_64; pressure: REAL_64; x_screen: INTEGER_32; y_screen: INTEGER_32)
 		do
-			diplay_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,0,1))
-			diplay_area.fill_rectangle (x, y, 10, 10)
+			display_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,0,1))
+			display_area.fill_rectangle (x, y, 10, 10)
 		end
 
 feature {NONE} -- al functions concerning the state of the game
@@ -339,7 +349,6 @@ feature {ANY}-- interfaces for GAME
 		local
 			buffer: EV_PIXMAP_ADVANCED
 			path_to_image: STRING
-			rescue_path: STRING
 		do
 			from
 			until
@@ -348,35 +357,53 @@ feature {ANY}-- interfaces for GAME
 				buffer_index := buffer_index + 1
 			end
 			create buffer
-			if attached rescue_path as rescue_image then
-				create path_to_image.make_from_string (rescue_image)
-			else
-				create path_to_image.make_from_separate (image)
-			end
+			create path_to_image.make_from_separate (image)
 			buffer.set_with_named_file (path_to_image)
 			buffer.height.do_nothing
 			pixmap_buffers.put (buffer, buffer_index)
 			RESULT:=buffer_index
-		rescue
-			rescue_path:="images\missing_image.png"
-			retry
 		end
 
-	draw_buffer_to_display(i: INTEGER; pos_x, pos_y: INTEGER)
+	set_mask(index_target, index_mask:INTEGER)
+		require
+			is_valid_buffer_index(index_target)
+			is_valid_buffer_index(index_mask)
+		local
+			bitmap:EV_BITMAP
+		do
+			if attached get_pixmap_buffer(index_target) as target and
+			attached get_pixmap_buffer(index_mask) as mask then
+
+				create bitmap.make_with_size (target.width, target.height)
+				bitmap.draw_pixmap (0, 0, mask)
+				target.set_mask(bitmap)
+			end
+		end
+
+	draw_buffer_to_display(index: INTEGER; pos_x, pos_y: INTEGER)
 	-- draws a buffer at top left position pos
 		do
-			if attached get_pixmap_buffer(i) as buffer then
-				diplay_area.draw_pixmap (pos_x, pos_y, buffer)
+			if attached get_pixmap_buffer(index) as buffer then
+				display_area.draw_pixmap (pos_x, pos_y, buffer)
 			else
-				print(i.out + " buffer not existing in draw buffer")
+				print(index.out + " buffer not existing in draw buffer")
 			end
 		end
 
 
-	get_pixmap_buffer(i:INTEGER):detachable EV_PIXMAP_ADVANCED
+	get_pixmap_buffer(index:INTEGER):detachable EV_PIXMAP_ADVANCED
 	-- returns a buffer if it exists otherwhise void
 		do
-			RESULT:=pixmap_buffers.at (i)
+			RESULT:=pixmap_buffers.at (index)
+		end
+
+	is_valid_buffer_index(index:INTEGER):BOOLEAN
+		do
+			if attached pixmap_buffers.at (index) then
+				RESULT:= TRUE
+			else
+				RESULT:= FALSE
+			end
 		end
 
 feature {NONE} -- variables
@@ -386,11 +413,14 @@ feature {NONE} -- variables
 	Window_width: INTEGER
 	Window_height: INTEGER
 
-	board_width: INTEGER = 500
-	board_height: INTEGER = 500
+	board_width: INTEGER
+	board_height: INTEGER
 
-	diplay_area: EV_PIXMAP_ADVANCED
+	display_area: EV_PIXMAP_ADVANCED
+	display_area_padding: INTEGER = 10
 	current_game: separate GAME
 	pixmap_buffers: HASH_TABLE[EV_PIXMAP_ADVANCED, INTEGER]
 	buffer_index: INTEGER
+
+
 end

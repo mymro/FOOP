@@ -134,7 +134,6 @@ feature {ANY}
 
 	update
 		do
-			print(labyrinth.get_path_from_to_nearest_node_with_type (labyrinth[1,1], node_type_helper.type_finish))
 			print("update labyrinth%N")
 			PRECURSOR{GAME_OBJECT}
 		end
