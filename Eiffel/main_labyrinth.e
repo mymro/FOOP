@@ -17,7 +17,9 @@ create
 	create_new_labyrinth
 
 feature {ANY}
+	-- distance between two nodes x axis in pixel
 	step_width: INTEGER
+	-- distance between two nodes y axis in pixel
 	step_height: INTEGER
 
 feature {NONE}
@@ -119,6 +121,17 @@ feature {NONE}
 				buffer.fill_ellipse (x_finish, y_finish, step_height, step_height)
 			end
 		end
+feature {ANY}
+
+	get_labyrinth_dim_x: INTEGER
+		do
+			RESULT:= labyrinth_dimension.x
+		end
+
+	get_labyrinth_dim_y: INTEGER
+		do
+			RESULT:= labyrinth_dimension.y
+		end
 
 
 feature {ANY}
@@ -131,16 +144,6 @@ feature {ANY}
 			else
 				print("buffer not attached in main labyrinth")
 			end
-		end
-
-	get_labyrinth_dim_x: INTEGER
-		do
-			RESULT:= labyrinth_dimension.x
-		end
-
-	get_labyrinth_dim_y: INTEGER
-		do
-			RESULT:= labyrinth_dimension.y
 		end
 
 	draw

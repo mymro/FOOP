@@ -48,6 +48,7 @@ feature {ANY}
 		end
 
 	add_modifier(modifier:F_MODIFIER)
+	-- adds modifer if it is not already in container
 		do
 			if modifiers.occurrences (modifier) = 0 then
 				modifiers.extend (modifier)
@@ -55,6 +56,7 @@ feature {ANY}
 		end
 
 	remove_modifier(modifier:F_MODIFIER)
+	-- removes all entries of modifier
 		do
 			modifiers.prune (modifier)
 		end

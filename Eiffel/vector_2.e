@@ -17,8 +17,8 @@ create
 	make_with_xy
 
 feature{ANY}
-	x: INTEGER
-	y: INTEGER
+	x: INTEGER assign set_x
+	y: INTEGER assign set_y
 
 feature {NONE}
 	default_create
@@ -47,4 +47,13 @@ feature {ANY}
 			Result:= create{VECTOR_2}.make_with_xy (current.x + other.x, current.y + other.y)
 		end
 
+	set_x(a_x:INTEGER)
+		do
+			x:=x
+		end
+
+	set_y(a_y:INTEGER)
+		do
+			y:= y
+		end
 end

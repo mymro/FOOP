@@ -60,7 +60,8 @@ feature {NONE}
 	set_dimension(a_pixmap: separate EV_PIXMAP_ADVANCED)
 	-- sets the dimension based on the size of the buffer
 		do
-			create dimension.make_with_xy (a_pixmap.width, a_pixmap.height)
+			dimension.x:=a_pixmap.width
+			dimension.y:=a_pixmap.height
 		end
 
 	draw_buffer_at_index(index: INTEGER)

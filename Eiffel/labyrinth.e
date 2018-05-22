@@ -11,11 +11,11 @@ create
 	make
 
 feature {ANY}
-	dimension: VECTOR_2
 	node_type_helper: NODE_TYPE_BASE
 
 feature {NONE}
 	labyrinth: ARRAY2[LABYRINTH_NODE]
+	dimension: VECTOR_2
 
 feature {NONE}
 
@@ -42,10 +42,20 @@ feature {ANY}
 
 	get_node_at alias "[]" (x,y: INTEGER):LABYRINTH_NODE
 		require
-			x>=1 and x <= dimension.x
-			y>=1 and y <= dimension.y
+			x>=1 and x <= get_dimension_x
+			y>=1 and y <= get_dimension_y
 		do
 			RESULT:= labyrinth[x,y]
+		end
+
+	get_dimension_x:INTEGER
+		do
+			RESULT:=dimension.x
+		end
+
+	get_dimension_y:INTEGER
+		do
+			RESULT:=dimension.y
 		end
 
 	create_labyrinth
@@ -274,7 +284,7 @@ feature {NONE}
 								g.put (tentative_g, neighbour)
 								f.put (tentative_f, neighbour)
 								came_from.put (current_node, neighbour)
-								
+
 							elseif g.at (neighbour) >= tentative_g then
 								g.put (tentative_g, neighbour)
 								f.put (tentative_f, neighbour)

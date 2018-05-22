@@ -1,6 +1,6 @@
 note
 	description: "Summary description for {FLAG}."
-	author: "COnstantin BUdin"
+	author: "Constantin Budin"
 	date: "22.05.2018"
 	revision: "1.0"
 

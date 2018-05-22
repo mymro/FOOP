@@ -33,11 +33,12 @@ feature{ANY}
 		--0 game shut down
 		--1 checking everything is fine for game start
 		--2 game running
+		-- TODO create static variables for states
 
 feature {NONE}
 
 	make
-	-- eeding random number generator
+	-- seeding random number generator
 	-- and resetting state
 		local
 			time:TIME
@@ -87,6 +88,7 @@ feature {NONE}
 		end
 
 	create_buffer_i(a_dimension:VECTOR_2; window: separate MAIN_WINDOW):INTEGER
+	-- creates a buffer and returns its index implementation
 		require
 			a_dimension.x > 0
 			a_dimension.y > 0
@@ -94,12 +96,14 @@ feature {NONE}
 			RESULT:= window.create_pixmap_buffer (a_dimension.x, a_dimension.y)
 		end
 
-	create_buffer_from_image_i(image: READABLE_STRING_8; window: separate MAIN_WINDOW):INTEGER
+	create_buffer_from_image_i(path_to_image: READABLE_STRING_8; window: separate MAIN_WINDOW):INTEGER
+	-- creates a buffer from image with path and returns its index implementation
 		do
-			RESULT:= window.create_pixmap_buffer_from_image (image)
+			RESULT:= window.create_pixmap_buffer_from_image (path_to_image)
 		end
 
 	set_mask_i(index_target, index_mask:INTEGER; window: separate MAIN_WINDOW)
+	-- sets a mask fro a pixmap in buffer implementation
 		do
 			window.set_mask (index_target, index_mask)
 		end
@@ -150,7 +154,7 @@ feature {ANY}
 
 	create_buffer(a_dimension:VECTOR_2):INTEGER
 	--creates buffer with size
-	-- 0 if unsuccessful(index ofdefault image)
+	-- 0 if unsuccessful(index of default image)
 		require
 			a_dimension.x > 0
 			a_dimension.y > 0
@@ -165,7 +169,7 @@ feature {ANY}
 
 	create_buffer_from_image(image: READABLE_STRING_8):INTEGER
 	--creates buffer from image
-	-- 0 if unsuccessful(index ofdefault image)
+	-- 0 if unsuccessful(index of default image)
 		require
 			is_window_attached
 		do
@@ -186,6 +190,7 @@ feature {ANY}
 		end
 
 	set_mask(index_target, index_mask:INTEGER)
+	-- sets mask of pixmap
 		do
 			if attached main_window as window then
 				set_mask_i(index_target, index_mask, window)

@@ -1,7 +1,7 @@
 note
 	description: "A node in the labyrinth. has neighbours, type and position"
 	author: "Constantin Budin"
-	date: "18.05.2018"
+	date: "17.05.2018"
 	revision: "0.1"
 
 class

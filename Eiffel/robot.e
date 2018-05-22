@@ -40,6 +40,7 @@ feature {NONE}
 		end
 
 	draw_buffer(buffer, mask: separate EV_PIXMAP_ADVANCED; index_buffer, index_mask:INTEGER)
+	--fills the buffer and draws mask for transparency
 		require
 			buffer.height = dimension.y
 			buffer.width = dimension.x
@@ -82,6 +83,7 @@ feature {ANY}
 		end
 
 	update
+	--updates robot
 		do
 			print("update ROBOT%N")
 			PRECURSOR{GAME_OBJECT}

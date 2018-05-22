@@ -256,8 +256,6 @@ feature {NONE} -- Implementation, Close event
 				destroy
 
 					-- End the application.
-					--| TODO: Remove next instruction if you don't want the application
-					--|       to end when the first window is closed..
 					-- set game_state.state to 0 indicating the game has ended
 					shut_down_game(current_game)
 				if attached (create {EV_ENVIRONMENT}).application as a then
