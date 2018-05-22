@@ -30,6 +30,7 @@ public class Main extends Application {
         private static GameSystem instance;
         private double delta_time; // in nanoseconds
         public MainLabyrinth labyrinth;
+
         private GameSystem(){
             delta_time = 0;
         }

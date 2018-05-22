@@ -141,7 +141,8 @@ feature {ANY}
 		game_state = 0
 	local
 		buffer_indices: ARRAY[INTEGER]
-		flag: FLAG
+		flag: FLAG_DONT_COME_NEAR
+		flag2: FLAG_SEARCH_HERE
 		root: MAIN_LABYRINTH
 		robot: ROBOT
 	do
@@ -158,18 +159,24 @@ feature {ANY}
 		add_root(root)
 
 		create buffer_indices.make_filled (0, 1, 1)
-		buffer_indices[1]:= window.create_pixmap_buffer_from_image ("images\missing_image.png")
-		create flag.make (current, create{VECTOR_2}.make_with_xy (1000, 0), 0, buffer_indices)
+		buffer_indices[1]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
+		create flag.make (current, 0, buffer_indices, create{EV_COLOR}.make_with_rgb (1, 0, 0), root, 10, 10)
 		root.add_child (flag)
+
+		create buffer_indices.make_filled (0, 1, 1)
+		buffer_indices[1]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
+		create flag2.make (current, 0, buffer_indices, create{EV_COLOR}.make_with_rgb (0, 1, 0), root, 11, 11)
+		root.add_child (flag2)
+
 
 		create buffer_indices.make_filled (0, 1, 2)
 		buffer_indices[1]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
 		buffer_indices[2]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
-		create robot.make_robot (current, create{VECTOR_2}.make_with_xy (500, 500), -1, buffer_indices)
+		create robot.make_robot (current, create{VECTOR_2}.make_with_xy (0, 0), -1, buffer_indices)
 		root.add_child (robot)
 	end
 
-	launch-- TODO needs frame limiter
+	launch
 	--launches the game
 	-- the main game loop
 		require
