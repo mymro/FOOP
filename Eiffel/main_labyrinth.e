@@ -16,6 +16,10 @@ inherit
 create
 	create_new_labyrinth
 
+feature {ANY}
+	step_width: INTEGER
+	step_height: INTEGER
+
 feature {NONE}
 	labyrinth: LABYRINTH
 	labyrinth_dimension: VECTOR_2
@@ -33,6 +37,8 @@ feature {NONE}
 			make(a_game, a_pos, a_layer, some_buffer_indices)
 			create node_type_helper
 			labyrinth_dimension := a_labyrinth_dimension
+			step_width:= 0
+			step_height:= 0
 			create labyrinth.make (labyrinth_dimension)
 			labyrinth.create_labyrinth
 			reset_buffer
@@ -41,12 +47,12 @@ feature {NONE}
 	fill_buffer(buffer: separate EV_PIXMAP_ADVANCED)
 	--draws labyrinth to a buffer
 		require
-			(buffer.width/labyrinth_dimension.x).truncated_to_integer > 2
+			buffer.height = dimension.y and
+			buffer.width = dimension.x and
+			(buffer.width/labyrinth_dimension.x).truncated_to_integer > 2 and
 			(buffer.height/labyrinth_dimension.y).truncated_to_integer > 2
 		local
-			step_width: INTEGER_32
 			step_width_half: INTEGER_32
-			step_height: INTEGER_32
 			step_height_half: INTEGER_32
 			x_finish: INTEGER_32
 			y_finish: INTEGER_32
@@ -123,6 +129,16 @@ feature {ANY}
 			else
 				print("buffer not attached in main labyrinth")
 			end
+		end
+
+	get_labyrinth_dim_x: INTEGER
+		do
+			RESULT:= labyrinth_dimension.x
+		end
+
+	get_labyrinth_dim_y: INTEGER
+		do
+			RESULT:= labyrinth_dimension.y
 		end
 
 	draw
