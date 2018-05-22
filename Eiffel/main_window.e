@@ -31,6 +31,8 @@ feature {NONE} -- Initialization
 
 	create_objects
 			-- <Precursor>
+		local
+			default_buffer:EV_PIXMAP_ADVANCED
 		do
 				-- Create main container.
 			create main_container
@@ -48,7 +50,12 @@ feature {NONE} -- Initialization
 
 			create pixmap_buffers.make (0)
 
-			buffer_index:=0
+			create default_buffer
+			default_buffer.set_with_named_file ("images\missing_image.png")
+			default_buffer.height.do_nothing
+			pixmap_buffers.put (default_buffer, 0)
+
+			buffer_index:=1
 			board_width:=1
 			board_height:= 1
 
@@ -345,7 +352,6 @@ feature {ANY}-- interfaces for GAME
 
 	create_pixmap_buffer_from_image(image: separate READABLE_STRING_8):INTEGER
 	-- creates a buffer from an image
-	-- loads missing_image.png, if image not found
 		local
 			buffer: EV_PIXMAP_ADVANCED
 			path_to_image: STRING

@@ -22,18 +22,38 @@ feature {NONE}
 	children: ARRAYED_LIST[GAME_OBJECT]
 
 feature {NONE}
-	make(a_game: GAME; a_pos_relative_to_parent: VECTOR_2; a_layer:INTEGER; some_buffer_indices: ARRAY[INTEGER])
+	make(a_game: GAME; a_pos_relative_to_parent, a_dimension: VECTOR_2; a_layer, buffer_count:INTEGER)
+		require
+			a_dimension.x>=0
+			a_dimension.y>=0
+			buffer_count > 0
+		do
+			game:= a_game
+			parent:= void
+			pos_relative_to_parent:= a_pos_relative_to_parent
+			layer:= a_layer
+			dimension:=a_dimension
+			create children.make (0)
+			create buffer_indices.make_filled (0, 1, buffer_count)
+
+			across
+				1 |..| buffer_count as i
+			loop
+				buffer_indices[i.item]:= game.create_buffer(dimension)
+			end
+		end
+
+	make_with_buffers(a_game: GAME; a_pos_relative_to_parent, a_dimension: VECTOR_2; a_layer:INTEGER; some_buffer_indices: ARRAY[INTEGER])
+		require
+			a_dimension.x>=0
+			a_dimension.y>=0
 		do
 			game:= a_game
 			parent:= void
 			buffer_indices := some_buffer_indices
 			pos_relative_to_parent:= a_pos_relative_to_parent
 			layer:= a_layer
-			if some_buffer_indices.count > 0 and attached a_game.get_buffer (buffer_indices[1]) as buffer_pixmap then
-				set_dimension(buffer_pixmap)
-			else
-				create dimension.make_with_xy (0, 0)
-			end
+			dimension:=a_dimension
 			create children.make (0)
 		end
 
@@ -47,7 +67,7 @@ feature {NONE}
 	-- draws the buffer at index to screen
 	-- at absolute parent position plus relative position to parent
 		do
-			game.draw_buffer_to_display (buffer_indices[index], get_absolute_pos)
+			game.queue_buffer_for_draw_to_display (buffer_indices[index], get_absolute_pos)
 		end
 
 feature {ANY}

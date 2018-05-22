@@ -20,6 +20,8 @@ feature{NONE}
 	main_window: detachable separate MAIN_WINDOW
 	fps_limit: INTEGER = 60
 	labyrinth_node_size: INTEGER = 20
+	draw_queue_pos: LINKED_LIST[VECTOR_2]
+	draw_queue_buffer_index: LINKED_LIST[INTEGER]
 
 feature{ANY}
 	time_diff: REAL_64
@@ -48,7 +50,34 @@ feature {NONE}
 			labyrinth_nodes_x:= 0
 			labyrinth_nodes_y:= 0
 			time_diff:=0
-			create game_root_objects.make (0)
+			create game_root_objects.make(0)
+			create draw_queue_pos.make
+			create draw_queue_buffer_index.make
+		end
+
+	draw_queue_to_display(window: separate MAIN_WINDOW)
+	--draws the queue to display
+		require
+			 draw_queue_pos.count = draw_queue_buffer_index.count
+		local
+		do
+			if draw_queue_pos.count > 0 then
+				from
+					draw_queue_pos.start
+					draw_queue_buffer_index.start
+					window.draw_buffer_to_display (draw_queue_buffer_index.item, draw_queue_pos.item.x, draw_queue_pos.item.y)
+				until
+					draw_queue_pos.islast
+				loop
+					draw_queue_pos.forth
+					draw_queue_buffer_index.forth
+					window.draw_buffer_to_display (draw_queue_buffer_index.item, draw_queue_pos.item.x, draw_queue_pos.item.y)
+				end
+				draw_queue_pos.wipe_out
+				draw_queue_buffer_index.wipe_out
+			end
+		ensure
+			draw_queue_pos.count = draw_queue_buffer_index.count
 		end
 
 	get_buffer_i(i:INTEGER; window: separate MAIN_WINDOW): detachable separate EV_PIXMAP_ADVANCED
@@ -57,10 +86,17 @@ feature {NONE}
 			RESULT:=window.get_pixmap_buffer(i)
 		end
 
-	draw_buffer_to_display_i(i: INTEGER; pos_x, pos_y:INTEGER; window: separate MAIN_WINDOW)
-	--implementation of draw_buffer_to_display
+	create_buffer_i(a_dimension:VECTOR_2; window: separate MAIN_WINDOW):INTEGER
+		require
+			a_dimension.x > 0
+			a_dimension.y > 0
 		do
-			window.draw_buffer_to_display (i, pos_x, pos_y)
+			RESULT:= window.create_pixmap_buffer (a_dimension.x, a_dimension.y)
+		end
+
+	create_buffer_from_image_i(image: READABLE_STRING_8; window: separate MAIN_WINDOW):INTEGER
+		do
+			RESULT:= window.create_pixmap_buffer_from_image (image)
 		end
 
 	set_mask_i(index_target, index_mask:INTEGER; window: separate MAIN_WINDOW)
@@ -69,6 +105,11 @@ feature {NONE}
 		end
 
 feature {ANY}
+
+	is_window_attached:BOOLEAN
+		do
+			RESULT:= attached main_window
+		end
 
 	add_root(root:GAME_OBJECT)
 	-- adds root object
@@ -107,14 +148,41 @@ feature {ANY}
 			end
 		end
 
-	draw_buffer_to_display(i: INTEGER; pos:VECTOR_2)
-	-- draws a buffer to display with top left corner position of pos
+	create_buffer(a_dimension:VECTOR_2):INTEGER
+	--creates buffer with size
+	-- 0 if unsuccessful(index ofdefault image)
+		require
+			a_dimension.x > 0
+			a_dimension.y > 0
+			is_window_attached
 		do
 			if attached main_window as window then
-				draw_buffer_to_display_i(i, pos.x, pos.y, window)
+				RESULT:=create_buffer_i(a_dimension, window)
 			else
-				print("main_window not attached in game draw_bufer_to_display")
+				RESULT:=0
 			end
+		end
+
+	create_buffer_from_image(image: READABLE_STRING_8):INTEGER
+	--creates buffer from image
+	-- 0 if unsuccessful(index ofdefault image)
+		require
+			is_window_attached
+		do
+			if attached main_window as window then
+				RESULT:=create_buffer_from_image_i(image, window)
+			else
+				RESULT:=0
+			end
+		end
+
+	queue_buffer_for_draw_to_display(index: INTEGER; pos:VECTOR_2)
+	-- queues buffer for draw
+		do
+			draw_queue_pos.extend (pos)
+			draw_queue_buffer_index.extend (index)
+		ensure
+			draw_queue_pos.count = draw_queue_buffer_index.count
 		end
 
 	set_mask(index_target, index_mask:INTEGER)
@@ -140,7 +208,6 @@ feature {ANY}
 		window /= void
 		game_state = 0
 	local
-		buffer_indices: ARRAY[INTEGER]
 		flag: FLAG_DONT_COME_NEAR
 		flag2: FLAG_SEARCH_HERE
 		root: MAIN_LABYRINTH
@@ -153,26 +220,16 @@ feature {ANY}
 		labyrinth_nodes_y:= (draw_area_height/labyrinth_node_size).truncated_to_integer
 
 		-- game_objects
-		create buffer_indices.make_filled (0, 1, 1)
-		buffer_indices[1]:= window.create_pixmap_buffer(drawing_area_width, drawing_area_height)
-		create root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0), 0, buffer_indices)
+		create root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0),  create{VECTOR_2}.make_with_xy (drawing_area_width, drawing_area_height))
 		add_root(root)
 
-		create buffer_indices.make_filled (0, 1, 1)
-		buffer_indices[1]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
-		create flag.make (current, 0, buffer_indices, create{EV_COLOR}.make_with_rgb (1, 0, 0), root, 10, 10)
+		create flag.make_flag (current, create{VECTOR_2}.make_with_xy (10, 10), root)
 		root.add_child (flag)
 
-		create buffer_indices.make_filled (0, 1, 1)
-		buffer_indices[1]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
-		create flag2.make (current, 0, buffer_indices, create{EV_COLOR}.make_with_rgb (0, 1, 0), root, 11, 11)
+		create flag2.make_flag (current, create{VECTOR_2}.make_with_xy (12, 12), root)
 		root.add_child (flag2)
 
-
-		create buffer_indices.make_filled (0, 1, 2)
-		buffer_indices[1]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
-		buffer_indices[2]:= window.create_pixmap_buffer(labyrinth_node_size, labyrinth_node_size)
-		create robot.make_robot (current, create{VECTOR_2}.make_with_xy (0, 0), -1, buffer_indices)
+		create robot.make_robot (current, create{VECTOR_2}.make_with_xy (1, 1), root)
 		root.add_child (robot)
 	end
 
@@ -233,6 +290,7 @@ feature {ANY}
 					loop
 						cursor.item.draw
 					end
+					draw_queue_to_display(window)
 				end
 				game_state := 0
 			else

@@ -28,19 +28,21 @@ feature {NONE}
 
 feature {NONE}
 
-	create_new_labyrinth(a_game: GAME; a_labyrinth_dimension, a_pos: VECTOR_2; a_layer:INTEGER; some_buffer_indices: ARRAY[INTEGER])
+	create_new_labyrinth(a_game: GAME; a_labyrinth_dimension, a_pos, a_dimension: VECTOR_2)
 		require
 			a_labyrinth_dimension.x >=1
 			a_labyrinth_dimension.y >=1
-			some_buffer_indices.count>=1
+			a_dimension.x > 0
+			a_dimension.y > 0
 		do
-			make(a_game, a_pos, a_layer, some_buffer_indices)
+			make(a_game, a_pos, a_dimension, 0, 1)
 			create node_type_helper
 			labyrinth_dimension := a_labyrinth_dimension
 			step_width:= 0
 			step_height:= 0
 			create labyrinth.make (labyrinth_dimension)
 			labyrinth.create_labyrinth
+
 			reset_buffer
 		end
 

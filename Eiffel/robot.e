@@ -18,11 +18,24 @@ create
 	make_robot
 
 feature {NONE}
-	make_robot(a_game: GAME; a_pos_relative_to_parent: VECTOR_2; a_layer:INTEGER; some_buffer_indices: ARRAY[INTEGER])
+	pos_in_labyrinth: VECTOR_2
+	labyrinth: MAIN_LABYRINTH
+	f_modifier: F_MODIFIER_CONTAINER
+
+
+feature {NONE}
+	make_robot(a_game: GAME; a_pos_in_labyrinth: VECTOR_2; a_labyrinth:MAIN_LABYRINTH)
 		require
-			some_buffer_indices.count>1
+			a_pos_in_labyrinth.x > 0 and a_pos_in_labyrinth.x <= a_labyrinth.get_labyrinth_dim_x
+			a_pos_in_labyrinth.y > 0 and a_pos_in_labyrinth.y <= a_labyrinth.get_labyrinth_dim_y
+		local
+			a_pos: VECTOR_2
 		do
-			make(a_game, a_pos_relative_to_parent, a_layer, some_buffer_indices)
+			labyrinth:=a_labyrinth
+			create f_modifier
+			pos_in_labyrinth:=a_pos_in_labyrinth
+			create a_pos.make_with_xy ((pos_in_labyrinth.x-1)*labyrinth.step_width, (pos_in_labyrinth.y-1)*labyrinth.step_height)
+			make(a_game, a_pos, create{VECTOR_2}.make_with_xy (labyrinth.step_width, labyrinth.step_height), 0, 2)
 			reset_buffer
 		end
 

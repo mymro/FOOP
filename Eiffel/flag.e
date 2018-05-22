@@ -22,24 +22,21 @@ feature {NONE}
 	color: EV_COLOR
 	modifier_container: F_MODIFIER_CONTAINER
 	labyrinth: MAIN_LABYRINTH
-	labyrinth_pos_x: INTEGER
-	labyrinth_pos_y: INTEGER
+	pos_in_labyrinth: VECTOR_2
 
 feature {NONE}
-	make(a_game: GAME; a_layer:INTEGER; some_buffer_indices: ARRAY[INTEGER]; a_color:EV_COLOR; a_labyrinth:MAIN_LABYRINTH; a_labyrinth_pos_x, a_labyrinth_pos_y:INTEGER)
+	make(a_game: GAME; a_pos_in_labyrinth: VECTOR_2; a_color:EV_COLOR; a_labyrinth:MAIN_LABYRINTH)
 		require
-			some_buffer_indices.count > 0
-			a_labyrinth_pos_x > 0 and a_labyrinth_pos_x <= a_labyrinth.get_labyrinth_dim_x
-			a_labyrinth_pos_y > 0 and a_labyrinth_pos_y <= a_labyrinth.get_labyrinth_dim_y
+			a_pos_in_labyrinth.x > 0 and a_pos_in_labyrinth.x <= a_labyrinth.get_labyrinth_dim_x
+			a_pos_in_labyrinth.y > 0 and a_pos_in_labyrinth.y <= a_labyrinth.get_labyrinth_dim_y
 		local
 			a_pos: VECTOR_2
 		do
-			create a_pos.make_with_xy (a_labyrinth_pos_x * a_labyrinth.step_width, a_labyrinth_pos_y * a_labyrinth.step_height)
-			game_object_make(a_game, a_pos, a_layer, some_buffer_indices)
+			pos_in_labyrinth:=a_pos_in_labyrinth
 			color:=a_color
 			labyrinth:= a_labyrinth
-			labyrinth_pos_x:= a_labyrinth_pos_x
-			labyrinth_pos_y:= a_labyrinth_pos_y
+			create a_pos.make_with_xy ((pos_in_labyrinth.x-1) * labyrinth.step_width, (pos_in_labyrinth.y-1) * labyrinth.step_height)
+			game_object_make(a_game, a_pos, create{VECTOR_2}.make_with_xy (labyrinth.step_width, labyrinth.step_height), 1, 1)
 			create modifier_container
 			reset_buffer
 

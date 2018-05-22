@@ -11,7 +11,13 @@ inherit
 	FLAG
 
 create
-	make
+	make_flag
+
+feature {NONE}
+	make_flag(a_game: GAME; a_pos_in_labyrinth: VECTOR_2; a_labyrinth:MAIN_LABYRINTH)
+		do
+			make(a_game, a_pos_in_labyrinth, create{EV_COLOR}.make_with_rgb (1, 0, 0), a_labyrinth)
+		end
 
 feature {ANY}
 
@@ -21,6 +27,6 @@ feature {ANY}
 			abs_pos:VECTOR_2
 		do
 			e:=2.7182818284590452353602874713527
-			RESULT:= 20*e^(-((labyrinth_pos_x - x)^2/200 + (labyrinth_pos_y-y)^2/200))
+			RESULT:= 20*e^(-((pos_in_labyrinth.x- x)^2/200 + (pos_in_labyrinth.y-y)^2/200))
 		end
 end

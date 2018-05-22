@@ -164,29 +164,29 @@ feature {ANY}
 			end
 		end
 
-	get_path_from_to(from_node, to_node: LABYRINTH_NODE):ARRAYED_LIST[LABYRINTH_NODE]
+	get_path_from_to(from_node, to_node: LABYRINTH_NODE; f_modifier: detachable F_MODIFIER):ARRAYED_LIST[LABYRINTH_NODE]
 	-- returns path between two nodes, if one is available.
 	-- The first entry is the start. The last the finish
 		require
 			get_node_at(from_node.x, from_node.y) = from_node
 			get_node_at(to_node.x, to_node.y) = to_node
 		do
-			RESULT:=get_path(from_node, to_node, -1, void)
+			RESULT:=get_path(from_node, to_node, -1, f_modifier)
 		end
 
-	get_path_from_to_nearest_node_with_type(from_node: LABYRINTH_NODE; stop_at_type: INTEGER):ARRAYED_LIST[LABYRINTH_NODE]
+	get_path_from_to_nearest_node_with_type(from_node: LABYRINTH_NODE; stop_at_type: INTEGER; f_modifier: detachable F_MODIFIER):ARRAYED_LIST[LABYRINTH_NODE]
 	-- returns path to nearest node with give type
 	-- The first entry is the start. The last the finish
 		require
 			get_node_at(from_node.x, from_node.y) = from_node
 			node_type_helper.is_type_valid (stop_at_type)
 		do
-			RESULT:=get_path(from_node, void, stop_at_type, void)
+			RESULT:=get_path(from_node, void, stop_at_type, f_modifier)
 		end
 
 feature {NONE}
 
-	get_path(from_node: LABYRINTH_NODE; to_node: detachable LABYRINTH_NODE; stop_at_type:INTEGER; f_modifier: detachable ANY):ARRAYED_LIST[LABYRINTH_NODE]
+	get_path(from_node: LABYRINTH_NODE; to_node: detachable LABYRINTH_NODE; stop_at_type:INTEGER; f_modifier: detachable F_MODIFIER):ARRAYED_LIST[LABYRINTH_NODE]
 	-- returns path between two nodes, if one is available.
 	-- returns path to an stop_at_type node, if it stumbles upon one or to_node is void
 	-- The first entry is the start. The last the finish
@@ -198,7 +198,7 @@ feature {NONE}
 			came_from: HASH_TABLE[LABYRINTH_NODE, LABYRINTH_NODE]
 			current_node: LABYRINTH_NODE
 			tentative_g: INTEGER
-			tentative_f: INTEGER
+			tentative_f: REAL_64
 			path: ARRAYED_LIST[LABYRINTH_NODE]
 		do
 
@@ -212,13 +212,13 @@ feature {NONE}
 
 			if attached to_node as to then
 				if attached f_modifier as modifier then
-
+					f.put ((from_node.x-to.x).abs + (from_node.y-to.y).abs + f_modifier.get_modifier_at (from_node.x, from_node.y), from_node)
 				else
 					f.put ((from_node.x-to.x).abs + (from_node.y-to.y).abs, from_node)
 				end
 			else
 				if attached f_modifier as modifier then
-
+					f.put (f_modifier.get_modifier_at (from_node.x, from_node.y), from_node)
 				else
 					f.put ( 0, from_node)
 				end
@@ -247,10 +247,10 @@ feature {NONE}
 							tentative_f:= tentative_g
 
 							if attached to_node as to then
-								tentative_f := tentative_f + (neighbour.x - current_node.x).abs + (neighbour.y - current_node.y).abs
+								tentative_f := tentative_f + (neighbour.x - to.x).abs + (neighbour.y - to.y).abs
 							end
 							if attached f_modifier as modifier then
-								--tentative_f := tentative_f +
+								tentative_f := tentative_f + f_modifier.get_modifier_at (neighbour.x, neighbour.y)
 							end
 
 							if open_set.occurrences (neighbour) = 0 then
@@ -274,7 +274,7 @@ feature {NONE}
 								g.put (tentative_g, neighbour)
 								f.put (tentative_f, neighbour)
 								came_from.put (current_node, neighbour)
-
+								
 							elseif g.at (neighbour) >= tentative_g then
 								g.put (tentative_g, neighbour)
 								f.put (tentative_f, neighbour)
