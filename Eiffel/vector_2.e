@@ -47,13 +47,18 @@ feature {ANY}
 			Result:= create{VECTOR_2}.make_with_xy (current.x + other.x, current.y + other.y)
 		end
 
+	times alias"*" (other: INTEGER): VECTOR_2
+		do
+			create RESULT.make_with_xy (current.x * other, current.y * other)
+		end
+
 	set_x(a_x:INTEGER)
 		do
-			x:=x
+			x:=a_x
 		end
 
 	set_y(a_y:INTEGER)
 		do
-			y:= y
+			y:=a_y
 		end
 end

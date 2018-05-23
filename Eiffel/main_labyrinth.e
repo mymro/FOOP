@@ -133,6 +133,13 @@ feature {ANY}
 			RESULT:= labyrinth_dimension.y
 		end
 
+	get_node_at alias"[]"(i,j:INTEGER):LABYRINTH_NODE
+		require
+			i > 0 and i <= get_labyrinth_dim_x
+			j > 0 and j <= get_labyrinth_dim_y
+		do
+			RESULT:= labyrinth[i,j]
+		end
 
 feature {ANY}
 
@@ -155,7 +162,6 @@ feature {ANY}
 
 	update
 		do
-			print("update labyrinth%N")
 			PRECURSOR{GAME_OBJECT}
 		end
 end

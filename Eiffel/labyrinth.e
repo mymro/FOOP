@@ -14,8 +14,8 @@ feature {ANY}
 	node_type_helper: NODE_TYPE_BASE
 
 feature {NONE}
-	labyrinth: ARRAY2[LABYRINTH_NODE]
 	dimension: VECTOR_2
+	labyrinth: ARRAY2[LABYRINTH_NODE]
 
 feature {NONE}
 
@@ -97,7 +97,7 @@ feature {ANY}
 				j := dimension.y
 			end
 
-			labyrinth[i,j].set_type (node_type_helper.type_finish)
+			labyrinth[i,j].set_type_integer (node_type_helper.type_finish)
 
 			-- create the rest of the labyrinth
 			create frontier.make (0)
@@ -130,7 +130,7 @@ feature {ANY}
 
 				rand.forth
 				current_node := frontier[(rand.item\\frontier.count) + 1]
-				current_node.set_type (node_type_helper.type_normal)
+				current_node.set_type_integer (node_type_helper.type_normal)
 				frontier.go_i_th ((rand.item\\frontier.count) + 1)
 				frontier.remove
 

@@ -28,12 +28,7 @@ feature {NONE}
 			a_dimension.y>=0
 			buffer_count > 0
 		do
-			game:= a_game
-			parent:= void
-			pos_relative_to_parent:= a_pos_relative_to_parent
-			layer:= a_layer
-			dimension:=a_dimension
-			create children.make (0)
+			initialize(a_game, a_pos_relative_to_parent, a_dimension, a_layer)
 			create buffer_indices.make_filled (0, 1, buffer_count)
 
 			across
@@ -48,9 +43,17 @@ feature {NONE}
 			a_dimension.x>=0
 			a_dimension.y>=0
 		do
+			initialize(a_game, a_pos_relative_to_parent, a_dimension, a_layer)
+			buffer_indices := some_buffer_indices
+		end
+
+	initialize(a_game: GAME; a_pos_relative_to_parent, a_dimension:VECTOR_2; a_layer: INTEGER)
+		require
+			a_dimension.x>=0
+			a_dimension.y>=0
+		do
 			game:= a_game
 			parent:= void
-			buffer_indices := some_buffer_indices
 			pos_relative_to_parent:= a_pos_relative_to_parent
 			layer:= a_layer
 			dimension:=a_dimension

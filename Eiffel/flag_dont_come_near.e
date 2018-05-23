@@ -24,7 +24,6 @@ feature {ANY}
 	get_modifier_at(x,y:INTEGER):REAL_64
 		local
 			e:REAL_64
-			abs_pos:VECTOR_2
 		do
 			e:=2.7182818284590452353602874713527
 			RESULT:= 20*e^(-((pos_in_labyrinth.x- x)^2/200 + (pos_in_labyrinth.y-y)^2/200))

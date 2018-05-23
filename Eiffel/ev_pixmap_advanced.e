@@ -27,6 +27,13 @@ feature {ANY} -- useful drawing funcions
 			current.set_foreground_color (create{EV_COLOR}.make_with_rgb (r, g, b))
 		end
 
+	set_foreground_color_grey (grey:REAL_32)
+		require
+			grey>=0 and grey <=1
+		do
+			current.set_foreground_color (create{EV_COLOR}.make_with_rgb (grey, grey, grey))
+		end
+
 	draw_triangle(x_center, y_center, triangle_height:INTEGER_32)
 		-- draws a filled triangle with (x_center, y_center - height/2)
 		--(x_center-height/2, y_center + height/2) and (x_center+height/2, y_center + height/2)

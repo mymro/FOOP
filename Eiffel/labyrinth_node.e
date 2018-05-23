@@ -63,11 +63,16 @@ feature {ANY}
 			y = a_y
 		end
 
-	set_type(a_type:INTEGER)
+	set_type_integer(a_type:INTEGER)
 		require
 			type.is_type_valid (a_type)
 		do
 			type.set_type (a_type)
+		end
+
+	set_type(a_type: NODE_TYPE)
+		do
+			type.set_type (a_type.type)
 		end
 
 	is_of_type(a_type: INTEGER):BOOLEAN

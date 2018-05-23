@@ -41,19 +41,21 @@ feature {NONE}
 			reset_buffer
 
 			modifier_container.add_modifier(current)
-			set_parent(a_labyrinth)
 		end
-
 	draw_buffer(buffer: separate EV_PIXMAP_ADVANCED)
 		require
 			buffer.height = dimension.y
 			buffer.width = dimension.x
 		do
 			buffer.set_foreground_color_rgb (color.red, color.green, color.blue)
-			buffer.fill_rectangle (0, 0, dimension.x, dimension.y)
+			buffer.fill_rectangle (0, 0, buffer.width, buffer.height)
 		end
 
 feature {ANY}
+
+	get_modifier_at(x,y:INTEGER):REAL_64
+		deferred
+		end
 
 	reset_buffer
 	-- redraws the buffer
@@ -73,7 +75,6 @@ feature {ANY}
 
 	update
 		do
-			print("update FLAG%N")
 			PRECURSOR{GAME_OBJECT}
 		end
 

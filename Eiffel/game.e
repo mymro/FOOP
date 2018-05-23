@@ -24,7 +24,7 @@ feature{NONE}
 	draw_queue_buffer_index: LINKED_LIST[INTEGER]
 
 feature{ANY}
-	time_diff: REAL_64
+	delta_time: REAL_64
 	labyrinth_nodes_x: INTEGER
 	labyrinth_nodes_y: INTEGER
 	draw_area_height: INTEGER
@@ -50,7 +50,7 @@ feature {NONE}
 			draw_area_width:=0
 			labyrinth_nodes_x:= 0
 			labyrinth_nodes_y:= 0
-			time_diff:=0
+			delta_time:=0
 			create game_root_objects.make(0)
 			create draw_queue_pos.make
 			create draw_queue_buffer_index.make
@@ -228,13 +228,13 @@ feature {ANY}
 		create root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0),  create{VECTOR_2}.make_with_xy (drawing_area_width, drawing_area_height))
 		add_root(root)
 
-		create flag.make_flag (current, create{VECTOR_2}.make_with_xy (10, 10), root)
+		create flag.make_flag (current, create{VECTOR_2}.make_with_xy (60, 10), root)
 		root.add_child (flag)
 
-		create flag2.make_flag (current, create{VECTOR_2}.make_with_xy (12, 12), root)
+		create flag2.make_flag (current, create{VECTOR_2}.make_with_xy (10, 10), root)
 		root.add_child (flag2)
 
-		create robot.make_robot (current, create{VECTOR_2}.make_with_xy (1, 1), root)
+		create robot.make_robot (current, create{VECTOR_2}.make_with_xy (20, 20), root)
 		root.add_child (robot)
 	end
 
@@ -252,7 +252,7 @@ feature {ANY}
 			frame_time:= 1/fps_limit
 			last_time:= 0
 			current_time:= 0
-			time_diff:= 0
+			delta_time:= 0
 
 			if	attached main_window as window then
 
@@ -273,15 +273,15 @@ feature {ANY}
 				loop
 					create time.make_now
 					current_time:= time.fine_seconds
-					time_diff:= current_time-last_time
+					delta_time:= current_time-last_time
 					-- frame limiter
-					if time_diff < frame_time then
-						sleep(((frame_time-time_diff)*1000000000).truncated_to_integer_64)
+					if delta_time < frame_time then
+						sleep(((frame_time-delta_time)*1000000000).truncated_to_integer_64)
 						create time.make_now
 						current_time:= time.fine_seconds
-						time_diff:= current_time-last_time
+						delta_time:= current_time-last_time
 					end
-					print((1/time_diff).out + "%N")
+					print((1/delta_time).out + "%N")
 					last_time:=current_time
 
 					across
