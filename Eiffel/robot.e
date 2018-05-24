@@ -2,7 +2,7 @@ note
 	description: "Robot class. "
 	author: "Constantin Budin"
 	date: "23.05.2018"
-	revision: "1.0
+	revision: "1.0"
 
 class
 	ROBOT

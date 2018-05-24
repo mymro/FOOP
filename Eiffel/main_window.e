@@ -279,6 +279,7 @@ feature {NONE} -- Implementation
 			--pixmap.pointer_enter_actions.extend (agent enter)
 			--pixmap.pointer_leave_actions.extend (agent leave)
 			--pixmap.pointer_button_press_actions.extend (agent press)
+			display_area.key_press_actions.extend (agent key_press)
 			create drawing_area_container.default_create
 			drawing_area_container.set_minimum_size (current.client_width, current.client_height - main_container.height)
 			drawing_area_container.set_padding (display_area_padding)
@@ -295,6 +296,11 @@ feature {NONE} -- Implementation
 		end
 
 feature {NONE} --functions for mouse interaction testing
+
+	key_press(key:EV_KEY)
+		do
+			print(key.code.out+"%N")
+		end
 
 	enter
 		do
@@ -317,11 +323,11 @@ feature {NONE} --functions for mouse interaction testing
 feature {NONE} -- al functions concerning the state of the game
 
 
-	launch_game(arg: separate GAME)
+	launch_game(a_game: separate GAME)
 		--sets up the variables and launches the game
 		do
-			arg.set_up (Current, board_width, board_height)
-			arg.launch
+			a_game.set_up (Current, board_width, board_height)
+			a_game.launch
 		end
 
 	shut_down_game(game: separate GAME)

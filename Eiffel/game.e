@@ -281,7 +281,7 @@ feature {ANY}
 						current_time:= time.fine_seconds
 						delta_time:= current_time-last_time
 					end
-					print((1/delta_time).out + "%N")
+					--print((1/delta_time).out + "%N")
 					last_time:=current_time
 
 					across
@@ -295,6 +295,7 @@ feature {ANY}
 					loop
 						cursor.item.draw
 					end
+
 					draw_queue_to_display(window)
 				end
 				game_state := 0

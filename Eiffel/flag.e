@@ -42,6 +42,7 @@ feature {NONE}
 
 			modifier_container.add_modifier(current)
 		end
+
 	draw_buffer(buffer: separate EV_PIXMAP_ADVANCED)
 		require
 			buffer.height = dimension.y
