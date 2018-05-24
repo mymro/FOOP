@@ -1,6 +1,6 @@
-package Game.Core;
+package game.core;
 
-import Game.GameObjects.Robot;
+import game.game.objects.Robot;
 
 public abstract class Flag extends GameObject implements FModifier {
 

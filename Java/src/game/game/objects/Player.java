@@ -1,6 +1,4 @@
-package Game.GameObjects;
-
-import javafx.scene.paint.Color;
+package game.game.objects;
 
 import java.io.Serializable;
 

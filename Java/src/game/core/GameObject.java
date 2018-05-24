@@ -1,6 +1,6 @@
-package Game.Core;
+package game.core;
 
-import Game.Main;
+import game.Main;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.LinkedList;

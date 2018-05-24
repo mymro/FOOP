@@ -1,8 +1,8 @@
-package Game.GameObjects;
+package game.game.objects;
 
-import Game.Core.GameObject;
-import Game.Core.Labyrinth;
-import Game.GameObjects.MainLabyrinth;
+import game.Main;
+import game.core.GameObject;
+import game.core.Labyrinth;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -19,10 +19,13 @@ public class Robot extends GameObject {
     private int current_path_index;
     private double current_delta_time;
     private MainLabyrinth mainLabyrinth;
+    private Main.GameSystem system=Main.GameSystem.getInstance();
+    private Player player;
 
 
     public Robot(int layer, Player player) {
         super(layer);
+        this.player = player;
         if (player.getColor().equalsIgnoreCase("RED")) {
             this.color = Color.RED;
         }
@@ -31,6 +34,9 @@ public class Robot extends GameObject {
         }
         if (player.getColor().equalsIgnoreCase("BLUE")) {
             this.color = Color.BLUE;
+        }
+        if (player.getColor().equalsIgnoreCase("YELLOW")) {
+            this.color = Color.YELLOW;
         }
         mainLabyrinth = null;
         initialize(null, 0, 0);
@@ -92,44 +98,52 @@ public class Robot extends GameObject {
 
     @Override
     public void update() {
-        if (current_node != null && labyrinth != null) {
-            current_delta_time += getGame_system().deltaTime();
-
-            if (current_path_index <= 0 && current_node.getType() != Labyrinth.NodeType.finish) {
-                current_path = labyrinth.findPath(current_node, null, mainLabyrinth);
-                current_path_index = current_path.size() - 1;
-                if (current_path_index > 0) {
-                    next_node = current_path.get(current_path_index - 1);
-                } else {
-                    next_node = null;
-                }
+        if(system.isRunning) {
+            if (current_node.getType().equals(Labyrinth.NodeType.finish)) {
+                system.setRunning(false);
+                system.setMessage("Game is finished " + this.player.getName() + " is  with color " + player.getColor() + " won ");
+                return;
             }
 
-            if (current_delta_time >= seconds_per_field && current_path_index > 0) {
-                current_delta_time = 0;
-                current_path_index = current_path_index - 1;
-                current_node = current_path.get(current_path_index);
+            if (current_node != null && labyrinth != null) {
+                current_delta_time += getGame_system().deltaTime();
 
-                if (current_path_index > 0) {
-                    next_node = current_path.get(current_path_index - 1);
-                } else {
-                    next_node = null;
-                }
-                setPos_x(current_node.getX());
-                setPos_y(current_node.getY());
-
-                if (current_node.getType() == Labyrinth.NodeType.unknown) {
-                    if (mainLabyrinth != null) {
-                        labyrinth.changeNode(current_node, mainLabyrinth.getTypeAt(current_node.getX(), current_node.getY()), mainLabyrinth.getEdgesAt(current_node.getX(), current_node.getY()));
+                if (current_path_index <= 0 && current_node.getType() != Labyrinth.NodeType.finish) {
+                    current_path = labyrinth.findPath(current_node, null, mainLabyrinth);
+                    current_path_index = current_path.size() - 1;
+                    if (current_path_index > 0) {
+                        next_node = current_path.get(current_path_index - 1);
+                    } else {
+                        next_node = null;
                     }
                 }
 
-            } else if (next_node != null) {
-                setPos_x(current_node.getX() + (next_node.getX() - current_node.getX()) * current_delta_time / seconds_per_field);
-                setPos_y(current_node.getY() + (next_node.getY() - current_node.getY()) * current_delta_time / seconds_per_field);
+                if (current_delta_time >= seconds_per_field && current_path_index > 0) {
+                    current_delta_time = 0;
+                    current_path_index = current_path_index - 1;
+                    current_node = current_path.get(current_path_index);
+
+                    if (current_path_index > 0) {
+                        next_node = current_path.get(current_path_index - 1);
+                    } else {
+                        next_node = null;
+                    }
+                    setPos_x(current_node.getX());
+                    setPos_y(current_node.getY());
+
+                    if (current_node.getType() == Labyrinth.NodeType.unknown) {
+                        if (mainLabyrinth != null) {
+                            labyrinth.changeNode(current_node, mainLabyrinth.getTypeAt(current_node.getX(), current_node.getY()), mainLabyrinth.getEdgesAt(current_node.getX(), current_node.getY()));
+                        }
+                    }
+
+                } else if (next_node != null) {
+                    setPos_x(current_node.getX() + (next_node.getX() - current_node.getX()) * current_delta_time / seconds_per_field);
+                    setPos_y(current_node.getY() + (next_node.getY() - current_node.getY()) * current_delta_time / seconds_per_field);
+                }
             }
+            super.update();
         }
-        super.update();
     }
 
     public void drawPath(ArrayList<Labyrinth.LabyrinthNode> path, GraphicsContext gc, Labyrinth labyrinth) {
@@ -174,6 +188,7 @@ public class Robot extends GameObject {
                     if (current.getNeighbourAt(Labyrinth.Direction.right) != null && current.getNeighbourAt(Labyrinth.Direction.right).getNeighbourAt(Labyrinth.Direction.left) == current) {
                         gc.strokeLine(centerX, centerY, centerX + width / 2, centerY);
                     }
+
                 }
             }
         }

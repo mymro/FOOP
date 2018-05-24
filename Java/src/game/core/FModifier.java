@@ -1,4 +1,4 @@
-package Game.Core;
+package game.core;
 
 public interface FModifier {
 

@@ -1,7 +1,6 @@
-package Game.net;
+package game.net;
 
-import Game.GameObjects.MainLabyrinth;
-import Game.GameObjects.Player;
+import game.game.objects.Player;
 
 import java.util.Vector;
 

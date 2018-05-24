@@ -1,9 +1,8 @@
-package Game;
+package game;
 
-import Game.Core.Labyrinth;
-import Game.GameObjects.DontComeNearFlag;
-import Game.GameObjects.MainLabyrinth;
-import Game.GameObjects.SearchHereFlag;
+import game.game.objects.DontComeNearFlag;
+import game.game.objects.MainLabyrinth;
+import game.game.objects.SearchHereFlag;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuBar;

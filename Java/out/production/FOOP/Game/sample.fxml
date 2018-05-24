@@ -2,7 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox  fx:controller="Game.Controller"
+<VBox  fx:controller="game.Controller"
           xmlns:fx="http://javafx.com/fxml" alignment="top_left">
     <MenuBar fx:id="menuBar">
         <menus>

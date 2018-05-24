@@ -1,6 +1,6 @@
-package Game.GameObjects;
+package game.game.objects;
 
-import Game.Core.*;
+import game.core.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -20,13 +20,13 @@ public class MainLabyrinth extends GameObject implements FModifier ,Serializable
     }
 
     public MainLabyrinth(Dimension dimension, int layer) {
-        this(new MainDimension(dimension.getDim_x(), dimension.getDim_y(), layer, new Random().nextInt()));
+        this(new MainDimension(dimension.getDim_x(), dimension.getDim_y(), layer, 10));
 
     }
 
     public MainLabyrinth(MainDimension mainDimension) {
         super(mainDimension.getLayer());
-        Random random = new Random(mainDimension.getSeed());
+        Random random = new Random(10);
         labyrinth = new Labyrinth(mainDimension);
         labyrinth.createLabyrinth(random);
         this.seed = mainDimension.getSeed();

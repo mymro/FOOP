@@ -1,6 +1,6 @@
-package Game.GameObjects;
+package game.game.objects;
 
-import Game.Core.Flag;
+import game.core.Flag;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

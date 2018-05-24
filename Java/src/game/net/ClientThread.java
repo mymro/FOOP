@@ -1,7 +1,6 @@
-package Game.net;
+package game.net;
 
-import Game.GameObjects.Player;
-import Game.Main;
+import game.game.objects.Player;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

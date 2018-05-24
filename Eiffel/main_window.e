@@ -221,6 +221,9 @@ feature {NONE} -- ToolBar Implementation
 				toolbar_pixmap.height.do_nothing
 					-- Everything is OK, associate image with the button.
 				Result.set_pixmap (toolbar_pixmap)
+				if name.is_equal ("New") then
+					Result.pointer_button_press_actions.extend (agent press)
+				end
 			end
 		rescue
 			if attached Result then
@@ -318,6 +321,7 @@ feature {NONE} --functions for mouse interaction testing
 		do
 			display_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,0,1))
 			display_area.fill_rectangle (x, y, 10, 10)
+			print("Button :: " + button.out + "%N")
 		end
 
 feature {NONE} -- al functions concerning the state of the game

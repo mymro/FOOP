@@ -1,8 +1,6 @@
-package Game;
+package game;
 
-import Game.Controller;
-import Game.Core.Labyrinth;
-import Game.GameObjects.*;
+import game.game.objects.MainLabyrinth;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,8 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-import java.util.concurrent.TimeUnit;
 
 public class Main extends Application {
 
@@ -30,7 +26,8 @@ public class Main extends Application {
         private static GameSystem instance;
         private double delta_time; // in nanoseconds
         public MainLabyrinth labyrinth;
-
+        public boolean isRunning= true;
+        private String message = "";
         private GameSystem(){
             delta_time = 0;
         }
@@ -56,6 +53,22 @@ public class Main extends Application {
 
         public void setLabyrinth(MainLabyrinth labyrinth) {
             this.labyrinth = labyrinth;
+        }
+
+        public boolean isRunning() {
+            return isRunning;
+        }
+
+        public void setRunning(boolean running) {
+            isRunning = running;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
         }
     }
 

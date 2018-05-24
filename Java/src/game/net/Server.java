@@ -1,8 +1,8 @@
-package Game.net;
+package game.net;
 
-import Game.Core.Dimension;
-import Game.GameObjects.*;
-import Game.Main;
+import game.core.Dimension;
+import game.Main;
+import game.game.objects.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 
@@ -50,7 +50,7 @@ public class Server {
 
 
         int countOfPlayer = 0;
-        while (countOfPlayer < 3) {
+        while (countOfPlayer < 4) {
             try {
                 socket = ssocket.accept();
                 if (socket != null) {
@@ -68,38 +68,6 @@ public class Server {
 
     }
 
-    public synchronized void startGame(Hashtable<Player, Socket> userList) {
-        Dimension dimension = new Dimension(50, 50);
-        labyrinth = new MainLabyrinth(dimension, 0);
-        System.out.println("The game can be started we are three persons");
-
-
-        int j = 5;
-        for (Player player : userList.keySet()) {
-
-            labyrinth.addPlayer(player, 0);
-            System.out.println("Player: " +   player);
-            Robot robot = new Robot(0, player);
-            SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, dimension.getDim_x(),dimension.getDim_y(), robot);
-            DontComeNearFlag flag2 = new DontComeNearFlag(-30 +j, 40 - j, 40 + j, dimension.getDim_x(),dimension.getDim_y(),robot);
-            labyrinth.addFlag(flag);
-            labyrinth.addFlag(flag2);
-            labyrinth.update();
-        }
-        Main.GameSystem game_system = Main.GameSystem.getInstance();
-        game_system.setLabyrinth(labyrinth);
-        new AnimationTimer() {
-            long last_frame_time = System.nanoTime();
-
-            @Override
-            public void handle(long now) {
-                game_system.labyrinth.update();
-                last_frame_time = now;
-            }
-        }.start();
-        Application.launch(Main.class);
-    }
-
     public synchronized void addUser(Player player, Socket socket,
                                      ObjectOutputStream oos, String info) {
         if(!userList.isEmpty()) {
@@ -110,9 +78,9 @@ public class Server {
 
             userList.put(player, socket);
 
-            if(userList.size()> 2) {
+            if(userList.size()> 3) {
                 startGame();
-                startGame(userList);
+                //startGame(userList);
             }
         }
         synchronized (userOutputStreamList) {
