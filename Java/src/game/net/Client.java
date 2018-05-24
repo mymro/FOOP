@@ -107,10 +107,10 @@ public class Client extends Thread {
             System.out.println("Player: " + player);
             currentMessage.setMessage("The Game is started");
             Robot robot = new Robot(0, player);
-            SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, dimension.getDim_x(), dimension.getDim_y(), robot);
-            DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, dimension.getDim_x(), dimension.getDim_y(), robot);
-            mainLabyrinth.addFlag(flag);
-            mainLabyrinth.addFlag(flag2);
+            //SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, dimension.getDim_x(), dimension.getDim_y(), robot);
+            //DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, dimension.getDim_x(), dimension.getDim_y(), robot);
+            //mainLabyrinth.addFlag(flag);
+            //mainLabyrinth.addFlag(flag2);
         }
     }
 

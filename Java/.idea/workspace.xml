@@ -12,11 +12,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Client.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Client.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/game/net/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2310">
-              <caret line="110" column="19" lean-forward="false" selection-start-line="110" selection-start-column="19" selection-end-line="110" selection-end-column="19" />
+            <state relative-caret-position="427">
+              <caret line="112" column="14" lean-forward="false" selection-start-line="112" selection-start-column="14" selection-end-line="112" selection-end-column="14" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -91,11 +91,28 @@
       <file leaf-file-name="ClientGUI.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/net/ClientGUI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="566">
-              <caret line="76" column="24" lean-forward="false" selection-start-line="76" selection-start-column="24" selection-end-line="76" selection-end-column="24" />
+            <state relative-caret-position="175">
+              <caret line="81" column="21" lean-forward="false" selection-start-line="81" selection-start-column="21" selection-end-line="81" selection-end-column="21" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <marker date="1527000456253" expanded="true" signature="10242:10284" ph="{...}" />
+                <element signature="e#1138#1139#0" expanded="true" />
+                <element signature="e#1167#1168#0" expanded="true" />
+                <element signature="e#1211#1212#0" expanded="true" />
+                <element signature="e#1247#1248#0" expanded="true" />
+                <element signature="e#1282#1283#0" expanded="true" />
+                <element signature="e#1313#1314#0" expanded="true" />
+                <element signature="e#1361#1362#0" expanded="true" />
+                <element signature="e#1401#1402#0" expanded="true" />
+                <element signature="e#1436#1437#0" expanded="true" />
+                <element signature="e#1467#1468#0" expanded="true" />
+                <element signature="e#1515#1516#0" expanded="true" />
+                <element signature="e#1555#1556#0" expanded="true" />
+                <element signature="e#1587#1588#0" expanded="true" />
+                <element signature="e#1614#1615#0" expanded="true" />
+                <element signature="e#1655#1656#0" expanded="true" />
+                <element signature="e#1687#1688#0" expanded="true" />
+                <element signature="e#7467#7683#0" expanded="true" />
+                <element signature="e#7682#7683#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -117,8 +134,8 @@
       <file leaf-file-name="FXMLLoader.java" pinned="false" current-in-tab="false">
         <entry file="jar://C:/Program Files/Java/jdk-9/lib/src.zip!/javafx.fxml/javafx/fxml/FXMLLoader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2426" column="0" lean-forward="false" selection-start-line="2426" selection-start-column="0" selection-end-line="2426" selection-end-column="0" />
+            <state relative-caret-position="282">
+              <caret line="2438" column="0" lean-forward="true" selection-start-line="2438" selection-start-column="0" selection-end-line="2438" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -127,16 +144,11 @@
       <file leaf-file-name="Controller.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/Controller.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+            <state relative-caret-position="352">
+              <caret line="73" column="69" lean-forward="false" selection-start-line="73" selection-start-column="55" selection-end-line="73" selection-end-column="69" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <marker date="1526988062736" expanded="false" signature="582:588" ph=" }" />
-                <marker date="1526988062736" expanded="true" signature="723:800" ph="{...}" />
-                <marker date="1526988062736" expanded="true" signature="855:963" ph="{...}" />
-                <marker date="1526988062736" expanded="true" signature="1013:1113" ph="{...}" />
-                <marker date="1526988062736" expanded="true" signature="1159:1242" ph="{...}" />
-                <marker date="1526988062736" expanded="true" signature="1315:2289" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -157,11 +169,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainLabyrinth.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MainLabyrinth.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/game/objects/MainLabyrinth.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="524">
-              <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+            <state relative-caret-position="125">
+              <caret line="24" column="5" lean-forward="true" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#452#453#0" expanded="true" />
@@ -188,7 +200,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>current.y</find>
       <find>current.x</find>
       <find>new Pl</find>
       <find>userInfoList</find>
@@ -218,6 +229,7 @@
       <find>start</find>
       <find>game_syste</find>
       <find>package Game.Core;</find>
+      <find>startGame</find>
     </findStrings>
     <replaceStrings>
       <replace>GameObject</replace>
@@ -282,7 +294,6 @@
         <option value="$PROJECT_DIR$/src/game/net/Controller.java" />
         <option value="$PROJECT_DIR$/src/game/net/ClientThread.java" />
         <option value="$PROJECT_DIR$/src/game/Controller.java" />
-        <option value="$PROJECT_DIR$/src/game/net/Client.java" />
         <option value="$PROJECT_DIR$/src/game/net/ServerThread.java" />
         <option value="$PROJECT_DIR$/src/game/net/Server.java" />
         <option value="$PROJECT_DIR$/src/game/core/Flag.java" />
@@ -290,6 +301,7 @@
         <option value="$PROJECT_DIR$/src/game/net/ClientGUI.java" />
         <option value="$PROJECT_DIR$/src/game/net/sample.fxml" />
         <option value="$PROJECT_DIR$/src/game/game/objects/MainLabyrinth.java" />
+        <option value="$PROJECT_DIR$/src/game/net/Client.java" />
       </list>
     </option>
   </component>
@@ -409,6 +421,20 @@
             </path>
             <path>
               <item name="Java" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Java" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="Client" type="1a9f42e2:ClassTreeNode" />
+            </path>
+            <path>
+              <item name="Java" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Java" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="ClientGUI" type="1a9f42e2:ClassTreeNode" />
+            </path>
+            <path>
+              <item name="Java" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
             <path>
@@ -454,7 +480,7 @@
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="SearchEverywhereHistoryKey" value="Lab&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/game/objects/MainLabyrinth.java&#10;Labyrin&#9;PSI&#9;JAVA://Game.Core.Labyrinth.LabyrinthNode&#10;Dim&#9;PSI&#9;JAVA://Game.GameObjects.Dimension&#10;Message&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Message.java&#10;MainD&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/MainDimension.java&#10;Client&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Client.java&#10;Clien&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Client.java&#10;ClientTh&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/ClientThread.java&#10;Robo&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/Robot.java&#10;Server&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Server.java&#10;MainL&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/MainLabyrinth.java&#10;Player&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/Player.java" />
+    <property name="SearchEverywhereHistoryKey" value="Client&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/net/Client.java&#10;Lab&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/game/objects/MainLabyrinth.java&#10;Labyrin&#9;PSI&#9;JAVA://Game.Core.Labyrinth.LabyrinthNode&#10;Dim&#9;PSI&#9;JAVA://Game.GameObjects.Dimension&#10;Message&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Message.java&#10;MainD&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/MainDimension.java&#10;Clien&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Client.java&#10;ClientTh&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/ClientThread.java&#10;Robo&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/Robot.java&#10;Server&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Server.java&#10;MainL&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/MainLabyrinth.java&#10;Player&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/Player.java" />
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
   </component>
@@ -667,7 +693,7 @@
       <workItem from="1526618057865" duration="8000" />
       <workItem from="1526618078374" duration="11000" />
       <workItem from="1527150672576" duration="1892000" />
-      <workItem from="1527152602578" duration="1398000" />
+      <workItem from="1527152602578" duration="1812000" />
     </task>
     <task id="LOCAL-00001" summary="MultiUsers Game Example">
       <created>1521467081037</created>
@@ -792,7 +818,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="175535000" />
+    <option name="totallyTimeSpent" value="175949000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -805,6 +831,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32963374" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -814,12 +841,12 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.68222225" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28929386" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28929386" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.32801822" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.6651481" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6651481" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12137487" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19602577" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24919441" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973147" sideWeight="0.49369368" order="1" side_tool="false" content_ui="tabs" />
@@ -1129,51 +1156,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/net/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2310">
-          <caret line="110" column="19" lean-forward="false" selection-start-line="110" selection-start-column="19" selection-end-line="110" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/Controller.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1526988062736" expanded="false" signature="582:588" ph=" }" />
-            <marker date="1526988062736" expanded="true" signature="723:800" ph="{...}" />
-            <marker date="1526988062736" expanded="true" signature="855:963" ph="{...}" />
-            <marker date="1526988062736" expanded="true" signature="1013:1113" ph="{...}" />
-            <marker date="1526988062736" expanded="true" signature="1159:1242" ph="{...}" />
-            <marker date="1526988062736" expanded="true" signature="1315:2289" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk-9/lib/src.zip!/javafx.fxml/javafx/fxml/FXMLLoader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2426" column="0" lean-forward="false" selection-start-line="2426" selection-start-column="0" selection-end-line="2426" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/net/ClientGUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="566">
-          <caret line="76" column="24" lean-forward="false" selection-start-line="76" selection-start-column="24" selection-end-line="76" selection-end-column="24" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1527000456253" expanded="true" signature="10242:10284" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/game/net/sample.fxml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
@@ -1187,8 +1169,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/game/game/objects/MainLabyrinth.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="524">
-          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+        <state relative-caret-position="125">
+          <caret line="24" column="5" lean-forward="true" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#452#453#0" expanded="true" />
@@ -1199,6 +1181,63 @@
             <marker date="1526982746511" expanded="false" signature="4578:4584" ph=" }" />
             <marker date="1526982746511" expanded="false" signature="4646:4657" ph=" { " />
             <marker date="1526982746511" expanded="false" signature="4701:4707" ph=" }" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-9/lib/src.zip!/javafx.fxml/javafx/fxml/FXMLLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="282">
+          <caret line="2438" column="0" lean-forward="true" selection-start-line="2438" selection-start-column="0" selection-end-line="2438" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/Controller.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="73" column="69" lean-forward="false" selection-start-line="73" selection-start-column="55" selection-end-line="73" selection-end-column="69" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <marker date="1526988062736" expanded="false" signature="582:588" ph=" }" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/net/ClientGUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="81" column="21" lean-forward="false" selection-start-line="81" selection-start-column="21" selection-end-line="81" selection-end-column="21" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1138#1139#0" expanded="true" />
+            <element signature="e#1167#1168#0" expanded="true" />
+            <element signature="e#1211#1212#0" expanded="true" />
+            <element signature="e#1247#1248#0" expanded="true" />
+            <element signature="e#1282#1283#0" expanded="true" />
+            <element signature="e#1313#1314#0" expanded="true" />
+            <element signature="e#1361#1362#0" expanded="true" />
+            <element signature="e#1401#1402#0" expanded="true" />
+            <element signature="e#1436#1437#0" expanded="true" />
+            <element signature="e#1467#1468#0" expanded="true" />
+            <element signature="e#1515#1516#0" expanded="true" />
+            <element signature="e#1555#1556#0" expanded="true" />
+            <element signature="e#1587#1588#0" expanded="true" />
+            <element signature="e#1614#1615#0" expanded="true" />
+            <element signature="e#1655#1656#0" expanded="true" />
+            <element signature="e#1687#1688#0" expanded="true" />
+            <element signature="e#7467#7683#0" expanded="true" />
+            <element signature="e#7682#7683#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/net/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="427">
+          <caret line="112" column="14" lean-forward="false" selection-start-line="112" selection-start-column="14" selection-end-line="112" selection-end-column="14" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
