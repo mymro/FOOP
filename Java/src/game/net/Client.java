@@ -101,9 +101,10 @@ public class Client extends Thread {
     public void startGame(Vector<Player> userList) {
         dimension = new Dimension(50, 50);
         mainLabyrinth = new MainLabyrinth(dimension, 0);
+        int startIndex=0;
         for (Player player : userList) {
-
-            mainLabyrinth.addPlayer(player, 0);
+            startIndex +=5;
+            mainLabyrinth.addPlayer(player, 0,dimension.getDim_x() -startIndex,dimension.getDim_y() -startIndex);
             System.out.println("Player: " + player);
             currentMessage.setMessage("The Game is started");
             Robot robot = new Robot(0, player);

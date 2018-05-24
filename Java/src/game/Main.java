@@ -18,10 +18,6 @@ public class Main extends Application {
         launch(args);
     }
 
-
-
-
-
     public static final class GameSystem {
         private static GameSystem instance;
         private double delta_time; // in nanoseconds
@@ -84,10 +80,7 @@ public class Main extends Application {
         GraphicsContext gc = controller.labyrinthCanvas.getGraphicsContext2D();
         primaryStage.show();
 
-
-
         GameSystem game_system = GameSystem.getInstance();
-        controller.setLabyrinth(game_system.labyrinth);
         new AnimationTimer(){
 
             long last_frame_time = System.nanoTime();

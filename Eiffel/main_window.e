@@ -196,7 +196,8 @@ feature {NONE} -- ToolBar Implementation
 			-- Populate the standard toolbar.
 		do
 				-- Initialize the toolbar.
-			standard_toolbar.extend (new_toolbar_item ("New", "images/new.png"))
+			standard_toolbar.extend (new_toolbar_item ("Player1", "images/new.png"))
+			standard_toolbar.extend (new_toolbar_item ("Player2", "images/new.png"))
 			standard_toolbar.extend (new_toolbar_item ("Open", "images/open.png"))
 			standard_toolbar.extend (new_toolbar_item ("Save", "images/save.png"))
 		ensure
@@ -221,7 +222,10 @@ feature {NONE} -- ToolBar Implementation
 				toolbar_pixmap.height.do_nothing
 					-- Everything is OK, associate image with the button.
 				Result.set_pixmap (toolbar_pixmap)
-				if name.is_equal ("New") then
+				if name.is_equal ("Player1") then
+					Result.pointer_button_press_actions.extend (agent press)
+				end
+				if name.is_equal ("Player2") then
 					Result.pointer_button_press_actions.extend (agent press)
 				end
 			end

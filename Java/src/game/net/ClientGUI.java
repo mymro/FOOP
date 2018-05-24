@@ -75,7 +75,6 @@ public class ClientGUI extends Application {
     private Integer port;
     private static Main.GameSystem game_system = Main.GameSystem.getInstance();
     private static Controller controller = null;
-    private MainLabyrinth mainLabyrinth;
     public static Text actiontarget = new Text();
 
     @Override
@@ -184,8 +183,7 @@ public class ClientGUI extends Application {
                     @Override
                     public void handle(long now) {
                         graphicsContext = controller.labyrinthCanvas.getGraphicsContext2D();
-
-                        controller.setLabyrinth(game_system.getLabyrinth());
+                        game_system.setLabyrinth(client.getMainLabyrinth());
                         graphicsContext.clearRect(0, 0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
                         graphicsContext.setFill(Color.BLACK);
                         graphicsContext.fillRect(0, 0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
@@ -247,7 +245,7 @@ public class ClientGUI extends Application {
 
     private static void tickAndRender(Client client) {
         // clear canvas
-        graphicsContext.clearRect(0, 0, WIDTH, HEIGHT);
+
         circle.setFill(Color.valueOf(client.getColorInfo()));
         if (currentlyActiveKeys.contains("LEFT")) {
 
@@ -257,14 +255,13 @@ public class ClientGUI extends Application {
 
                 @Override
                 public void handle(long now) {
-                    GraphicsContext graphicsContext = controller.labyrinthCanvas.getGraphicsContext2D();
-
-                    controller.setLabyrinth(client.getMainLabyrinth());
+                    graphicsContext = controller.labyrinthCanvas.getGraphicsContext2D();
+                    game_system.setLabyrinth(client.getMainLabyrinth());
                     graphicsContext.clearRect(0, 0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
                     graphicsContext.setFill(Color.BLACK);
                     graphicsContext.fillRect(0, 0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
-                    client.getMainLabyrinth().update();
-                    client.getMainLabyrinth().draw(graphicsContext);
+                    game_system.getLabyrinth().update();
+                    game_system.getLabyrinth().draw(graphicsContext);
                     game_system.setDelta_time((now - last_frame_time) / 1000000000.0);
 
                     last_frame_time = now;

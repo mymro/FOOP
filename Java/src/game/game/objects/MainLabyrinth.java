@@ -6,7 +6,6 @@ import javafx.scene.paint.Color;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Set;
 
 public class MainLabyrinth extends GameObject implements FModifier ,Serializable {
@@ -26,24 +25,20 @@ public class MainLabyrinth extends GameObject implements FModifier ,Serializable
 
     public MainLabyrinth(MainDimension mainDimension) {
         super(mainDimension.getLayer());
-        Random random = new Random(10);
         labyrinth = new Labyrinth(mainDimension);
-        labyrinth.createLabyrinth(random);
+        labyrinth.createLabyrinth(mainDimension.getSeed());
         this.seed = mainDimension.getSeed();
         modifiers = new ArrayList<>();
     }
 
-    public Robot addPlayer(Player player, int layer) {
-        Random random = new Random();
-        int i, j;
+    public Robot addPlayer(Player player, int layer, int startX, int startY) {
+
         do {
-            i = random.nextInt(labyrinth.getDimension().getDim_x());
-            j = random.nextInt(labyrinth.getDimension().getDim_y());
-        } while (labyrinth.getNodeAt(i, j).getType() == Labyrinth.NodeType.finish);
+        } while (labyrinth.getNodeAt(startX, startY).getType() == Labyrinth.NodeType.finish);
         Robot robot = new Robot(layer, player);
         Labyrinth lab = new Labyrinth(labyrinth.getDimension());
-        lab.setNodeAt(i, j, Labyrinth.NodeType.normal, labyrinth.getNodeAt(i, j).getEdges());
-        robot.initialize(lab, i, j);
+        lab.setNodeAt(startX, startY, Labyrinth.NodeType.normal, labyrinth.getNodeAt(startX, startY).getEdges());
+        robot.initialize(lab, startX, startY);
         attach(robot);
 
         return robot;
