@@ -22,6 +22,7 @@ feature{NONE}
 	draw_queue_pos: LINKED_LIST[VECTOR_2]
 	draw_queue_buffer_index: LINKED_LIST[INTEGER]
 	node_type_helper: NODE_TYPE_BASE
+	winner_name: STRING
 
 feature{ANY}
 	delta_time: REAL_64
@@ -33,7 +34,7 @@ feature{ANY}
 	last_pressed_key: INTEGER
 	game_root_object: detachable GAME_OBJECT
 	player_count: INTEGER
-	has_player_found_exit: BOOLEAN
+	player_has_found_exit: BOOLEAN
 	is_game_running: BOOLEAN
 
 feature {NONE}
@@ -54,18 +55,19 @@ feature {NONE}
 			player_count:=0
 			was_new_key_pressed:= FALSE
 			last_pressed_key:=0
+			winner_name:=""
 			create draw_queue_pos.make
 			create draw_queue_buffer_index.make
 			create node_type_helper
-			has_player_found_exit:= FALSE
+			player_has_found_exit:= FALSE
 			is_game_running:= FALSE
 		end
 
 feature {NONE}
 
-	is_destroyed(window: separate MAIN_WINDOW):BOOLEAN
+	window_requested_stop(window: separate MAIN_WINDOW):BOOLEAN
 		do
-			Result:= window.is_destroyed
+			Result:= window.is_destroyed or window.has_requested_stop
 		end
 
 	update_pressed_key(window: separate MAIN_WINDOW)
@@ -203,9 +205,10 @@ feature {ANY}
 			end
 		end
 
-	player_has_found_exit(player: Player)
+	robot_has_found_exit(robot: ROBOT)
 		do
-			has_player_found_exit := TRUE
+			player_has_found_exit := TRUE
+			winner_name:= robot.name
 		end
 
 feature {ANY}
@@ -263,6 +266,20 @@ feature {ANY}
 			end
 		end
 
+	reset_game
+		do
+			is_game_running:= FALSE
+			player_has_found_exit:= FALSE
+			player_count:= 0
+			if attached {MAIN_LABYRINTH}game_root_object as root then
+				root.remove_all_children
+				root.create_new_labyrinth
+				draw_once
+			else
+				print("game_root_object not attached or not of type MAIN_LABYRINTH ")
+			end
+		end
+
 	set_up(window: separate MAIN_WINDOW; drawing_area_width, drawing_area_height:INTEGER)
 	--attaches nedded objects for game
 	--creates root object
@@ -279,7 +296,7 @@ feature {ANY}
 		labyrinth_nodes_y:= (draw_area_height/labyrinth_node_size).truncated_to_integer
 
 
-		create root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0),  create{VECTOR_2}.make_with_xy (drawing_area_width, drawing_area_height))
+		create root.make(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0),  create{VECTOR_2}.make_with_xy (drawing_area_width, drawing_area_height))
 		game_root_object:=root
 	end
 
@@ -295,7 +312,7 @@ feature {ANY}
 			current_time: REAL_64
 			frame_time: REAL_64
 		do
-			has_player_found_exit:= FALSE
+			player_has_found_exit:= FALSE
 			frame_time:= 1/fps_limit
 			last_time:= 0
 			current_time:= 0
@@ -305,9 +322,11 @@ feature {ANY}
 				and attached game_root_object as root then
 					is_game_running:= TRUE
 				from
+					create time.make_now
+					last_time:= time.fine_seconds
 				until
-				 	is_destroyed(window) or
-				 	has_player_found_exit
+				 	window_requested_stop(window) or
+				 	player_has_found_exit
 				loop
 					create time.make_now
 					current_time:= time.fine_seconds
@@ -329,8 +348,19 @@ feature {ANY}
 
 					draw_queue_to_display(window)
 				end
+
+				if player_has_found_exit then
+					display_win_message(window, winner_name)
+				end
+
+				is_game_running:=FALSE
 			else
 				print("main_window not attched in main_loop")
 			end
 		end
+
+	 display_win_message(window: separate MAIN_WINDOW; name: STRING)
+	 	do
+	 		window.display_win_message (name)
+	 	end
 end

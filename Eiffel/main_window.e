@@ -29,6 +29,7 @@ create
 
 feature {ANY}
 	was_new_key_pressed:BOOLEAN
+	requested_stop:BOOLEAN
 
 feature {NONE} -- variables
 
@@ -39,8 +40,6 @@ feature {NONE} -- variables
 
 	main_container: EV_VERTICAL_BOX
 	standard_toolbar: EV_TOOL_BAR
-	add_player_button: EV_TOOL_BAR_BUTTON
-	start_game_button: EV_TOOL_BAR_BUTTON
 	color_dialog: EV_COLOR_DIALOG
 
 	board_width: INTEGER
@@ -51,6 +50,10 @@ feature {NONE} -- variables
 	current_game: separate GAME
 	pixmap_buffers: HASH_TABLE[EV_PIXMAP_ADVANCED, INTEGER]
 	buffer_index: INTEGER
+	reset_game_button: EV_TOOL_BAR_BUTTON
+	add_player_button: EV_TOOL_BAR_BUTTON
+	start_game_button: EV_TOOL_BAR_BUTTON
+	stop_game_button: EV_TOOL_BAR_BUTTON
 
 	last_pressed_key: INTEGER
 
@@ -66,11 +69,12 @@ feature {NONE} -- Initialization
 				-- Create a toolbar.
 			create standard_toolbar
 
-			create add_player_button
-
-			create start_game_button
-
 			create color_dialog
+
+			create reset_game_button
+			create add_player_button
+			create start_game_button
+			create stop_game_button
 
 			create display_area.make_with_size (1, 1)
 
@@ -86,6 +90,7 @@ feature {NONE} -- Initialization
 			board_height:= 1
 			last_pressed_key:= 0
 			was_new_key_pressed:= FALSE
+			requested_stop:= FALSE
 
 			create current_game.make
 		end
@@ -146,17 +151,31 @@ feature {NONE} -- ToolBar Implementation
 		do
 			add_player_button.set_text (Menu_add_player_label)
 			add_player_button.select_actions.extend (agent on_add_player)
+			standard_toolbar.extend(add_player_button)
+
 			start_game_button.set_text (Menu_start_game_label)
 			start_game_button.select_actions.extend (agent on_start_game)
-			standard_toolbar.extend (add_player_button)
-			standard_toolbar.extend (start_game_button)
+			standard_toolbar.extend(start_game_button)
+
+			reset_game_button.set_text(Menu_reset_game_label)
+			reset_game_button.select_actions.extend (agent on_reset_game)
+
+			stop_game_button.set_text(Menu_stop_game_label)
+			stop_game_button.select_actions.extend(agent on_stop_game)
 		ensure
 			toolbar_initialized: not standard_toolbar.is_empty
 		end
 
 		on_add_player
+			local
+				warning: EV_WARNING_DIALOG
 			do
-				color_dialog.show_modal_to_window (current)
+				if player_count(current_game) < 2 then
+					color_dialog.show_modal_to_window (current)
+				else
+					create warning.make_with_text (Warning_no_more_players)
+					warning.show_modal_to_window (current)
+				end
 			end
 
 		on_color_selected
@@ -180,13 +199,44 @@ feature {NONE} -- ToolBar Implementation
 			end
 
 		on_start_game
+			local
+				warning: EV_WARNING_DIALOG
 			do
-				start_game(current_game)
+				if player_count(current_game) > 0 then
+					start_game(current_game)
+					standard_toolbar.prune (add_player_button)
+					standard_toolbar.prune (start_game_button)
+					standard_toolbar.extend (stop_game_button)
+				else
+					create warning.make_with_text (Warning_no_players)
+					warning.show_modal_to_window (current)
+				end
 			end
 
 		start_game(game: separate GAME)
 			do
 				game.launch
+			end
+
+		on_reset_game
+			do
+				requested_stop:=FALSE
+				reset_game(current_game)
+				standard_toolbar.put_front (start_game_button)
+				standard_toolbar.put_front (add_player_button)
+				standard_toolbar.prune (reset_game_button)
+			ensure
+				requested_stop = FALSE
+			end
+
+		reset_game(game: separate GAME)
+			do
+				game.reset_game
+			end
+
+		on_stop_game
+			do
+				requested_stop:=TRUE
 			end
 
 feature {NONE} -- Implementation, Close event
@@ -334,16 +384,26 @@ feature {ANY}-- interfaces for GAME
 			RESULT:=last_pressed_key
 		end
 
-	is_game_running(game: separate GAME):BOOLEAN
-		do
-			RESULT:= game.is_game_running
-		end
-
 	display_win_message(name: separate STRING)
 		local
 			win_dialog: EV_INFORMATION_DIALOG
 		do
-			create win_dialog.make_with_text (create{STRING}.make_from_separate (name))
+			create win_dialog.make_with_text ("Player: " + create{STRING}.make_from_separate (name) + " has won the game!!!")
+			win_dialog.set_minimum_width (300)
+			win_dialog.show_modal_to_window (current)
+			standard_toolbar.prune(stop_game_button)
+			standard_toolbar.extend (reset_game_button)
+		end
+
+	has_requested_stop:BOOLEAN
+		do
+			RESULT:=requested_stop
+			requested_stop:=FALSE
+		end
+
+	player_count(game: separate GAME):INTEGER
+		do
+			RESULT:=game.player_count
 		end
 
 end

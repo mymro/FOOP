@@ -21,7 +21,8 @@ feature {ANY}
 	current_delta_time: REAL_64
 	current_path_index: INTEGER
 	node_type_helper: NODE_TYPE_BASE
-	seconds_per_field: REAL_64 = 0.3
+	seconds_per_field: REAL_64 = 0.4
+	name: STRING
 
 feature {NONE}
 	pos_in_labyrinth: VECTOR_2
@@ -32,7 +33,6 @@ feature {NONE}
 	next_node: LABYRINTH_NODE
 	current_path: ARRAYED_LIST[LABYRINTH_NODE]
 	color: EV_COLOR
-	name: STRING
 
 
 feature {NONE}
@@ -68,23 +68,37 @@ feature {NONE}
 		require
 			i > 0 and i <= main_labyrinth.get_labyrinth_dim_x and i <= personal_labyrinth.get_dimension_x
 			j > 0 and j <= main_labyrinth.get_labyrinth_dim_y and j <= personal_labyrinth.get_dimension_y
+		local
+			keys: ARRAYED_LIST[STRING]
+			rand: RANDOM
+			index: INTEGER
 		do
 			personal_labyrinth[i,j].set_type(main_labyrinth[i,j].type)
-			across
-				main_labyrinth[i,j].neighbours.new_cursor as cursor
+
+			from
+				create rand.set_seed ((create{TIME}.make_now).seconds)
+				create keys.make_from_array (main_labyrinth[i,j].neighbours.current_keys)
+			until
+				keys.is_empty
 			loop
-				if attached cursor.item as item then
-					personal_labyrinth[i,j].neighbours.put (personal_labyrinth[item.x,item.y], cursor.key)
-					if cursor.key = "up" then
-						personal_labyrinth[item.x,item.y].neighbours.put (personal_labyrinth[i,j], "down")
-					elseif cursor.key = "down" then
-						personal_labyrinth[item.x,item.y].neighbours.put (personal_labyrinth[i,j], "up")
-					elseif cursor.key = "left" then
-						personal_labyrinth[item.x,item.y].neighbours.put (personal_labyrinth[i,j], "right")
-					elseif cursor.key = "right" then
-						personal_labyrinth[item.x,item.y].neighbours.put (personal_labyrinth[i,j], "left")
+				rand.forth
+				index:= (rand.item\\keys.count) + 1
+
+				if attached main_labyrinth[i,j].neighbours.at (keys[index]) as node then
+					personal_labyrinth[i,j].neighbours.put (personal_labyrinth[node.x,node.y], keys[index])
+					if keys[index] = "up" then
+						personal_labyrinth[node.x,node.y].neighbours.put (personal_labyrinth[i,j], "down")
+					elseif keys[index] = "down" then
+						personal_labyrinth[node.x,node.y].neighbours.put (personal_labyrinth[i,j], "up")
+					elseif keys[index] = "left" then
+						personal_labyrinth[node.x,node.y].neighbours.put (personal_labyrinth[i,j], "right")
+					elseif keys[index] = "right" then
+						personal_labyrinth[node.x,node.y].neighbours.put (personal_labyrinth[i,j], "left")
 					end
 				end
+
+				keys.go_i_th (index)
+				keys.remove
 			end
 		end
 
@@ -137,11 +151,13 @@ feature {ANY}
 			current_delta_time := current_delta_time + game.delta_time
 
 			if current_path_index >= current_path.count and not current_node.is_of_type (node_type_helper.type_finish) then
-				current_path:= personal_labyrinth.get_path_from_to_nearest_node_with_type (current_node, node_type_helper.type_unknown, f_modifier)
+				current_path:= personal_labyrinth.get_path_from_to_nearest_node_with_type (current_node, node_type_helper.type_unknown, void)
 				current_path_index := 1
 				if current_path.count > 1 then
 					next_node:= current_path[2]
 				end
+			elseif current_node.is_of_type (node_type_helper.type_finish) then
+				game.robot_has_found_exit (current)
 			end
 
 			if current_delta_time >= seconds_per_field and current_path_index < current_path.count then

@@ -18,6 +18,10 @@ feature -- Access
 
 	Menu_start_game_label: STRING = "Start Game"
 
+	Menu_reset_game_label: STRING = "Reset Game"
+
+	Menu_stop_game_label: STRING = "Stop Game"
+
 	Dialog_select_color_title: STRING = "Select a color"
 
 	Label_select_player_name: STRING = "Please select a name:"
@@ -25,6 +29,12 @@ feature -- Access
 	Title_select_player_name: STRING = "Please select a name"
 
 	Message_no_name_set: STRING = "Please choose a name"
+
+	Warning_game_running: STRING = "You can't do that while the game is runnning!"
+
+	Warning_no_players: STRING = "You have to add at least one player"
+
+	Warning_no_more_players: STRING = "You cannot add more players"
 
 	Label_confirm_close_window: STRING = "You are about to close this window.%NClick OK to proceed."
 			-- String for the confirmation dialog box that appears

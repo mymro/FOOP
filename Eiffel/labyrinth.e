@@ -58,6 +58,43 @@ feature {ANY}
 			RESULT:=dimension.y
 		end
 
+	create_new_labyrinth
+		do
+			across
+				1 |..| dimension.x as  i
+			loop
+				across
+					1 |..| dimension.y as j
+				loop
+					labyrinth[i.item,j.item].neighbours.wipe_out
+					labyrinth[i.item,j.item].type.set_type (node_type_helper.type_unknown)
+				end
+			end
+			create_labyrinth
+		end
+
+	get_path_from_to(from_node, to_node: LABYRINTH_NODE; f_modifier: detachable F_MODIFIER):ARRAYED_LIST[LABYRINTH_NODE]
+	-- returns path between two nodes, if one is available.
+	-- The first entry is the start. The last the finish
+		require
+			get_node_at(from_node.x, from_node.y) = from_node
+			get_node_at(to_node.x, to_node.y) = to_node
+		do
+			RESULT:=get_path(from_node, to_node, -1, f_modifier)
+		end
+
+	get_path_from_to_nearest_node_with_type(from_node: LABYRINTH_NODE; stop_at_type: INTEGER; f_modifier: detachable F_MODIFIER):ARRAYED_LIST[LABYRINTH_NODE]
+	-- returns path to nearest node with give type
+	-- The first entry is the start. The last the finish
+		require
+			get_node_at(from_node.x, from_node.y) = from_node
+			node_type_helper.is_type_valid (stop_at_type)
+		do
+			RESULT:=get_path(from_node, void, stop_at_type, f_modifier)
+		end
+
+feature {NONE}
+
 	create_labyrinth
 	-- creates a random labyrinth
 		local
@@ -174,28 +211,6 @@ feature {ANY}
 			end
 		end
 
-	get_path_from_to(from_node, to_node: LABYRINTH_NODE; f_modifier: detachable F_MODIFIER):ARRAYED_LIST[LABYRINTH_NODE]
-	-- returns path between two nodes, if one is available.
-	-- The first entry is the start. The last the finish
-		require
-			get_node_at(from_node.x, from_node.y) = from_node
-			get_node_at(to_node.x, to_node.y) = to_node
-		do
-			RESULT:=get_path(from_node, to_node, -1, f_modifier)
-		end
-
-	get_path_from_to_nearest_node_with_type(from_node: LABYRINTH_NODE; stop_at_type: INTEGER; f_modifier: detachable F_MODIFIER):ARRAYED_LIST[LABYRINTH_NODE]
-	-- returns path to nearest node with give type
-	-- The first entry is the start. The last the finish
-		require
-			get_node_at(from_node.x, from_node.y) = from_node
-			node_type_helper.is_type_valid (stop_at_type)
-		do
-			RESULT:=get_path(from_node, void, stop_at_type, f_modifier)
-		end
-
-feature {NONE}
-
 	get_path(from_node: LABYRINTH_NODE; to_node: detachable LABYRINTH_NODE; stop_at_type:INTEGER; f_modifier: detachable F_MODIFIER):ARRAYED_LIST[LABYRINTH_NODE]
 	-- returns path between two nodes, if one is available.
 	-- returns path to an stop_at_type node, if it stumbles upon one or to_node is void
@@ -210,6 +225,7 @@ feature {NONE}
 			tentative_g: INTEGER
 			tentative_f: REAL_64
 			path: ARRAYED_LIST[LABYRINTH_NODE]
+			possible_current_nodes: ARRAYED_LIST[LABYRINTH_NODE]
 		do
 
 			create open_set.make (0)
@@ -222,13 +238,13 @@ feature {NONE}
 
 			if attached to_node as to then
 				if attached f_modifier as modifier then
-					f.put ((from_node.x-to.x).abs + (from_node.y-to.y).abs + f_modifier.get_modifier_at (from_node.x, from_node.y), from_node)
+					f.put ((from_node.x-to.x).abs + (from_node.y-to.y).abs + modifier.get_modifier_at (from_node.x, from_node.y), from_node)
 				else
 					f.put ((from_node.x-to.x).abs + (from_node.y-to.y).abs, from_node)
 				end
 			else
 				if attached f_modifier as modifier then
-					f.put (f_modifier.get_modifier_at (from_node.x, from_node.y), from_node)
+					f.put (modifier.get_modifier_at (from_node.x, from_node.y), from_node)
 				else
 					f.put ( 0, from_node)
 				end
@@ -260,7 +276,7 @@ feature {NONE}
 								tentative_f := tentative_f + (neighbour.x - to.x).abs + (neighbour.y - to.y).abs
 							end
 							if attached f_modifier as modifier then
-								tentative_f := tentative_f + f_modifier.get_modifier_at (neighbour.x, neighbour.y)
+								tentative_f := tentative_f + modifier.get_modifier_at (neighbour.x, neighbour.y)
 							end
 
 							if open_set.occurrences (neighbour) = 0 then
@@ -293,13 +309,16 @@ feature {NONE}
 						end
 					end
 				end
-
-				current_node:=open_set.first
+				if not open_set.is_empty then
+					current_node:=open_set.first
+				end
 			end
 
 			create path.make (0)
 
 			if from_node = to_node  or from_node.is_of_type (stop_at_type)then
+				path.extend (from_node)
+			elseif not current_node.is_of_type (stop_at_type) then
 				path.extend (from_node)
 			elseif attached came_from.at (current_node) and closed_set.count > 0 then
 				path.extend (current_node)

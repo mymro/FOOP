@@ -114,6 +114,17 @@ feature {ANY}
 			child.parent = current
 		end
 
+	remove_all_children
+		do
+			from
+
+			until
+				children.is_empty
+			loop
+				remove_child(children.first)
+			end
+		end
+
 	remove_child(child: GAME_OBJECT)
 	-- removes child and sets child.parent to void
 		do

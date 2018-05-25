@@ -20,10 +20,12 @@ inherit
 			dimension as labyrinth_dimension,
 			get_dimension_x as get_labyrinth_dim_x,
 			get_dimension_y as get_labyrinth_dim_y
+		redefine
+			create_new_labyrinth
 		end
 
 create
-	create_new_labyrinth
+	make
 
 feature {ANY}
 	-- distance between two nodes x axis in pixel
@@ -34,7 +36,7 @@ feature {ANY}
 
 feature {NONE}
 
-	create_new_labyrinth(a_game: GAME; a_labyrinth_dimension, a_pos, a_dimension: VECTOR_2)
+	make(a_game: GAME; a_labyrinth_dimension, a_pos, a_dimension: VECTOR_2)
 		require
 			a_labyrinth_dimension.x >=1
 			a_labyrinth_dimension.y >=1
@@ -122,6 +124,12 @@ feature {NONE}
 			else
 				buffer.fill_ellipse (x_finish, y_finish, step_height, step_height)
 			end
+		end
+feature{ANY}
+	create_new_labyrinth
+		do
+			PRECURSOR{LABYRINTH}
+			reset_buffer
 		end
 
 feature {ANY}

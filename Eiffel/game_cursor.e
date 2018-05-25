@@ -24,7 +24,7 @@ feature{NONE}
 	position_in_labyrinth: VECTOR_2
 	keybindings: KEY_BINDINGS
 	current_delta_time:REAL_64
-	blink_interval: REAL_64 = 0.5
+	blink_interval: REAL_64 = 0.3
 	draw_cursor: BOOLEAN
 
 feature{NONE}
