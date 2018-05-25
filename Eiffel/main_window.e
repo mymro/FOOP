@@ -33,7 +33,7 @@ feature {ANY}
 
 feature {NONE} -- variables
 
-	Window_title: STRING = "my_vision2_application_1"
+	Window_title: STRING = "Bot Racer"
 
 	Window_width: INTEGER
 	Window_height: INTEGER
