@@ -151,7 +151,7 @@ feature {ANY}
 			current_delta_time := current_delta_time + game.delta_time
 
 			if current_path_index >= current_path.count and not current_node.is_of_type (node_type_helper.type_finish) then
-				current_path:= personal_labyrinth.get_path_from_to_nearest_node_with_type (current_node, node_type_helper.type_unknown, void)
+				current_path:= personal_labyrinth.get_path_from_to_nearest_node_with_type (current_node, node_type_helper.type_unknown, f_modifier)
 				current_path_index := 1
 				if current_path.count > 1 then
 					next_node:= current_path[2]
