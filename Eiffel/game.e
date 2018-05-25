@@ -16,12 +16,12 @@ create
 
 feature{NONE}
 	rand: RANDOM
-	game_root_objects: ARRAYED_LIST[GAME_OBJECT]
 	main_window: detachable separate MAIN_WINDOW
 	fps_limit: INTEGER = 60
-	labyrinth_node_size: INTEGER = 20
+	labyrinth_node_size: INTEGER = 30
 	draw_queue_pos: LINKED_LIST[VECTOR_2]
 	draw_queue_buffer_index: LINKED_LIST[INTEGER]
+	node_type_helper: NODE_TYPE_BASE
 
 feature{ANY}
 	delta_time: REAL_64
@@ -29,11 +29,12 @@ feature{ANY}
 	labyrinth_nodes_y: INTEGER
 	draw_area_height: INTEGER
 	draw_area_width: INTEGER
-	game_state: INTEGER
-		--0 game shut down
-		--1 checking everything is fine for game start
-		--2 game running
-		-- TODO create static variables for states
+	was_new_key_pressed: BOOLEAN
+	last_pressed_key: INTEGER
+	game_root_object: detachable GAME_OBJECT
+	player_count: INTEGER
+	has_player_found_exit: BOOLEAN
+	is_game_running: BOOLEAN
 
 feature {NONE}
 
@@ -45,15 +46,32 @@ feature {NONE}
 		do
 			create time.make_now
 			create rand.set_seed (time.seconds)
-			game_state := 0
 			draw_area_height:= 0
 			draw_area_width:=0
 			labyrinth_nodes_x:= 0
 			labyrinth_nodes_y:= 0
 			delta_time:=0
-			create game_root_objects.make(0)
+			player_count:=0
+			was_new_key_pressed:= FALSE
+			last_pressed_key:=0
 			create draw_queue_pos.make
 			create draw_queue_buffer_index.make
+			create node_type_helper
+			has_player_found_exit:= FALSE
+			is_game_running:= FALSE
+		end
+
+feature {NONE}
+
+	is_destroyed(window: separate MAIN_WINDOW):BOOLEAN
+		do
+			Result:= window.is_destroyed
+		end
+
+	update_pressed_key(window: separate MAIN_WINDOW)
+		do
+			was_new_key_pressed:= window.was_new_key_pressed
+			last_pressed_key:=window.get_last_pressed_key
 		end
 
 	draw_queue_to_display(window: separate MAIN_WINDOW)
@@ -108,37 +126,23 @@ feature {NONE}
 			window.set_mask (index_target, index_mask)
 		end
 
+feature{ANY}
+	draw_once
+		do
+			if attached game_root_object as root and
+				attached main_window as window then
+				root.draw
+				draw_queue_to_display(window)
+			else
+				print("game_root_object or main_window not attached%N")
+			end
+		end
+
 feature {ANY}
 
 	is_window_attached:BOOLEAN
 		do
 			RESULT:= attached main_window
-		end
-
-	add_root(root:GAME_OBJECT)
-	-- adds root object
-		require
-			root.game = current
-		do
-			if game_root_objects.count = 0 then
-				game_root_objects.extend (root)
-			elseif game_root_objects.occurrences (root) = 0 then
-				from
-					game_root_objects.start
-				until
-					game_root_objects.item_for_iteration.layer > root.layer or game_root_objects.islast
-				loop
-					game_root_objects.forth
-				end
-
-				if game_root_objects.item.layer > root.layer then
-					game_root_objects.put_left (root)
-				else
-					game_root_objects.put_right (root)
-				end
-			end
-		ensure
-			game_root_objects.occurrences (root) = 1
 		end
 
 	get_buffer(index:INTEGER): detachable separate EV_PIXMAP_ADVANCED
@@ -199,24 +203,74 @@ feature {ANY}
 			end
 		end
 
-	shut_down
-	-- ends the game
+	player_has_found_exit(player: Player)
 		do
-			game_state := 0
+			has_player_found_exit := TRUE
+		end
+
+feature {ANY}
+
+	add_player(name: separate STRING; color: separate EV_COLOR)
+	-- adds a player at a random location
+	 	require
+	 		labyrinth_nodes_x > 0
+	 		labyrinth_nodes_y > 0
+	 		attached {MAIN_LABYRINTH} game_root_object
+	 		not is_game_running
+		local
+			cursor: PLAYER
+			robot: ROBOT
+			x: INTEGER
+			y: INTEGER
+			key_bindings: KEY_BINDINGS
+		do
+			if player_count < 2 then
+				if attached {MAIN_LABYRINTH} game_root_object as root then
+					from
+						rand.forth
+						x:= (rand.item\\labyrinth_nodes_x)+1
+						rand.forth
+						y:= (rand.item\\labyrinth_nodes_y)+1
+					until
+						not root[x,y].type.is_of_type (node_type_helper.type_finish)
+					loop
+						rand.forth
+						x:= (rand.item\\labyrinth_nodes_x)+1
+						rand.forth
+						y:= (rand.item\\labyrinth_nodes_y)+1
+					end
+
+					inspect player_count
+					when 0 then
+						key_bindings:=  create {PLAYER_1_KEY_BINDINGS}
+					when 1 then
+						key_bindings:=  create {PLAYER_2_KEY_BINDINGS}
+					end
+
+					create cursor.make (current, root, create{VECTOR_2}.make_with_xy (x, y), key_bindings)
+					create robot.make_robot (current, root , create{VECTOR_2}.make_with_xy (x, y), create {EV_COLOR}.make_with_rgb (color.red, color.green, color.blue), create{STRING}.make_from_separate (name))
+
+					root.add_child (cursor)
+					root.add_child (robot)
+
+					player_count := player_count + 1
+					draw_once
+				else
+					print("Root as MAIN_LABYRINTH not attached%N")
+				end
+			else
+				print("already 2 palyers%N")
+			end
 		end
 
 	set_up(window: separate MAIN_WINDOW; drawing_area_width, drawing_area_height:INTEGER)
 	--attaches nedded objects for game
-	--creates all game objects
-	-- prepares for launch
+	--creates root object
 	require
-		window /= void
-		game_state = 0
+		attached window
+		not is_game_running
 	local
-		flag: FLAG_DONT_COME_NEAR
-		flag2: FLAG_SEARCH_HERE
 		root: MAIN_LABYRINTH
-		robot: ROBOT
 	do
 		main_window:=window
 		draw_area_height:= drawing_area_height
@@ -224,52 +278,36 @@ feature {ANY}
 		labyrinth_nodes_x:= (draw_area_width/labyrinth_node_size).truncated_to_integer
 		labyrinth_nodes_y:= (draw_area_height/labyrinth_node_size).truncated_to_integer
 
-		-- game_objects
+
 		create root.create_new_labyrinth(Current, create{VECTOR_2}.make_with_xy (labyrinth_nodes_x, labyrinth_nodes_y), create{VECTOR_2}.make_with_xy (0, 0),  create{VECTOR_2}.make_with_xy (drawing_area_width, drawing_area_height))
-		add_root(root)
-
-		create flag.make_flag (current, create{VECTOR_2}.make_with_xy (60, 10), root)
-		root.add_child (flag)
-
-		create flag2.make_flag (current, create{VECTOR_2}.make_with_xy (10, 10), root)
-		root.add_child (flag2)
-
-		create robot.make_robot (current, create{VECTOR_2}.make_with_xy (20, 20), root)
-		root.add_child (robot)
+		game_root_object:=root
 	end
 
 	launch
 	--launches the game
 	-- the main game loop
 		require
-			game_state = 0
+			player_count > 0
+			not is_game_running
 		local
 			time: TIME
 			last_time: REAL_64
 			current_time: REAL_64
 			frame_time: REAL_64
 		do
+			has_player_found_exit:= FALSE
 			frame_time:= 1/fps_limit
 			last_time:= 0
 			current_time:= 0
 			delta_time:= 0
 
-			if	attached main_window as window then
-
-				game_state := 1
-
+			if	attached main_window as window
+				and attached game_root_object as root then
+					is_game_running:= TRUE
 				from
 				until
-					is_running(window)
-				loop
-
-				end
-
-				game_state := 2
-
-				from
-				until
-				 	not is_running(window)
+				 	is_destroyed(window) or
+				 	has_player_found_exit
 				loop
 					create time.make_now
 					current_time:= time.fine_seconds
@@ -284,30 +322,15 @@ feature {ANY}
 					--print((1/delta_time).out + "%N")
 					last_time:=current_time
 
-					across
-						game_root_objects.new_cursor as cursor
-					loop
-						cursor.item.update
-					end
+					update_pressed_key(window)
 
-					across
-						game_root_objects.new_cursor as cursor
-					loop
-						cursor.item.draw
-					end
+					root.update
+					root.draw
 
 					draw_queue_to_display(window)
 				end
-				game_state := 0
 			else
 				print("main_window not attched in main_loop")
 			end
-		end
-
-feature {NONE}
-
-	is_running(window: separate MAIN_WINDOW):BOOLEAN
-		do
-			Result:= (game_state /= 0) and (not window.is_destroyed)
 		end
 end

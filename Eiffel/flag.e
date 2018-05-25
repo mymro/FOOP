@@ -36,7 +36,7 @@ feature {NONE}
 			color:=a_color
 			labyrinth:= a_labyrinth
 			create a_pos.make_with_xy ((pos_in_labyrinth.x-1) * labyrinth.step_width, (pos_in_labyrinth.y-1) * labyrinth.step_height)
-			game_object_make(a_game, a_pos, create{VECTOR_2}.make_with_xy (labyrinth.step_width, labyrinth.step_height), 1, 1)
+			game_object_make(a_game, a_pos, create{VECTOR_2}.make_with_xy (labyrinth.step_width, labyrinth.step_height), 0, 1)
 			create modifier_container
 			reset_buffer
 

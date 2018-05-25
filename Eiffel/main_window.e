@@ -27,6 +27,33 @@ inherit
 create
 	default_create
 
+feature {ANY}
+	was_new_key_pressed:BOOLEAN
+
+feature {NONE} -- variables
+
+	Window_title: STRING = "my_vision2_application_1"
+
+	Window_width: INTEGER
+	Window_height: INTEGER
+
+	main_container: EV_VERTICAL_BOX
+	standard_toolbar: EV_TOOL_BAR
+	add_player_button: EV_TOOL_BAR_BUTTON
+	start_game_button: EV_TOOL_BAR_BUTTON
+	color_dialog: EV_COLOR_DIALOG
+
+	board_width: INTEGER
+	board_height: INTEGER
+
+	display_area: EV_PIXMAP_ADVANCED
+	display_area_padding: INTEGER = 10
+	current_game: separate GAME
+	pixmap_buffers: HASH_TABLE[EV_PIXMAP_ADVANCED, INTEGER]
+	buffer_index: INTEGER
+
+	last_pressed_key: INTEGER
+
 feature {NONE} -- Initialization
 
 	create_objects
@@ -36,15 +63,14 @@ feature {NONE} -- Initialization
 		do
 				-- Create main container.
 			create main_container
-				-- Create the menu bar.
-			create standard_menu_bar
-				-- Create file menu.
-			create file_menu.make_with_text (Menu_file_item)
-				-- Create help menu.
-			create help_menu.make_with_text (Menu_help_item)
-
 				-- Create a toolbar.
 			create standard_toolbar
+
+			create add_player_button
+
+			create start_game_button
+
+			create color_dialog
 
 			create display_area.make_with_size (1, 1)
 
@@ -55,9 +81,11 @@ feature {NONE} -- Initialization
 			default_buffer.height.do_nothing
 			pixmap_buffers.put (default_buffer, 0)
 
-			buffer_index:=1
-			board_width:=1
+			buffer_index:= 1
+			board_width:= 1
 			board_height:= 1
+			last_pressed_key:= 0
+			was_new_key_pressed:= FALSE
 
 			create current_game.make
 		end
@@ -67,24 +95,21 @@ feature {NONE} -- Initialization
 		do
 			Precursor {EV_TITLED_WINDOW}
 			current.maximize
-				-- Create and add the menu bar.
-			build_standard_menu_bar
-			set_menu_bar (standard_menu_bar)
 
+			color_dialog.set_title (Dialog_select_color_title)
+			color_dialog.ok_actions.extend (agent on_color_selected)
 				-- Create and add the toolbar.
-			build_standard_toolbar
 			main_container.extend (create {EV_HORIZONTAL_SEPARATOR})
+			build_standard_toolbar
 			main_container.disable_item_expand (main_container.first)
 			main_container.extend (standard_toolbar)
 			main_container.disable_item_expand (standard_toolbar)
+			main_container.extend (create {EV_HORIZONTAL_SEPARATOR})
+			main_container.disable_item_expand (main_container.last)
 
 			build_main_container
 			current.extend (main_container)
-				-- Execute `request_close_window' when the user clicks
-				-- on the cross in the title bar.
 			close_request_actions.extend (agent request_close_window)
-
-				-- Set the title of the window.
 			set_title (Window_title)
 
 				-- Set the initial size of the window.
@@ -95,10 +120,15 @@ feature {NONE} -- Initialization
 				-- Also there is some margin, which makes the window also wider
 			Window_width := current.width
 			Window_height := current.height
-			--current.restore
-			--current.set_size (Window_width, Window_height)
-			--current.set_position (0, 0)
-			launch_game(current_game)
+			key_press_actions.extend (agent on_key_pressed)
+			set_up_game(current_game)
+		end
+
+	set_up_game(a_game: separate GAME)
+		--sets up the variables and launches the game
+		do
+			a_game.set_up (Current, board_width, board_height)
+			a_game.draw_once
 		end
 
 	is_in_default_state: BOOLEAN
@@ -110,143 +140,54 @@ feature {NONE} -- Initialization
 				(title.is_equal (Window_title))
 		end
 
-feature {NONE} -- Menu Implementation
-
-	standard_menu_bar: EV_MENU_BAR
-			-- Standard menu bar for this window.
-
-	file_menu: EV_MENU
-			-- "File" menu for this window (contains New, Open, Close, Exit...)
-
-	help_menu: EV_MENU
-			-- "Help" menu for this window (contains About...)
-
-	build_standard_menu_bar
-			-- Create and populate `standard_menu_bar'.
-		do
-				-- Add the "File" menu.
-			build_file_menu
-			standard_menu_bar.extend (file_menu)
-				-- Add the "Help" menu.
-			build_help_menu
-			standard_menu_bar.extend (help_menu)
-		ensure
-			menu_bar_initialized: not standard_menu_bar.is_empty
-		end
-
-	build_file_menu
-			-- Create and populate `file_menu'.
-		local
-			menu_item: EV_MENU_ITEM
-		do
-			create menu_item.make_with_text (Menu_file_new_item)
-				--| TODO: Add the action associated with "New" here.
-			file_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_file_open_item)
-				--| TODO: Add the action associated with "Open" here.
-			file_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_file_save_item)
-				--| TODO: Add the action associated with "Save" here.
-			file_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_file_saveas_item)
-				--| TODO: Add the action associated with "Save As..." here.
-			file_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_file_close_item)
-				--| TODO: Add the action associated with "Close" here.
-			file_menu.extend (menu_item)
-
-			file_menu.extend (create {EV_MENU_SEPARATOR})
-
-				-- Create the File/Exit menu item and make it call
-				-- `request_close_window' when it is selected.
-			create menu_item.make_with_text (Menu_file_exit_item)
-			menu_item.select_actions.extend (agent request_close_window)
-			file_menu.extend (menu_item)
-		ensure
-			file_menu_initialized: not file_menu.is_empty
-		end
-
-	build_help_menu
-			-- Create and populate `help_menu'.
-		local
-			menu_item: EV_MENU_ITEM
-		do
-			create menu_item.make_with_text (Menu_help_contents_item)
-				--| TODO: Add the action associated with "Contents and Index" here.
-			help_menu.extend (menu_item)
-
-			create menu_item.make_with_text (Menu_help_about_item)
-			menu_item.select_actions.extend (agent on_about)
-			help_menu.extend (menu_item)
-
-		ensure
-			help_menu_initialized: not help_menu.is_empty
-		end
-
 feature {NONE} -- ToolBar Implementation
 
-	standard_toolbar: EV_TOOL_BAR
-			-- Standard toolbar for this window.
-
 	build_standard_toolbar
-			-- Populate the standard toolbar.
 		do
-				-- Initialize the toolbar.
-			standard_toolbar.extend (new_toolbar_item ("Player1", "images/new.png"))
-			standard_toolbar.extend (new_toolbar_item ("Player2", "images/new.png"))
-			standard_toolbar.extend (new_toolbar_item ("Open", "images/open.png"))
-			standard_toolbar.extend (new_toolbar_item ("Save", "images/save.png"))
+			add_player_button.set_text (Menu_add_player_label)
+			add_player_button.select_actions.extend (agent on_add_player)
+			start_game_button.set_text (Menu_start_game_label)
+			start_game_button.select_actions.extend (agent on_start_game)
+			standard_toolbar.extend (add_player_button)
+			standard_toolbar.extend (start_game_button)
 		ensure
 			toolbar_initialized: not standard_toolbar.is_empty
 		end
 
-	new_toolbar_item (name: READABLE_STRING_GENERAL; image: READABLE_STRING_GENERAL): EV_TOOL_BAR_BUTTON
-			-- A new toolbar item with an image from a file `image' or with a text `name' if image is not available.
-		local
-			toolbar_pixmap: EV_PIXMAP
-		do
-			if attached Result then
-					-- Image could not be loaded.
-					-- Use a text label instead.
-				Result.set_text (name)
-			else
-					-- The first attempt to create a button from an image file.
-				create Result
-				create toolbar_pixmap
-				toolbar_pixmap.set_with_named_file (image)
-					-- Make sure the image is effectively loaded by computing its dimention.
-				toolbar_pixmap.height.do_nothing
-					-- Everything is OK, associate image with the button.
-				Result.set_pixmap (toolbar_pixmap)
-				if name.is_equal ("Player1") then
-					Result.pointer_button_press_actions.extend (agent press)
-				end
-				if name.is_equal ("Player2") then
-					Result.pointer_button_press_actions.extend (agent press)
-				end
+		on_add_player
+			do
+				color_dialog.show_modal_to_window (current)
 			end
-		rescue
-			if attached Result then
-					-- Image could not be loaded.
-					-- Create a button by setting a label text instead.
-				retry
+
+		on_color_selected
+			local
+				select_name_dialog: SELECT_NAME_DIALOG
+			do
+				create select_name_dialog
+				select_name_dialog.ok_actions.extend (agent on_name_selected)
+				select_name_dialog.show_modal_to_window (current)
 			end
-		end
 
-feature {NONE} -- About Dialog Implementation
+		on_name_selected(name: STRING)
+			do
+				add_player(current_game, name, color_dialog.color)
+			end
 
-	on_about
-			-- Display the About dialog.
-		local
-			about_dialog: ABOUT_DIALOG
-		do
-			create about_dialog
-			about_dialog.show_modal_to_window (Current)
-		end
+		add_player(game: separate GAME; name:STRING; color: EV_COLOR)
+			do
+				game.add_player (name, color)
+				game.draw_once
+			end
+
+		on_start_game
+			do
+				start_game(current_game)
+			end
+
+		start_game(game: separate GAME)
+			do
+				game.launch
+			end
 
 feature {NONE} -- Implementation, Close event
 
@@ -263,8 +204,6 @@ feature {NONE} -- Implementation, Close event
 				destroy
 
 					-- End the application.
-					-- set game_state.state to 0 indicating the game has ended
-					shut_down_game(current_game)
 				if attached (create {EV_ENVIRONMENT}).application as a then
 					a.destroy
 				end
@@ -273,21 +212,13 @@ feature {NONE} -- Implementation, Close event
 
 feature {NONE} -- Implementation
 
-	main_container: EV_VERTICAL_BOX
-			-- Main container (contains all widgets displayed in this window).
-
 	build_main_container
 			-- Populate `main_container'.
 		local
 			drawing_area_container: EV_VERTICAL_BOX
 		do
-			--diplay_area.set_foreground_color (create {EV_COLOR}.make_with_rgb(1,0,0))
-			--diplay_area.fill_rectangle (0, 0, board_width, board_height)
-			--pixmap.pointer_enter_actions.extend (agent enter)
-			--pixmap.pointer_leave_actions.extend (agent leave)
-			--pixmap.pointer_button_press_actions.extend (agent press)
-			display_area.key_press_actions.extend (agent key_press)
 			create drawing_area_container.default_create
+
 			drawing_area_container.set_minimum_size (current.client_width, current.client_height - main_container.height)
 			drawing_area_container.set_padding (display_area_padding)
 			drawing_area_container.set_background_color (create {EV_COLOR}.make_with_rgb(0,0,0))
@@ -302,46 +233,19 @@ feature {NONE} -- Implementation
 			main_container_created: main_container /= Void
 		end
 
-feature {NONE} --functions for mouse interaction testing
+feature {NONE} -- user input
 
-	key_press(key:EV_KEY)
+	on_key_pressed(key:EV_KEY)
 		do
-			print(key.code.out+"%N")
+			last_pressed_key:=key.code
+			was_new_key_pressed:=TRUE
 		end
 
-	enter
-		do
-			display_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(1,0,0))
-			display_area.fill_rectangle (0, 0, board_width, board_height)
-		end
-
-	leave
-		do
-			display_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,1,0))
-			display_area.fill_rectangle (0, 0, board_width, board_height)
-		end
-
-	press(x: INTEGER_32; y: INTEGER_32; button: INTEGER_32; x_tilt: REAL_64; y_tilt: REAL_64; pressure: REAL_64; x_screen: INTEGER_32; y_screen: INTEGER_32)
+	press_mouse_button(x: INTEGER_32; y: INTEGER_32; button: INTEGER_32; x_tilt: REAL_64; y_tilt: REAL_64; pressure: REAL_64; x_screen: INTEGER_32; y_screen: INTEGER_32)
 		do
 			display_area.set_foreground_color(create {EV_COLOR}.make_with_rgb(0,0,1))
 			display_area.fill_rectangle (x, y, 10, 10)
 			print("Button :: " + button.out + "%N")
-		end
-
-feature {NONE} -- al functions concerning the state of the game
-
-
-	launch_game(a_game: separate GAME)
-		--sets up the variables and launches the game
-		do
-			a_game.set_up (Current, board_width, board_height)
-			a_game.launch
-		end
-
-	shut_down_game(game: separate GAME)
-	-- shuts down the game
-		do
-			game.shut_down
 		end
 
 feature {ANY}-- interfaces for GAME
@@ -424,21 +328,22 @@ feature {ANY}-- interfaces for GAME
 			end
 		end
 
-feature {NONE} -- variables
+	get_last_pressed_key:INTEGER
+		do
+			was_new_key_pressed:=FALSE
+			RESULT:=last_pressed_key
+		end
 
-	Window_title: STRING = "my_vision2_application_1"
+	is_game_running(game: separate GAME):BOOLEAN
+		do
+			RESULT:= game.is_game_running
+		end
 
-	Window_width: INTEGER
-	Window_height: INTEGER
-
-	board_width: INTEGER
-	board_height: INTEGER
-
-	display_area: EV_PIXMAP_ADVANCED
-	display_area_padding: INTEGER = 10
-	current_game: separate GAME
-	pixmap_buffers: HASH_TABLE[EV_PIXMAP_ADVANCED, INTEGER]
-	buffer_index: INTEGER
-
+	display_win_message(name: separate STRING)
+		local
+			win_dialog: EV_INFORMATION_DIALOG
+		do
+			create win_dialog.make_with_text (create{STRING}.make_from_separate (name))
+		end
 
 end

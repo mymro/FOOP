@@ -12,35 +12,19 @@ feature -- Access
 	Button_ok_item: STRING = "OK"
 			-- String for "OK" buttons.
 
-	Menu_file_item: STRING = "&File"
-			-- String for menu "File"
+	Button_cancel_item: STRING = "Cancel"
 
-	Menu_file_new_item: STRING = "&New%TCtrl+N"
-			-- String for menu "File/New"
+	Menu_add_player_label: STRING = "Add Player"
 
-	Menu_file_open_item: STRING = "&Open...%TCtrl+O"
-			-- String for menu "File/Open"
+	Menu_start_game_label: STRING = "Start Game"
 
-	Menu_file_save_item: STRING = "&Save%TCtrl+S"
-			-- String for menu "File/Save"
+	Dialog_select_color_title: STRING = "Select a color"
 
-	Menu_file_saveas_item: STRING = "Save &As..."
-			-- String for menu "File/Save As"
+	Label_select_player_name: STRING = "Please select a name:"
 
-	Menu_file_close_item: STRING = "&Close"
-			-- String for menu "File/Close"
+	Title_select_player_name: STRING = "Please select a name"
 
-	Menu_file_exit_item: STRING = "E&xit"
-			-- String for menu "File/Exit"
-
-	Menu_help_item: STRING = "&Help"
-			-- String for menu "Help"
-
-	Menu_help_contents_item: STRING = "&Contents and Index"
-			-- String for menu "Help/Contents and Index"
-
-	Menu_help_about_item: STRING = "&About..."
-			-- String for menu "Help/About"
+	Message_no_name_set: STRING = "Please choose a name"
 
 	Label_confirm_close_window: STRING = "You are about to close this window.%NClick OK to proceed."
 			-- String for the confirmation dialog box that appears

@@ -5,7 +5,7 @@ note
 	revision: "1.0.0"
 
 class
-	ABOUT_DIALOG
+	SELECT_NAME_DIALOG
 
 inherit
 	EV_DIALOG
@@ -24,122 +24,85 @@ inherit
 create
 	default_create
 
+feature {ANY}
+	ok_actions: ACTION_SEQUENCE[STRING]
+
+feature {NONE} -- Implementation
+
+	text_field: EV_TEXT_FIELD
+			-- "OK" button.
+
 feature {NONE} -- Initialization
 
 	create_interface_objects
 			-- <Precursor>
 		do
 			Precursor
-			create message_label
-			create ok_button.make_with_text (Button_ok_item)
+
+			create text_field
+			create ok_actions
 		end
 
 	initialize
 			-- Populate the dialog box.
 		local
-			main_horizontal_box: EV_HORIZONTAL_BOX
-			left_vertical_box: EV_VERTICAL_BOX
-			right_vertical_box: EV_VERTICAL_BOX
-			horizontal_separator: EV_HORIZONTAL_SEPARATOR
+			main_vertical_box: EV_VERTICAL_BOX
+			information_label: EV_LABEL
+			ok_button: EV_BUTTON
+			cancel_button: EV_BUTTON
 			buttons_box: EV_HORIZONTAL_BOX
-			ev_cell: EV_CELL
-			pixmap: EV_PIXMAP
 		do
 			Precursor
+			close_request_actions.extend(agent on_cancel)
 
-				--| Add the pixmap to the dialog box. 
-				--|
-				--| We do not use `{EV_STOCK_PIXMAPS}.Information_pixmap' 
-				--| directly because a given pixmap can only have one
-				--| parent. `Information_pixmap' may have alredy been put
-				--| into another container.
-			create pixmap
-			pixmap.copy ((create {EV_STOCK_PIXMAPS}).Information_pixmap)
-			pixmap.set_minimum_size (pixmap.width, pixmap.height)
-	
-			message_label.align_text_left
-
-			create horizontal_separator
+			create information_label
+			information_label.set_text (Label_select_player_name)
+			information_label.align_text_left
 
 			create ok_button.make_with_text (Button_ok_item)
 			ok_button.set_minimum_size (75, 24)
-			ok_button.select_actions.extend (agent destroy)
+			ok_button.select_actions.extend (agent on_ok)
+
+			create cancel_button.make_with_text (Button_cancel_item)
+			cancel_button.set_minimum_size (75, 24)
+			cancel_button.select_actions.extend (agent on_cancel)
 
 			create buttons_box
 			buttons_box.extend (create {EV_CELL}) -- Fill in empty space on left
+			buttons_box.extend (cancel_button)
 			buttons_box.extend (ok_button)
 			buttons_box.disable_item_expand (ok_button)
-						
-			create left_vertical_box
-			left_vertical_box.set_border_width (7)
-			left_vertical_box.extend (pixmap)
-			left_vertical_box.disable_item_expand (pixmap)
-			left_vertical_box.extend (create {EV_CELL})
 
-			create right_vertical_box
-			right_vertical_box.set_padding (7)
-			right_vertical_box.extend (message_label)
-			right_vertical_box.extend (horizontal_separator)
-			right_vertical_box.disable_item_expand (horizontal_separator)
-			right_vertical_box.extend (buttons_box)
-			right_vertical_box.disable_item_expand (buttons_box)
-
-			create main_horizontal_box
-			main_horizontal_box.set_border_width (7)
-			create ev_cell
-			ev_cell.set_minimum_width (21)
-			main_horizontal_box.extend (ev_cell)
-			main_horizontal_box.disable_item_expand (ev_cell)
-			main_horizontal_box.extend (left_vertical_box)
-			main_horizontal_box.disable_item_expand (left_vertical_box)
-			create ev_cell
-			ev_cell.set_minimum_width (28)
-			main_horizontal_box.extend (ev_cell)
-			main_horizontal_box.disable_item_expand (ev_cell)
-			main_horizontal_box.extend (right_vertical_box)
-			extend (main_horizontal_box)
+			create main_vertical_box
+			main_vertical_box.set_border_width (7)
+			main_vertical_box.extend (information_label)
+			main_vertical_box.extend (text_field)
+			main_vertical_box.extend (buttons_box)
+			extend (main_vertical_box)
 
 			set_default_push_button (ok_button)
-			set_default_cancel_button (ok_button)
+			set_default_cancel_button (cancel_button)
 
-			set_title (Default_title)
-			set_message (Default_message)
-			set_size (400, 150)
+			set_title (Title_select_player_name)
+			set_width(300)
+			set_position(0, 200)
 		end
 
-feature -- Access
+		on_ok
+			local
+				warning: EV_WARNING_DIALOG
+			do
+				if text_field.text_length > 0 then
+					ok_actions.call(text_field.text.as_string_8)
+					destroy
+				else
+					create warning.make_with_text (Message_no_name_set)
+					warning.show_modal_to_window (current)
+				end
+			end
 
-	message: STRING
-			-- Message displayed in the dialog box.
-		do
-			Result := message_label.text
-		end
-
-feature -- Element change
-	
-	set_message (a_message: STRING)
-		do
-			message_label.set_text (a_message)
-		end
-
-feature {NONE} -- Implementation
-
-	message_label: EV_LABEL
-			-- Label situated on the top of the dialog,
-			-- contains the message.
-
-	ok_button: EV_BUTTON
-			-- "OK" button.
-
-feature {NONE} -- Implementation / Constants
-
-	Default_title: STRING = "About Dialog"
-			-- Default title for the dialog window.
-
-	Default_message: STRING =
-		"YourCompany (R) my_vision2_application_1%N%
-		%Version 1.0%N%
-		%%N%
-		%Copyright (C) 2013 YourCompany"
-
+		on_cancel
+			do
+				destroy
+			end
 end

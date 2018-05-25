@@ -21,7 +21,7 @@ feature {ANY}
 	current_delta_time: REAL_64
 	current_path_index: INTEGER
 	node_type_helper: NODE_TYPE_BASE
-	seconds_per_field: REAL_64 = 0.2
+	seconds_per_field: REAL_64 = 0.3
 
 feature {NONE}
 	pos_in_labyrinth: VECTOR_2
@@ -31,10 +31,12 @@ feature {NONE}
 	current_node: LABYRINTH_NODE
 	next_node: LABYRINTH_NODE
 	current_path: ARRAYED_LIST[LABYRINTH_NODE]
+	color: EV_COLOR
+	name: STRING
 
 
 feature {NONE}
-	make_robot(a_game: GAME; a_pos_in_labyrinth: VECTOR_2; a_labyrinth:MAIN_LABYRINTH)
+	make_robot(a_game: GAME; a_labyrinth:MAIN_LABYRINTH; a_pos_in_labyrinth: VECTOR_2; a_color: EV_COLOR; a_name: STRING)
 		require
 			a_pos_in_labyrinth.x > 0 and a_pos_in_labyrinth.x <= a_labyrinth.get_labyrinth_dim_x
 			a_pos_in_labyrinth.y > 0 and a_pos_in_labyrinth.y <= a_labyrinth.get_labyrinth_dim_y
@@ -47,13 +49,16 @@ feature {NONE}
 			pos_in_labyrinth:=a_pos_in_labyrinth
 			current_delta_time:= 0
 			current_path_index:= 1
+			color:= a_color
+			name:= a_name
 			create current_path.make (0)
 			create node_type_helper
 			current_node:= personal_labyrinth[pos_in_labyrinth.x, pos_in_labyrinth.y]
 			next_node:= personal_labyrinth[pos_in_labyrinth.x, pos_in_labyrinth.y]
-			create a_pos.make_with_xy ((pos_in_labyrinth.x-1)*main_labyrinth.step_width, (pos_in_labyrinth.y-1)*main_labyrinth.step_height)
 			copy_node_at(pos_in_labyrinth.x, pos_in_labyrinth.y)
-			make(a_game, a_pos, create{VECTOR_2}.make_with_xy (main_labyrinth.step_width, main_labyrinth.step_height), 0, 2)
+
+			create a_pos.make_with_xy ((pos_in_labyrinth.x-1)*main_labyrinth.step_width, (pos_in_labyrinth.y-1)*main_labyrinth.step_height)
+			make(a_game, a_pos, create{VECTOR_2}.make_with_xy (main_labyrinth.step_width, main_labyrinth.step_height), 1, 2)
 			reset_buffer
 		end
 
@@ -102,7 +107,7 @@ feature {NONE}
 			mask.set_foreground_color_rgb (1, 1, 1)
 			mask.draw_triangle (x_center, y_center, dimension.y)
 
-			buffer.set_foreground_color_rgb (0, 1, 0)
+			buffer.set_foreground_color_rgb(color.red, color.green, color.blue)
 			buffer.draw_triangle (x_center, y_center, dimension.y)
 			game.set_mask (index_buffer, index_mask)
 		end

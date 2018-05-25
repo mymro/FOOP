@@ -20,10 +20,6 @@
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time.ecf"/>
 		<library name="vision2" location="$ISE_LIBRARY\library\vision2\vision2.ecf"/>
-		<cluster name="root_cluster" location=".\" recursive="true">
-			<file_rule>
-				<exclude>^img$</exclude>
-			</file_rule>
-		</cluster>
+		<cluster name="root_cluster" location=".\" recursive="true"/>
 	</target>
 </system>

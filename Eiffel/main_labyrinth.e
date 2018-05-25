@@ -8,9 +8,18 @@ class
 	MAIN_LABYRINTH
 inherit
 	GAME_OBJECT
+		rename
+			make as make_game_object
 		redefine
 			draw,
 			update
+		end
+	LABYRINTH
+		rename
+			make as make_labyrinth,
+			dimension as labyrinth_dimension,
+			get_dimension_x as get_labyrinth_dim_x,
+			get_dimension_y as get_labyrinth_dim_y
 		end
 
 create
@@ -22,11 +31,6 @@ feature {ANY}
 	-- distance between two nodes y axis in pixel
 	step_height: INTEGER
 
-feature {NONE}
-	labyrinth: LABYRINTH
-	labyrinth_dimension: VECTOR_2
-	node_type_helper: NODE_TYPE_BASE
-
 
 feature {NONE}
 
@@ -37,13 +41,11 @@ feature {NONE}
 			a_dimension.x > 0
 			a_dimension.y > 0
 		do
-			make(a_game, a_pos, a_dimension, 0, 1)
-			create node_type_helper
-			labyrinth_dimension := a_labyrinth_dimension
+			make_game_object(a_game, a_pos, a_dimension, 0, 1)
 			step_width:= 0
 			step_height:= 0
-			create labyrinth.make (labyrinth_dimension)
-			labyrinth.create_labyrinth
+			make_labyrinth (a_labyrinth_dimension)
+			create_labyrinth
 
 			reset_buffer
 		end
@@ -51,9 +53,9 @@ feature {NONE}
 	fill_buffer(buffer: separate EV_PIXMAP_ADVANCED)
 	--draws labyrinth to a buffer
 		require
-			buffer.height = dimension.y and
-			buffer.width = dimension.x and
-			(buffer.width/labyrinth_dimension.x).truncated_to_integer > 2 and
+			(buffer.height = dimension.y)
+			(buffer.width = dimension.x)
+			(buffer.width/labyrinth_dimension.x).truncated_to_integer > 2
 			(buffer.height/labyrinth_dimension.y).truncated_to_integer > 2
 		local
 			step_width_half: INTEGER_32
@@ -120,25 +122,6 @@ feature {NONE}
 			else
 				buffer.fill_ellipse (x_finish, y_finish, step_height, step_height)
 			end
-		end
-feature {ANY}
-
-	get_labyrinth_dim_x: INTEGER
-		do
-			RESULT:= labyrinth_dimension.x
-		end
-
-	get_labyrinth_dim_y: INTEGER
-		do
-			RESULT:= labyrinth_dimension.y
-		end
-
-	get_node_at alias"[]"(i,j:INTEGER):LABYRINTH_NODE
-		require
-			i > 0 and i <= get_labyrinth_dim_x
-			j > 0 and j <= get_labyrinth_dim_y
-		do
-			RESULT:= labyrinth[i,j]
 		end
 
 feature {ANY}
