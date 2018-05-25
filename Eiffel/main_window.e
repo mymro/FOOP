@@ -81,7 +81,7 @@ feature {NONE} -- Initialization
 			create pixmap_buffers.make (0)
 
 			create default_buffer
-			default_buffer.set_with_named_file ("images\missing_image.png")
+			default_buffer.set_with_named_file ("images\missing_texture.png")
 			default_buffer.height.do_nothing
 			pixmap_buffers.put (default_buffer, 0)
 
