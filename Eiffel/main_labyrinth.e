@@ -43,7 +43,7 @@ feature {NONE}
 			a_dimension.x > 0
 			a_dimension.y > 0
 		do
-			make_game_object(a_game, a_pos, a_dimension, 0, 1)
+			make_game_object(a_game, a_pos, a_dimension, create{VECTOR_2}.make_with_xy (0, 0), 0, 1)
 			step_width:= 0
 			step_height:= 0
 			make_labyrinth (a_labyrinth_dimension)
@@ -52,11 +52,11 @@ feature {NONE}
 			reset_buffer
 		end
 
-	fill_buffer(buffer: separate EV_PIXMAP_ADVANCED)
+	fill_buffer_labyrinth(buffer: separate EV_PIXMAP_ADVANCED)
 	--draws labyrinth to a buffer
 		require
-			(buffer.height = dimension.y)
-			(buffer.width = dimension.x)
+			(buffer.height = dimension.y-margin.y*2)
+			(buffer.width = dimension.x-margin.x*2)
 			(buffer.width/labyrinth_dimension.x).truncated_to_integer > 2
 			(buffer.height/labyrinth_dimension.y).truncated_to_integer > 2
 		local
@@ -138,7 +138,7 @@ feature {ANY}
 	-- redraws the buffer
 		do
 			if attached game.get_buffer (buffer_indices[1]) as buffer_pixmap then
-				fill_buffer(buffer_pixmap)
+				fill_buffer_labyrinth(buffer_pixmap)
 			else
 				print("buffer not attached in main labyrinth")
 			end

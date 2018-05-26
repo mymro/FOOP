@@ -11,7 +11,8 @@ inherit
 	GAME_OBJECT
 		redefine
 			draw,
-			update
+			update,
+			fill_buffer_using_mask
 		end
 
 create
@@ -42,6 +43,8 @@ feature {NONE}
 			a_pos_in_labyrinth.y > 0 and a_pos_in_labyrinth.y <= a_labyrinth.get_labyrinth_dim_y
 		local
 			a_pos: VECTOR_2
+			a_dimension: VECTOR_2
+			a_margin: VECTOR_2
 		do
 			main_labyrinth:=a_labyrinth
 			create personal_labyrinth.make(create {VECTOR_2}.make_with_xy(main_labyrinth.get_labyrinth_dim_x, main_labyrinth.get_labyrinth_dim_y))
@@ -58,7 +61,9 @@ feature {NONE}
 			copy_node_at(pos_in_labyrinth.x, pos_in_labyrinth.y)
 
 			create a_pos.make_with_xy ((pos_in_labyrinth.x-1)*main_labyrinth.step_width, (pos_in_labyrinth.y-1)*main_labyrinth.step_height)
-			make(a_game, a_pos, create{VECTOR_2}.make_with_xy (main_labyrinth.step_width, main_labyrinth.step_height), 1, 2)
+			create a_dimension.make_with_xy (main_labyrinth.step_width, main_labyrinth.step_height)
+			create a_margin.make_with_xy (3, 3)
+			make(a_game, a_pos, a_dimension, a_margin, 1, 2)
 			reset_buffer
 		end
 
@@ -102,27 +107,22 @@ feature {NONE}
 			end
 		end
 
-	draw_buffer(buffer, mask: separate EV_PIXMAP_ADVANCED; index_buffer, index_mask:INTEGER)
+	fill_buffer_using_mask(buffer, mask: separate EV_PIXMAP_ADVANCED; index_buffer, index_mask:INTEGER)
 	--fills the buffer and draws mask for transparency
-		require
-			buffer.height = dimension.y
-			buffer.width = dimension.x
-			buffer.height = mask.height
-			buffer.width = mask.width
 		local
 			x_center: INTEGER
 			y_center: INTEGER
 		do
-			x_center:= (dimension.x/2).truncated_to_integer
-			y_center:= (dimension.y/2).truncated_to_integer
+			x_center:= (buffer.width/2).truncated_to_integer
+			y_center:= (buffer.height/2).truncated_to_integer
 
 			mask.set_foreground_color_rgb (0,0,0)
-			mask.fill_rectangle (0, 0, dimension.x, dimension.y)
+			mask.fill_rectangle (0, 0, mask.width, mask.height)
 			mask.set_foreground_color_rgb (1, 1, 1)
-			mask.draw_triangle (x_center, y_center, dimension.y)
+			mask.draw_triangle (x_center, y_center, mask.height)
 
 			buffer.set_foreground_color_rgb(color.red, color.green, color.blue)
-			buffer.draw_triangle (x_center, y_center, dimension.y)
+			buffer.fill_rectangle (0, 0, buffer.width, buffer.height)
 			game.set_mask (index_buffer, index_mask)
 		end
 feature {ANY}
@@ -132,7 +132,7 @@ feature {ANY}
 		do
 			if attached game.get_buffer (buffer_indices[1]) as buffer and
 			attached game.get_buffer (buffer_indices[2]) as mask then
-				draw_buffer(buffer, mask, buffer_indices[1], buffer_indices[2])
+				fill_buffer_using_mask(buffer, mask, buffer_indices[1], buffer_indices[2])
 			else
 				print("buffer not attached in main labyrinth")
 			end

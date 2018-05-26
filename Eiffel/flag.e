@@ -13,7 +13,8 @@ inherit
 			make as game_object_make
 		redefine
 			draw,
-			update
+			update,
+			fill_buffer
 		end
 
 	F_MODIFIER
@@ -31,22 +32,23 @@ feature {NONE}
 			a_pos_in_labyrinth.y > 0 and a_pos_in_labyrinth.y <= a_labyrinth.get_labyrinth_dim_y
 		local
 			a_pos: VECTOR_2
+			a_dimension: VECTOR_2
+			a_margin: VECTOR_2
 		do
 			pos_in_labyrinth:=a_pos_in_labyrinth
 			color:=a_color
 			labyrinth:= a_labyrinth
 			create a_pos.make_with_xy ((pos_in_labyrinth.x-1) * labyrinth.step_width, (pos_in_labyrinth.y-1) * labyrinth.step_height)
-			game_object_make(a_game, a_pos, create{VECTOR_2}.make_with_xy (labyrinth.step_width, labyrinth.step_height), 0, 1)
+			create a_dimension.make_with_xy (labyrinth.step_width, labyrinth.step_height)
+			create a_margin.make_with_xy (6, 6)
+			game_object_make(a_game, a_pos, a_dimension, a_margin, 0, 1)
 			create modifier_container
 			reset_buffer
 
 			modifier_container.add_modifier(current)
 		end
 
-	draw_buffer(buffer: separate EV_PIXMAP_ADVANCED)
-		require
-			buffer.height = dimension.y
-			buffer.width = dimension.x
+	fill_buffer(buffer: separate EV_PIXMAP_ADVANCED)
 		do
 			buffer.set_foreground_color_rgb (color.red, color.green, color.blue)
 			buffer.fill_rectangle (0, 0, buffer.width, buffer.height)
@@ -62,7 +64,7 @@ feature {ANY}
 	-- redraws the buffer
 		do
 			if attached game.get_buffer (buffer_indices[1]) as buffer then
-				draw_buffer(buffer)
+				fill_buffer(buffer)
 			else
 				print("buffer not attached in main labyrinth")
 			end

@@ -310,7 +310,7 @@ feature {NONE}
 					end
 				end
 				if not open_set.is_empty then
-					current_node:=open_set.first
+					current_node:= open_set.first
 				end
 			end
 

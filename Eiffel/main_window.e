@@ -237,6 +237,8 @@ feature {NONE} -- ToolBar Implementation
 		on_stop_game
 			do
 				requested_stop:=TRUE
+				standard_toolbar.prune (stop_game_button)
+				standard_toolbar.extend (reset_game_button)
 			end
 
 feature {NONE} -- Implementation, Close event

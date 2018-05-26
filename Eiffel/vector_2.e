@@ -47,9 +47,19 @@ feature {ANY}
 			Result:= create{VECTOR_2}.make_with_xy (current.x + other.x, current.y + other.y)
 		end
 
+	subtracts alias "-" (other: VECTOR_2): VECTOR_2
+		do
+			Result:= create{VECTOR_2}.make_with_xy (current.x - other.x, current.y - other.y)
+		end
+
 	times alias"*" (other: INTEGER): VECTOR_2
 		do
 			create RESULT.make_with_xy (current.x * other, current.y * other)
+		end
+
+	greater_than alias">" (other: VECTOR_2):BOOLEAN
+		do
+			RESULT:= other.x<current.x and other.y < current.y
 		end
 
 	set_x(a_x:INTEGER)

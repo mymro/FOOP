@@ -45,7 +45,7 @@ feature{NONE}
 			create a_dimension.make_with_xy (labyrinth.step_width, labyrinth.step_height)
 			create a_pos.make_with_xy ((position_in_labyrinth.x - 1) * labyrinth.step_width, (position_in_labyrinth.y - 1) * labyrinth.step_height)
 
-			make_game_object(a_game, a_pos, a_dimension, 2, 2)
+			make_game_object(a_game, a_pos, a_dimension, create{VECTOR_2}.make_with_xy (0, 0), 2, 2)
 			reset_buffer
 		end
 

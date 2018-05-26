@@ -8,7 +8,8 @@ class
 	GAME_OBJECT
 
 create
-	make
+	make,
+	make_with_buffers
 
 feature {ANY}
 	layer: INTEGER
@@ -20,34 +21,37 @@ feature {NONE}
 	buffer_indices:ARRAY[INTEGER]
 	dimension: VECTOR_2
 	children: ARRAYED_LIST[GAME_OBJECT]
+	margin: VECTOR_2
 
 feature {NONE}
-	make(a_game: GAME; a_pos_relative_to_parent, a_dimension: VECTOR_2; a_layer, buffer_count:INTEGER)
+	make(a_game: GAME; a_pos_relative_to_parent, a_dimension, a_margin: VECTOR_2; a_layer, buffer_count:INTEGER)
 		require
 			a_dimension.x>=0
 			a_dimension.y>=0
 			buffer_count > 0
+			a_dimension > (a_margin * 2)
 		do
-			initialize(a_game, a_pos_relative_to_parent, a_dimension, a_layer)
+			initialize(a_game, a_pos_relative_to_parent, a_dimension, a_margin, a_layer)
 			create buffer_indices.make_filled (0, 1, buffer_count)
 
 			across
 				1 |..| buffer_count as i
 			loop
-				buffer_indices[i.item]:= game.create_buffer(dimension)
+				buffer_indices[i.item]:= game.create_buffer(dimension - (margin * 2))
 			end
 		end
 
-	make_with_buffers(a_game: GAME; a_pos_relative_to_parent, a_dimension: VECTOR_2; a_layer:INTEGER; some_buffer_indices: ARRAY[INTEGER])
+	make_with_buffers(a_game: GAME; a_pos_relative_to_parent, a_dimension, a_margin: VECTOR_2; a_layer:INTEGER; some_buffer_indices: ARRAY[INTEGER])
 		require
 			a_dimension.x>=0
 			a_dimension.y>=0
+			a_dimension > (a_margin * 2)
 		do
-			initialize(a_game, a_pos_relative_to_parent, a_dimension, a_layer)
+			initialize(a_game, a_pos_relative_to_parent, a_dimension, a_margin, a_layer)
 			buffer_indices := some_buffer_indices
 		end
 
-	initialize(a_game: GAME; a_pos_relative_to_parent, a_dimension:VECTOR_2; a_layer: INTEGER)
+	initialize(a_game: GAME; a_pos_relative_to_parent, a_dimension, a_margin:VECTOR_2; a_layer: INTEGER)
 		require
 			a_dimension.x>=0
 			a_dimension.y>=0
@@ -57,24 +61,68 @@ feature {NONE}
 			pos_relative_to_parent:= a_pos_relative_to_parent
 			layer:= a_layer
 			dimension:=a_dimension
+			margin:= a_margin
 			create children.make (0)
 		end
 
 	set_dimension(a_pixmap: separate EV_PIXMAP_ADVANCED)
 	-- sets the dimension based on the size of the buffer
 		do
-			dimension.x:=a_pixmap.width
-			dimension.y:=a_pixmap.height
+			dimension.x:=a_pixmap.width + margin.x*2
+			dimension.y:=a_pixmap.height + margin.y*2
 		end
 
 	draw_buffer_at_index(index: INTEGER)
 	-- draws the buffer at index to screen
 	-- at absolute parent position plus relative position to parent
 		do
-			game.queue_buffer_for_draw_to_display (buffer_indices[index], get_absolute_pos)
+			game.queue_buffer_for_draw_to_display (buffer_indices[index], get_absolute_pos_of_draw_area)
+		end
+
+	fill_buffer_using_mask(buffer, mask: separate EV_PIXMAP_ADVANCED; index_buffer, index_mask:INTEGER)
+	--fills the buffer and draws mask for transparency
+		require
+			buffer.height = dimension.y - margin.y*2
+			buffer.width = dimension.x - margin.x*2
+			buffer.height = mask.height
+			buffer.width = mask.width
+		do
+			game.set_mask (index_buffer, index_mask)
+		end
+
+	fill_buffer(buffer: separate EV_PIXMAP_ADVANCED)
+		require
+			buffer.height = dimension.y - margin.y*2
+			buffer.width = dimension.x - margin.x*2
+		do
 		end
 
 feature {ANY}
+
+	set_margin(x,y:INTEGER)
+		require
+			x>=0
+			y>=0
+		do
+			dimension:= dimension - margin
+			margin.x:=x
+			margin.y:=y
+			dimension:= dimension + margin
+		ensure
+			dimension.x >= 0
+			dimension.y >= 0
+		end
+
+	get_absolute_pos_of_draw_area: VECTOR_2
+	-- returns the absolute pos of object in window
+	-- adds margin
+		do
+			if attached parent as a_parent then
+				RESULT:= pos_relative_to_parent + a_parent.get_absolute_pos_of_draw_area + margin
+			else
+				RESULT:= pos_relative_to_parent + margin
+			end
+		end
 
 	get_absolute_pos: VECTOR_2
 	-- returns the absolute pos of object in window
@@ -159,7 +207,7 @@ feature {ANY}
 		local
 			pos:VECTOR_2
 		do
-			pos:=get_absolute_pos
+			pos:=get_absolute_pos_of_draw_area
 			if 	pos.x > game.draw_area_width or
 				pos.y > game.draw_area_height or
 				pos.x < -dimension.x or
