@@ -53,7 +53,7 @@ public class Server implements Serializable {
 
 
         int countOfPlayer = 0;
-        while (countOfPlayer < 2) {
+        while (countOfPlayer < 3) {
             try {
                 socket = ssocket.accept();
                 if (socket != null) {
@@ -81,7 +81,7 @@ public class Server implements Serializable {
 
             userList.put(player, socket);
 
-             if(userList.size()> 1) {
+             if(userList.size()> 2) {
                  startGame();
             }
         }

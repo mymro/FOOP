@@ -2,6 +2,7 @@ package game.net;
 
 import game.core.Dimension;
 import game.core.GameObject;
+import game.core.Labyrinth;
 import game.core.Serialization;
 import game.game.objects.*;
 import javafx.scene.paint.Color;
@@ -10,6 +11,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class Client extends Thread {
@@ -102,13 +105,12 @@ public class Client extends Thread {
         }
     }
 
-    public void startGame(Vector<Player> userList) {
-        int startIndex=0;
+    public void startGame(Vector<Player> userList, int startIndex) {
         currentMessage.setMessage("The Game is started");
         dimension = new Dimension(50, 50);
         for (Player player : userList) {
-            startIndex +=5;
-            mainLabyrinth.addPlayer(player, 0,dimension.getDim_x() -startIndex,dimension.getDim_y() -startIndex);
+            startIndex += 5;
+            mainLabyrinth.addPlayer(player, 0, dimension.getDim_x() - startIndex, dimension.getDim_y() - startIndex);
             System.out.println("Player: " + player);
             currentMessage.setMessage("The Game is started");
             System.out.println(mainLabyrinth.toString());
@@ -136,7 +138,7 @@ public class Client extends Thread {
                 this.mainLabyrinth = this.currentMessage.getMainLabyrinth();
                 if (message.getUserList().size() > 1) {
                     this.currentMessage.setMessage("Please click LEFT Key to start game");
-                    startGame(message.getUserList());
+                    startGame(message.getUserList(),0);
                 }
                 break;
             case Message.SEND_FLAG:
@@ -145,6 +147,18 @@ public class Client extends Thread {
                 this.currentMessage.setMessage("Flag is added");
                 this.mainLabyrinth = this.currentMessage.getMainLabyrinth();
                 this.mainLabyrinth.addFlag(message.getFlag());
+                List<Robot> robots = new ArrayList<>();
+                for (GameObject robot : mainLabyrinth.getChildren()) {
+                    if (robot instanceof Robot) {
+                        robots.add((Robot) robot);
+                    }
+                }
+
+                for (Robot robot : robots) {
+                    mainLabyrinth.getChildren().remove(robot);
+                }
+
+                startGame(this.currentMessage.getUserList(),2);
                 break;
 
             case Message.BYE:
@@ -168,20 +182,20 @@ public class Client extends Thread {
                 this.currentMessage = message;
                 System.out.println("Ich bin in CLIENT in Type" + "START_MATCH ");
                 this.mainLabyrinth = this.currentMessage.getMainLabyrinth();
-                if (message.getUserList().size() > 2) {
+                if (message.getUserList().size() > 3) {
                     this.currentMessage.setMessage("Please click LEFT Key to start game");
-                    startGame(message.getUserList());
+                    startGame(message.getUserList(),0);
                 }
                 break;
-                /**
-                try {
-                    new ClientThread(this, this.currentMessage).join();
+            /**
+             try {
+             new ClientThread(this, this.currentMessage).join();
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                break;
-                ***/
+             } catch (InterruptedException e) {
+             e.printStackTrace();
+             }
+             break;
+             ***/
             default:
                 break;
         }
@@ -237,7 +251,7 @@ public class Client extends Thread {
     }
 
     public String getColorInfo() {
-        if(currentMessage != null && !currentMessage.getUserList().isEmpty()) {
+        if (currentMessage != null && !currentMessage.getUserList().isEmpty()) {
             for (Player pl : currentMessage.getUserList()) {
                 if (this.player.getName().equals(pl.getName())) {
                     return pl.getColor();

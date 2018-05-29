@@ -204,4 +204,12 @@ public class Robot extends GameObject implements Serializable{
     public void setColor(Color color) {
         this.color = color;
     }
+
+    public Labyrinth.LabyrinthNode getCurrent_node() {
+        return current_node;
+    }
+
+    public void setCurrent_node(Labyrinth.LabyrinthNode current_node) {
+        this.current_node = current_node;
+    }
 }
