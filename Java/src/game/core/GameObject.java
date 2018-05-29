@@ -3,10 +3,11 @@ package game.core;
 import game.Main;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-public abstract class GameObject{
+public abstract class GameObject implements Serializable{
     private GameObject parent;
     private LinkedList<GameObject> children;
     private int layer;
@@ -35,7 +36,7 @@ public abstract class GameObject{
         }
     }
 
-    public void draw(GraphicsContext graphicsContext){
+    public void draw(GraphicsContext graphicsContext) {
         for(GameObject go : children){
             go.draw(graphicsContext);
         }
@@ -101,4 +102,9 @@ public abstract class GameObject{
     public Main.GameSystem getGame_system(){
         return game_system;
     }
+
+    public LinkedList<GameObject> getChildren() {
+        return children;
+    }
+
 }

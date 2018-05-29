@@ -4,7 +4,9 @@ import game.core.Flag;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class SearchHereFlag extends Flag {
+import java.io.Serializable;
+
+public class SearchHereFlag extends Flag implements Serializable{
 
     public SearchHereFlag(int layer, int x, int y, int dim_x, int dim_y, Robot player )throws IllegalArgumentException{
         super(layer, x, y, dim_x, dim_y, player);
@@ -24,5 +26,11 @@ public class SearchHereFlag extends Flag {
     @Override
     public double getFModifierAt(double x, double y) {
         return -20*Math.exp(-((Math.pow(x-getPos_x(),2)/(100) + Math.pow(y-getPos_y(), 2)/(100))));
+    }
+
+    @Override
+    public String toString() {
+        super.toString();
+        return "SearchHereFlag{}";
     }
 }

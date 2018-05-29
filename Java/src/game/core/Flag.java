@@ -21,4 +21,13 @@ public abstract class Flag extends GameObject implements FModifier {
     public Robot getPlayer(){
         return player;
     }
+
+    @Override
+    public String toString() {
+        return "Flag{" +
+                "dim_x=" + dim_x +
+                ", dim_y=" + dim_y +
+                ", player=" + player +
+                '}';
+    }
 }

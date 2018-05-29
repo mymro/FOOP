@@ -25,15 +25,10 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.HashSet;
-
-import static java.awt.image.ImageObserver.HEIGHT;
-import static java.awt.image.ImageObserver.WIDTH;
-
 
 public class ClientGUI extends Application {
 
@@ -182,13 +177,14 @@ public class ClientGUI extends Application {
 
                     @Override
                     public void handle(long now) {
+                        controller.setMainLabyrinth(client.getMainLabyrinth());
+                        controller.setClient(client);
                         graphicsContext = controller.labyrinthCanvas.getGraphicsContext2D();
-                        game_system.setLabyrinth(client.getMainLabyrinth());
                         graphicsContext.clearRect(0, 0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
                         graphicsContext.setFill(Color.BLACK);
                         graphicsContext.fillRect(0, 0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
-                        game_system.getLabyrinth().update();
-                        game_system.getLabyrinth().draw(graphicsContext);
+                        client.getMainLabyrinth().update();
+                        client.getMainLabyrinth().draw(graphicsContext);
                         game_system.setDelta_time((now - last_frame_time) / 1000000000.0);
                         last_frame_time = now;
                         infoLabel.setText(client.getCurrentMessage().getMessage());
@@ -222,7 +218,9 @@ public class ClientGUI extends Application {
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
                 tickAndRender(client);
-                infoLabel.setText(client.getCurrentMessage().getMessage());
+                if(client.getCurrentMessage()!=null) {
+                    infoLabel.setText(client.getCurrentMessage().getMessage());
+                }
             }
         }.start();
         primaryStage.setScene(gameScene);
@@ -237,7 +235,7 @@ public class ClientGUI extends Application {
                 result += "Name:: " + player.getName() + " Color: " + player.getColor() + " :: \n";
             }
         }
-        if(client.getCurrentMessage().getUserList().size() == 3){
+        else if(client.getCurrentMessage() != null && client.getCurrentMessage().getUserList().size() == 3){
             result +="\n" + "Please click on LEFT tab to play game";
         }
         return result;
@@ -248,20 +246,21 @@ public class ClientGUI extends Application {
 
         circle.setFill(Color.valueOf(client.getColorInfo()));
         if (currentlyActiveKeys.contains("LEFT")) {
-
             new AnimationTimer() {
 
                 long last_frame_time = System.nanoTime();
 
                 @Override
                 public void handle(long now) {
+                    controller.setMainLabyrinth(client.getMainLabyrinth());
+                    controller.setClient(client);
                     graphicsContext = controller.labyrinthCanvas.getGraphicsContext2D();
                     game_system.setLabyrinth(client.getMainLabyrinth());
                     graphicsContext.clearRect(0, 0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
                     graphicsContext.setFill(Color.BLACK);
                     graphicsContext.fillRect(0, 0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
-                    game_system.getLabyrinth().update();
-                    game_system.getLabyrinth().draw(graphicsContext);
+                    client.getMainLabyrinth().update();
+                    client.getMainLabyrinth().draw(graphicsContext);
                     game_system.setDelta_time((now - last_frame_time) / 1000000000.0);
 
                     last_frame_time = now;
@@ -269,10 +268,10 @@ public class ClientGUI extends Application {
                     if (!game_system.isRunning) {
                         infoLabel.setText(game_system.getMessage());
                     }
-
                 }
             }.start();
-        } else {
+        }
+        else {
             GraphicsContext graphicsContext = controller.labyrinthCanvas.getGraphicsContext2D();
 
             graphicsContext.setFill(Color.GREEN);

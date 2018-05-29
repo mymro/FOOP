@@ -1,10 +1,9 @@
 package game.net;
 
-import game.core.Dimension;
 import game.Main;
+import game.core.Dimension;
+import game.core.Serialization;
 import game.game.objects.*;
-import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 
 import java.io.*;
 import java.net.*;
@@ -13,7 +12,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
-public class Server {
+public class Server implements Serializable {
 
     private int port;
     private ServerSocket ssocket = null;
@@ -26,7 +25,9 @@ public class Server {
 
     private MainLabyrinth labyrinth = null;
     private List<String> colorList = new ArrayList<>();
-
+    private static Integer startIndex = 0;
+    private Dimension dimension = null;
+    private static Main.GameSystem game_system = Main.GameSystem.getInstance();
     public Server(int port) {
         colorList.add("RED");
         colorList.add("BLUE");
@@ -34,6 +35,8 @@ public class Server {
         this.port = port;
         try {
             this.ssocket = new ServerSocket(port);
+            dimension = new Dimension(50, 50);
+            labyrinth = new MainLabyrinth(dimension, 0);
         } catch (IOException e) {
             System.out.println("Server: " + e.getMessage());
             e.printStackTrace();
@@ -50,7 +53,7 @@ public class Server {
 
 
         int countOfPlayer = 0;
-        while (countOfPlayer < 4) {
+        while (countOfPlayer < 2) {
             try {
                 socket = ssocket.accept();
                 if (socket != null) {
@@ -70,7 +73,7 @@ public class Server {
 
     public synchronized void addUser(Player player, Socket socket,
                                      ObjectOutputStream oos, String info) {
-        if(!userList.isEmpty()) {
+        if (!userList.isEmpty()) {
             player.setColor(colorList.get(userList.size()));
         }
 
@@ -78,9 +81,8 @@ public class Server {
 
             userList.put(player, socket);
 
-            if(userList.size()> 3) {
-                startGame();
-                //startGame(userList);
+             if(userList.size()> 1) {
+                 startGame();
             }
         }
         synchronized (userOutputStreamList) {
@@ -95,14 +97,29 @@ public class Server {
     public void sendUserList() {
         Message msg = new Message(Message.USERS_LIST);
         msg.setUserList(new Vector(userList.keySet()));
+        msg.setMainLabyrinth(labyrinth);
+        //Serialization.serialize(labyrinth,"game.dat");
+        sendToClients(msg);
+    }
+
+    public void addFlag(Message message) {
+        Message msg = new Message(Message.SEND_FLAG);
+        msg.setUserList(new Vector<>(userList.keySet()));
+
+        //labyrinth.addFlag(message.getFlag());
+        msg.setMainLabyrinth(labyrinth);
+        msg.setFlag(message.getFlag());
+        //Serialization.serialize(labyrinth,"game.dat");
         sendToClients(msg);
     }
 
     public void startGame() {
         Message msg = new Message(Message.START_MATCH);
+        msg.setUserList(new Vector<>(userList.keySet()));
+        msg.setMainLabyrinth(labyrinth);
+        //Serialization.serialize(labyrinth,"game.dat");
         sendToClients(msg);
     }
-
 
 
     public void sendToClients(Object message) {

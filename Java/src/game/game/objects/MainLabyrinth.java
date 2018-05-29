@@ -1,18 +1,20 @@
 package game.game.objects;
 
 import game.core.*;
+import game.core.Dimension;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Vector;
 
 public class MainLabyrinth extends GameObject implements FModifier ,Serializable {
 
     private Labyrinth labyrinth;
     private long seed;
-    private ArrayList<FModifier> modifiers;
+    private Vector<FModifier> modifiers;
 
     public Labyrinth getLabyrinth() {
         return labyrinth;
@@ -28,7 +30,7 @@ public class MainLabyrinth extends GameObject implements FModifier ,Serializable
         labyrinth = new Labyrinth(mainDimension);
         labyrinth.createLabyrinth(mainDimension.getSeed());
         this.seed = mainDimension.getSeed();
-        modifiers = new ArrayList<>();
+        modifiers = new Vector<>();
     }
 
     public Robot addPlayer(Player player, int layer, int startX, int startY) {

@@ -6,15 +6,18 @@ import game.core.Labyrinth;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Robot extends GameObject {
+public class Robot extends GameObject implements Serializable{
 
-    public static final double seconds_per_field = 0.30;
+    private static final long serialVersionUID = 1L;
+
+    public static final double seconds_per_field = 0.80;
 
     private Labyrinth labyrinth;
     private Labyrinth.LabyrinthNode current_node, next_node;
-    private Color color;
+    private transient Color color;
     private ArrayList<Labyrinth.LabyrinthNode> current_path;
     private int current_path_index;
     private double current_delta_time;
@@ -77,7 +80,7 @@ public class Robot extends GameObject {
     }
 
     @Override
-    public void draw(GraphicsContext gc) {
+    public void draw(GraphicsContext gc)  {
         if (getPos_x() >= 0 && getPos_y() >= 0 && labyrinth != null) {
             //drawLabyrinth(gc);
             //if(current_path != null){
@@ -194,4 +197,11 @@ public class Robot extends GameObject {
         }
     }
 
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }

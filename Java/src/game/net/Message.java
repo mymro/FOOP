@@ -1,5 +1,7 @@
 package game.net;
 
+import game.core.Flag;
+import game.game.objects.MainLabyrinth;
 import game.game.objects.Player;
 
 import java.util.Vector;
@@ -15,18 +17,20 @@ public class Message implements java.io.Serializable {
     public static final int REQUEST_MATCH		= 5;
     public static final int START_MATCH 		= 6;
     public static final int USER_INFO 			= 7;
-    public static final int MOVE	 			= 8;
-    public static final int TAKE 				= 9;
-    public static final int KING 				= 10;
+    public static final int SEND_FLAG 			= 8;
+
+
 
     private static final long serialVersionUID = 1L;
 
     private int type;
+    private MainLabyrinth mainLabyrinth;
     private Player player;
     private String message;
     private int from;
     private int to;
     private int taken;
+    private Flag flag;
 
     private Vector<Player> userList;
 
@@ -40,6 +44,11 @@ public class Message implements java.io.Serializable {
     public Message(int type,Player player) {
         this.type = type;
         this.player = player;
+    }
+
+    public Message(int type,Flag flag) {
+        this.type = type;
+        this.flag = flag;
     }
 
     public Message(int type, Player player, String message) {
@@ -118,6 +127,23 @@ public class Message implements java.io.Serializable {
 
     public void setUserList(Vector<Player> userList) {
         this.userList = userList;
+    }
+
+
+    public Flag getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Flag flag) {
+        this.flag = flag;
+    }
+
+    public MainLabyrinth getMainLabyrinth() {
+        return mainLabyrinth;
+    }
+
+    public void setMainLabyrinth(MainLabyrinth mainLabyrinth) {
+        this.mainLabyrinth = mainLabyrinth;
     }
 
 }

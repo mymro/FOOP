@@ -1,7 +1,10 @@
 package game.net;
 
 import game.core.Dimension;
+import game.core.GameObject;
+import game.core.Serialization;
 import game.game.objects.*;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,7 +23,6 @@ public class Client extends Thread {
 
     ObjectInputStream ois;
     ObjectOutputStream oos;
-    private String colorInfo = "";
 
     private ServerSocket clsSocket;
     private Socket socket;
@@ -44,6 +46,8 @@ public class Client extends Thread {
         try {
             while (run) {
                 Message message = (Message) ois.readObject();
+                this.mainLabyrinth = message.getMainLabyrinth();
+                //this.mainLabyrinth= Serialization.deserialize("game.dat", MainLabyrinth.class);
                 handleMessage(message);
 
             }
@@ -99,20 +103,25 @@ public class Client extends Thread {
     }
 
     public void startGame(Vector<Player> userList) {
-        dimension = new Dimension(50, 50);
-        mainLabyrinth = new MainLabyrinth(dimension, 0);
         int startIndex=0;
+        currentMessage.setMessage("The Game is started");
+        dimension = new Dimension(50, 50);
         for (Player player : userList) {
             startIndex +=5;
             mainLabyrinth.addPlayer(player, 0,dimension.getDim_x() -startIndex,dimension.getDim_y() -startIndex);
             System.out.println("Player: " + player);
             currentMessage.setMessage("The Game is started");
-            Robot robot = new Robot(0, player);
+            System.out.println(mainLabyrinth.toString());
+            //Robot robot = new Robot(0, player);
             //SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, dimension.getDim_x(), dimension.getDim_y(), robot);
             //DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, dimension.getDim_x(), dimension.getDim_y(), robot);
             //mainLabyrinth.addFlag(flag);
             //mainLabyrinth.addFlag(flag2);
         }
+    }
+
+    public void startGameALT(Vector<Player> userList) {
+
     }
 
 
@@ -122,14 +131,20 @@ public class Client extends Thread {
 
             case Message.USERS_LIST:
                 this.currentMessage = message;
-                setColorInfo(getColor());
                 System.out.println("Ich bin in CLIENT in Type" + "USERS_LIST");
                 this.currentMessage.setMessage("The game is waiting for three Persons");
-                if (message.getUserList().size() > 2) {
+                this.mainLabyrinth = this.currentMessage.getMainLabyrinth();
+                if (message.getUserList().size() > 1) {
                     this.currentMessage.setMessage("Please click LEFT Key to start game");
                     startGame(message.getUserList());
                 }
-
+                break;
+            case Message.SEND_FLAG:
+                this.currentMessage = message;
+                System.out.println("Ich bin in CLIENT in Type" + "SEND_FLAG");
+                this.currentMessage.setMessage("Flag is added");
+                this.mainLabyrinth = this.currentMessage.getMainLabyrinth();
+                this.mainLabyrinth.addFlag(message.getFlag());
                 break;
 
             case Message.BYE:
@@ -152,7 +167,13 @@ public class Client extends Thread {
             case Message.START_MATCH:
                 this.currentMessage = message;
                 System.out.println("Ich bin in CLIENT in Type" + "START_MATCH ");
-
+                this.mainLabyrinth = this.currentMessage.getMainLabyrinth();
+                if (message.getUserList().size() > 2) {
+                    this.currentMessage.setMessage("Please click LEFT Key to start game");
+                    startGame(message.getUserList());
+                }
+                break;
+                /**
                 try {
                     new ClientThread(this, this.currentMessage).join();
 
@@ -160,7 +181,7 @@ public class Client extends Thread {
                     e.printStackTrace();
                 }
                 break;
-
+                ***/
             default:
                 break;
         }
@@ -197,6 +218,11 @@ public class Client extends Thread {
         sendToServer(message);
     }
 
+    public void sendFlag(Message message) {
+        //this.mainLabyrinth.addFlag(message.getFlag());
+        sendToServer(message);
+    }
+
     public void disconnectFromServer() { // disconnect procedure
         sendToServer(new Message(Message.CLIENT_DISCONNECT, player));
     }
@@ -210,54 +236,32 @@ public class Client extends Thread {
         }
     }
 
-    public String getColor() {
-        for (Player pl : currentMessage.getUserList()) {
-            if (this.player.getName().equals(pl.getName())) {
-                return pl.getColor();
+    public String getColorInfo() {
+        if(currentMessage != null && !currentMessage.getUserList().isEmpty()) {
+            for (Player pl : currentMessage.getUserList()) {
+                if (this.player.getName().equals(pl.getName())) {
+                    return pl.getColor();
+                }
             }
         }
-        return null;
+        return "RED";
     }
 
     public Message getCurrentMessage() {
         return currentMessage;
     }
 
-    public void setCurrentMessage(Message currentMessage) {
-        this.currentMessage = currentMessage;
-    }
-
     public String getServerIP() {
         return serverIP;
-    }
-
-    public void setServerIP(String serverIP) {
-        this.serverIP = serverIP;
     }
 
     public int getPort() {
         return port;
     }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
-
 
     public MainLabyrinth getMainLabyrinth() {
         return mainLabyrinth;
-    }
-
-    public void setMainLabyrinth(MainLabyrinth mainLabyrinth) {
-        this.mainLabyrinth = mainLabyrinth;
-    }
-
-    public String getColorInfo() {
-        return colorInfo;
-    }
-
-    public void setColorInfo(String colorInfo) {
-        this.colorInfo = colorInfo;
     }
 
     public Player getPlayer() {

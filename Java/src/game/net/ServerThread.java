@@ -1,5 +1,7 @@
 package game.net;
 
+import game.game.objects.MainLabyrinth;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -85,7 +87,9 @@ public class ServerThread extends Thread {
                 message.setMessage("Start_GAME");
                 sendMessage(new Message(Message.START_MATCH));; // to special user(request)
                 break;
-
+            case Message.SEND_FLAG:
+                server.addFlag(message);
+                break;
             default:
                 break;
         }
