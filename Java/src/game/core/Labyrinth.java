@@ -61,10 +61,10 @@ public class Labyrinth implements Serializable{
         }
     }
 
-    private Dimension dimension;
+    private Vector_2 dimension;
     private LabyrinthNode[][] labyrinth;
 
-    public Labyrinth(Dimension dimension){
+    public Labyrinth(Vector_2 dimension){
         if(dimension.getDim_x() < 1 || dimension.getDim_x() <1){
             throw new IllegalArgumentException("Dimensions have to be greater 0");
         }
@@ -352,11 +352,11 @@ public class Labyrinth implements Serializable{
         return node;
     }
 
-    public Dimension getDimension() {
+    public Vector_2 getDimension() {
         return dimension;
     }
 
-    public void setDimension(Dimension dimension) {
+    public void setDimension(Vector_2 dimension) {
         this.dimension = dimension;
     }
 

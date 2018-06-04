@@ -25,6 +25,6 @@
         </menus>
     </MenuBar>
 
-    <Canvas fx:id="labyrinthCanvas" height="500" width="500" onMouseClicked="#handleClickEvent"></Canvas>
+    <Canvas fx:id="labyrinthCanvas" height="800" width="800" onMouseClicked="#handleClickEvent"></Canvas>
 
 </VBox >

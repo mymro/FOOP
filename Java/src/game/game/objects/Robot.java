@@ -8,6 +8,9 @@ import javafx.scene.paint.Color;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 public class Robot extends GameObject implements Serializable{
 
@@ -29,18 +32,7 @@ public class Robot extends GameObject implements Serializable{
     public Robot(int layer, Player player) {
         super(layer);
         this.player = player;
-        if (player.getColor().equalsIgnoreCase("RED")) {
-            this.color = Color.RED;
-        }
-        if (player.getColor().equalsIgnoreCase("GREEN")) {
-            this.color = Color.GREEN;
-        }
-        if (player.getColor().equalsIgnoreCase("BLUE")) {
-            this.color = Color.BLUE;
-        }
-        if (player.getColor().equalsIgnoreCase("YELLOW")) {
-            this.color = Color.YELLOW;
-        }
+        this.color = Color.web(player.getColor());
         mainLabyrinth = null;
         initialize(null, 0, 0);
     }
@@ -136,7 +128,16 @@ public class Robot extends GameObject implements Serializable{
 
                     if (current_node.getType() == Labyrinth.NodeType.unknown) {
                         if (mainLabyrinth != null) {
-                            labyrinth.changeNode(current_node, mainLabyrinth.getTypeAt(current_node.getX(), current_node.getY()), mainLabyrinth.getEdgesAt(current_node.getX(), current_node.getY()));
+                            ArrayList<Labyrinth.Direction> edges = new ArrayList<>(mainLabyrinth.getEdgesAt(current_node.getX(), current_node.getY()));
+                            Set<Labyrinth.Direction> scrambled_edges = new HashSet<>();
+                            Random rand = new Random();
+                            while (edges.size()>0){
+                                int index = rand.nextInt(edges.size());
+                                scrambled_edges.add(edges.get(index));
+                                edges.remove(index);
+                            }
+
+                            labyrinth.changeNode(current_node, mainLabyrinth.getTypeAt(current_node.getX(), current_node.getY()), scrambled_edges);
                         }
                     }
 
@@ -211,5 +212,9 @@ public class Robot extends GameObject implements Serializable{
 
     public void setCurrent_node(Labyrinth.LabyrinthNode current_node) {
         this.current_node = current_node;
+    }
+
+    public Player getPlayer(){
+        return player;
     }
 }

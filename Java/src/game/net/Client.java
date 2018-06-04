@@ -1,19 +1,12 @@
 package game.net;
 
-import game.core.Dimension;
-import game.core.GameObject;
-import game.core.Labyrinth;
-import game.core.Serialization;
+import game.core.*;
 import game.game.objects.*;
-import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
 public class Client extends Thread {
 
@@ -22,7 +15,7 @@ public class Client extends Thread {
     private String userName;
     private Message currentMessage;
     private boolean run = true;
-    private Player player = null;
+    private Player player;
 
     ObjectInputStream ois;
     ObjectOutputStream oos;
@@ -31,34 +24,35 @@ public class Client extends Thread {
     private Socket socket;
 
     public static ClientGUI clientGUI;
-    private MainLabyrinth mainLabyrinth = null;
-    private Dimension dimension = null;
+    private Vector_2 dimension = null;
 
 
-    public Client(String serverIP, int port, String color, String userName) {
+    public Client(String serverIP, int port, String userName) {
         this.serverIP = serverIP;
         this.port = port;
         this.userName = userName;
-        clientGUI = new ClientGUI();
-        player = new Player(userName, color, serverIP.toString(), port);
 
     }
 
-    public void startClient() {
+    @Override
+    public void run() {
+
         connectToServer();
+        Message message;
         try {
             while (run) {
-                Message message = (Message) ois.readObject();
-                this.mainLabyrinth = message.getMainLabyrinth();
-                //this.mainLabyrinth= Serialization.deserialize("game.dat", MainLabyrinth.class);
-                handleMessage(message);
-
+                message = (Message) ois.readObject();
+                if(message != null){
+                    handleMessage(message);
+                }
             }
         } catch (SocketException e) {
-            // clientGUI.showMessage("Server : " + e.getMessage());
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }catch (Exception e){
             e.printStackTrace();
         } finally {
             try {
@@ -79,130 +73,35 @@ public class Client extends Thread {
         }
     }
 
-    @Override
-    public void run() {
-
-        try {
-            clsSocket = new ServerSocket(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        while (true) {
-            try {
-                Socket socket = clsSocket.accept();
-                if (socket != null) {
-                    System.out.println(userName + "accepted: ");
-                    try {
-                        new ClientThread(this, socket, player).join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void startGame(Vector<Player> userList, int startIndex) {
-        currentMessage.setMessage("The Game is started");
-        dimension = new Dimension(50, 50);
-        for (Player player : userList) {
-            startIndex += 5;
-            mainLabyrinth.addPlayer(player, 0, dimension.getDim_x() - startIndex, dimension.getDim_y() - startIndex);
-            System.out.println("Player: " + player);
-            currentMessage.setMessage("The Game is started");
-            System.out.println(mainLabyrinth.toString());
-            //Robot robot = new Robot(0, player);
-            //SearchHereFlag flag = new SearchHereFlag(-30, 10, 10, dimension.getDim_x(), dimension.getDim_y(), robot);
-            //DontComeNearFlag flag2 = new DontComeNearFlag(-30, 40, 40, dimension.getDim_x(), dimension.getDim_y(), robot);
-            //mainLabyrinth.addFlag(flag);
-            //mainLabyrinth.addFlag(flag2);
-        }
-    }
-
-    public void startGameALT(Vector<Player> userList) {
-
-    }
-
-
     private void handleMessage(Message message) {
 
+        Player new_player;
         switch (message.getType()) {
-
-            case Message.USERS_LIST:
-                this.currentMessage = message;
-                System.out.println("Ich bin in CLIENT in Type" + "USERS_LIST");
-                this.currentMessage.setMessage("The game is waiting for three Persons");
-                this.mainLabyrinth = this.currentMessage.getMainLabyrinth();
-                if (message.getUserList().size() > 1) {
-                    this.currentMessage.setMessage("Please click LEFT Key to start game");
-                    startGame(message.getUserList(),0);
-                }
+            case Message.ADD_PLAYER:
+                new_player = new Player(message.getName(), message.getColor());
+                this.player = new_player;
+                clientGUI.addPlayer(new_player, (int)message.getPosX(), (int)message.getPosY(), message.getObjectKey());
                 break;
-            case Message.SEND_FLAG:
-                this.currentMessage = message;
-                System.out.println("Ich bin in CLIENT in Type" + "SEND_FLAG");
-                this.currentMessage.setMessage("Flag is added");
-                this.mainLabyrinth = this.currentMessage.getMainLabyrinth();
-                this.mainLabyrinth.addFlag(message.getFlag());
-                List<Robot> robots = new ArrayList<>();
-                for (GameObject robot : mainLabyrinth.getChildren()) {
-                    if (robot instanceof Robot) {
-                        robots.add((Robot) robot);
-                    }
-                }
-
-                for (Robot robot : robots) {
-                    mainLabyrinth.getChildren().remove(robot);
-                }
-
-                startGame(this.currentMessage.getUserList(),2);
+            case Message.WELCOME:
+                MainDimension dim = new MainDimension(message.getVector2().getDim_x(), message.getVector2().getDim_y(), 0, message.getSeed());
+                clientGUI.createLabyrinth(dim);
+                new_player = new Player(userName, message.getColor());
+                this.player = new_player;
+                clientGUI.addPlayer(new_player, (int)message.getPosX(), (int)message.getPosY(), message.getObjectKey());
                 break;
-
-            case Message.BYE:
-                run = false;
-                this.currentMessage = message;
-                System.out.println("Ich bin in CLIENT in Type" + "BYE");
+            case Message.UPDATE:
+                clientGUI.updateGame(message.getKeys(), message.getNew_positions_x(), message.getNew_positions_y());
                 break;
-
-            case Message.USER_INFO:
-                this.currentMessage = message;
-                System.out.println("Ich bin in CLIENT in Type" + "REQUEST_MATCH ");
+            case Message.ADD_FLAG:
+                clientGUI.addFlag((int)message.getPosX(), (int)message.getPosY(), message.getFlagType());
                 break;
-
-            case Message.REQUEST_MATCH: { // rival
-                this.currentMessage = message;
-                System.out.println("Ich bin in CLIENT in Type" + "REQUEST_MATCH ");
-                break;
-            }
-
-            case Message.START_MATCH:
-                this.currentMessage = message;
-                System.out.println("Ich bin in CLIENT in Type" + "START_MATCH ");
-                this.mainLabyrinth = this.currentMessage.getMainLabyrinth();
-                if (message.getUserList().size() > 3) {
-                    this.currentMessage.setMessage("Please click LEFT Key to start game");
-                    startGame(message.getUserList(),0);
-                }
-                break;
-            /**
-             try {
-             new ClientThread(this, this.currentMessage).join();
-
-             } catch (InterruptedException e) {
-             e.printStackTrace();
-             }
-             break;
-             ***/
             default:
                 break;
         }
     }
 
 
-    private void connectToServer() { // connect to server
+    private void connectToServer() {//waits until labyrinth is created
 
         try {
             this.socket = new Socket(InetAddress.getByName(serverIP), this.port);
@@ -211,34 +110,35 @@ public class Client extends Thread {
             oos.flush();
             ois = new ObjectInputStream(socket.getInputStream());
 
-            ois.readObject();
             Message connectMessage = new Message(Message.CLIENT_CONNECT);
-            connectMessage.setPlayer(player);
-            //System.out.println(InetAddress.getLocalHost().getHostAddress().toString() + ":" + clsSocket.getLocalPort());
-            connectMessage.setMessage(InetAddress.getLocalHost().getHostAddress().toString() + ":" + clsSocket.getLocalPort());
-            sendToServer(connectMessage); // send connect info to server
+            connectMessage.setMessage(userName);
+            sendToServer(connectMessage);
+
+            Message message;
+            while (true){// wait for welcome message
+                message = (Message) ois.readObject();
+                if(message != null && message.getType() == Message.WELCOME){
+                    handleMessage(message);
+                    break;
+                }
+            }
 
         } catch (UnknownHostException e) {
-            //clientGUI.showMessage("Unable to connect server\n" + e.getMessage());
+            e.printStackTrace();
             System.exit(0);
         } catch (IOException e) {
-            // clientGUI.showMessage("Unable to connect server\n" + e.getMessage());
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public void makeRequest(Message message) {
-        sendToServer(message);
-    }
-
-    public void sendFlag(Message message) {
-        //this.mainLabyrinth.addFlag(message.getFlag());
-        sendToServer(message);
-    }
-
-    public void disconnectFromServer() { // disconnect procedure
-        sendToServer(new Message(Message.CLIENT_DISCONNECT, player));
+    public void addFlag(int x, int y, Flag.flag_type type){
+        Message msg = new Message(Message.ADD_FLAG);
+        msg.setPosY(y);
+        msg.setPosX(x);
+        msg.setFlagType(type);
+        sendToServer(msg);
     }
 
     public void sendToServer(Message message) {
@@ -248,17 +148,6 @@ public class Client extends Thread {
         } catch (IOException e) {
             //clientGUI.showMessage("IO Error:\n" + e.getMessage());
         }
-    }
-
-    public String getColorInfo() {
-        if (currentMessage != null && !currentMessage.getUserList().isEmpty()) {
-            for (Player pl : currentMessage.getUserList()) {
-                if (this.player.getName().equals(pl.getName())) {
-                    return pl.getColor();
-                }
-            }
-        }
-        return "RED";
     }
 
     public Message getCurrentMessage() {
@@ -273,16 +162,7 @@ public class Client extends Thread {
         return port;
     }
 
-
-    public MainLabyrinth getMainLabyrinth() {
-        return mainLabyrinth;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setGUI(ClientGUI gui){
+        clientGUI = gui;
     }
 }

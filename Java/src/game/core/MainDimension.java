@@ -3,14 +3,14 @@ package game.core;
 import java.io.Serializable;
 import java.util.Random;
 
-public class MainDimension extends Dimension implements Serializable {
+public class MainDimension extends Vector_2 implements Serializable {
     private int layer;
-    private int seed;
+    private long seed;
 
     public MainDimension(){
         super();
     }
-    public MainDimension(int dim_x, int  dim_y, int layer, int seed) {
+    public MainDimension(int dim_x, int  dim_y, int layer, long seed) {
         super(dim_x,dim_y);
         this.layer = layer;
         this.seed = seed;
@@ -20,7 +20,7 @@ public class MainDimension extends Dimension implements Serializable {
         return layer;
     }
 
-    public int getSeed() {
+    public long getSeed() {
         if(seed == 0) {
             return new Random().nextInt();
         }

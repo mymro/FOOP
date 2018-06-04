@@ -2,14 +2,14 @@ package game.core;
 
 import java.io.Serializable;
 
-public class Dimension implements Serializable {
+public class Vector_2 implements Serializable {
     private int dim_x;
     private int dim_y;
 
-    public Dimension(){
+    public Vector_2(){
 
     }
-    public Dimension(int dim_x, int dim_y) {
+    public Vector_2(int dim_x, int dim_y) {
         this.dim_x = dim_x;
         this.dim_y = dim_y;
     }
