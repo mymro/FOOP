@@ -1,7 +1,5 @@
 package game.net;
 
-import game.game.objects.MainLabyrinth;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -34,15 +32,15 @@ public class ServerThread extends Thread {
             System.out.println("ServerThread streams: " + e);
         }
 
-        sendMessage(new Message(Message.WELCOME));
-
         try {
+            Message incoming_message;
             while (true) {
-                Message message = (Message) ois.readObject(); // get a message
-                // from Client
-                processClientMessage(message); // handle this message
-                if(message.getType() == Message.CLIENT_DISCONNECT)
-                    break;
+                incoming_message = (Message) ois.readObject();
+                if(incoming_message != null){
+                    processClientMessage(incoming_message); // handle this message
+                    if(incoming_message.getType() == Message.CLIENT_DISCONNECT)
+                        break;
+                }
             }
 
         } catch (IOException e) {
@@ -65,30 +63,10 @@ public class ServerThread extends Thread {
         switch (message.getType()) {
 
             case Message.CLIENT_CONNECT:
-                server.addUser(message.getPlayer(), this.clientSocket, this.oos, message.getMessage());
-                server.sendUserList();
+                server.addUser(oos, clientSocket, message.getMessage());
                 break;
-
-            case Message.CLIENT_DISCONNECT:
-                server.removeUser(message.getPlayer());
-                sendMessage(new Message(Message.BYE));
-                server.sendUserList();
-                break;
-
-            case Message.USERS_LIST:
-                server.sendUserList();
-                break;
-
-            case Message.REQUEST_MATCH:
-                sendMessageTo(message, server.getUserOutputStreamList().get(message.getPlayer().getName())); // to special user(request)
-                break;
-
-            case Message.START_MATCH:
-                message.setMessage("Start_GAME");
-                sendMessage(new Message(Message.START_MATCH));; // to special user(request)
-                break;
-            case Message.SEND_FLAG:
-                server.addFlag(message);
+            case Message.ADD_FLAG:
+                server.addFlag((int)message.getPosX(), (int)message.getPosY(), message.getFlagType());
                 break;
             default:
                 break;
@@ -146,4 +124,5 @@ public class ServerThread extends Thread {
     public void setOos(ObjectOutputStream oos) {
         this.oos = oos;
     }
+
 }

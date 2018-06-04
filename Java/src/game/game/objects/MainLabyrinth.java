@@ -1,11 +1,12 @@
 package game.game.objects;
 
 import game.core.*;
-import game.core.Dimension;
+import game.core.Vector_2;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.io.Serializable;
+import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
@@ -19,8 +20,8 @@ public class MainLabyrinth extends GameObject implements FModifier ,Serializable
         return labyrinth;
     }
 
-    public MainLabyrinth(Dimension dimension, int layer) {
-        this(new MainDimension(dimension.getDim_x(), dimension.getDim_y(), layer, 10));
+    public MainLabyrinth(Vector_2 dimension, int layer) {
+        this(new MainDimension(dimension.getDim_x(), dimension.getDim_y(), layer, new Random().nextInt()));
 
     }
 
@@ -34,9 +35,28 @@ public class MainLabyrinth extends GameObject implements FModifier ,Serializable
 
     public Robot addPlayer(Player player, int layer, int startX, int startY) {
 
-        do {
-        } while (labyrinth.getNodeAt(startX, startY).getType() == Labyrinth.NodeType.finish);
         Robot robot = new Robot(layer, player);
+        Labyrinth lab = new Labyrinth(labyrinth.getDimension());
+        lab.setNodeAt(startX, startY, Labyrinth.NodeType.normal, labyrinth.getNodeAt(startX, startY).getEdges());
+        robot.initialize(lab, startX, startY);
+        attach(robot);
+
+        return robot;
+    }
+
+    public Robot addPlayer(String color, String name){
+
+        int startX, startY;
+        Random rand = new Random();
+
+        do {
+            startX = (rand.nextInt(labyrinth.getDimension().getDim_x()));
+            startY = (rand.nextInt(labyrinth.getDimension().getDim_y()));
+        } while (labyrinth.getNodeAt(startX, startY).getType() == Labyrinth.NodeType.finish);
+
+        Player player = new Player(name, color);
+
+        Robot robot = new Robot(0, player);
         Labyrinth lab = new Labyrinth(labyrinth.getDimension());
         lab.setNodeAt(startX, startY, Labyrinth.NodeType.normal, labyrinth.getNodeAt(startX, startY).getEdges());
         robot.initialize(lab, startX, startY);
@@ -132,5 +152,9 @@ public class MainLabyrinth extends GameObject implements FModifier ,Serializable
                 ", seed=" + seed +
                 ", modifiers=" + modifiers +
                 '}';
+    }
+
+    public long getSeed(){
+        return seed;
     }
 }

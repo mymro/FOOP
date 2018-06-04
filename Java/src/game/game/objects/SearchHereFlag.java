@@ -8,8 +8,8 @@ import java.io.Serializable;
 
 public class SearchHereFlag extends Flag implements Serializable{
 
-    public SearchHereFlag(int layer, int x, int y, int dim_x, int dim_y, Robot player )throws IllegalArgumentException{
-        super(layer, x, y, dim_x, dim_y, player);
+    public SearchHereFlag(int layer, int x, int y, int dim_x, int dim_y)throws IllegalArgumentException{
+        super(layer, x, y, dim_x, dim_y);
     }
 
     @Override
@@ -17,7 +17,7 @@ public class SearchHereFlag extends Flag implements Serializable{
         double step_width = gc.getCanvas().getWidth()/dim_x;
         double step_height = gc.getCanvas().getHeight()/dim_y;
         for(int i = 0; i < 20; i++){
-            gc.setStroke(Color.web("#4cf140", -0.9*getFModifierAt(getPos_x()-i,getPos_y())/20));
+            gc.setStroke(Color.web("#4cf140", -0.8*getFModifierAt(getPos_x()-i,getPos_y())/20));
             gc.setLineWidth(step_width);
             gc.strokeOval((getPos_x()-i)*step_width, (getPos_y()-i)*step_height, ((i)*2+1)*step_width, ((i)*2+1)*step_height);
         }

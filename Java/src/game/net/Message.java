@@ -1,10 +1,7 @@
 package game.net;
 
 import game.core.Flag;
-import game.game.objects.MainLabyrinth;
-import game.game.objects.Player;
-
-import java.util.Vector;
+import game.core.Vector_2;
 
 public class Message implements java.io.Serializable {
 
@@ -17,58 +14,33 @@ public class Message implements java.io.Serializable {
     public static final int REQUEST_MATCH		= 5;
     public static final int START_MATCH 		= 6;
     public static final int USER_INFO 			= 7;
-    public static final int SEND_FLAG 			= 8;
+    public static final int ADD_FLAG            = 8;
+    public static final int ADD_PLAYER          = 9;
+    public static final int UPDATE              = 10;
 
 
 
     private static final long serialVersionUID = 1L;
 
     private int type;
-    private MainLabyrinth mainLabyrinth;
-    private Player player;
+    private Flag.flag_type flag_type;
     private String message;
-    private int from;
-    private int to;
-    private int taken;
-    private Flag flag;
-
-    private Vector<Player> userList;
+    private long seed;
+    private String color;
+    private double pos_x;
+    private double pos_y;
+    private int object_key;
+    private Vector_2 vect;
+    private String name;
+    private int[] new_positions_keys;
+    private double[] new_positions_x;
+    private  double[] new_positions_y;
 
     public Message() {
     }
 
     public Message(int type) {
         this.type = type;
-    }
-
-    public Message(int type,Player player) {
-        this.type = type;
-        this.player = player;
-    }
-
-    public Message(int type,Flag flag) {
-        this.type = type;
-        this.flag = flag;
-    }
-
-    public Message(int type, Player player, String message) {
-        this.type = type;
-        this.player  = player;
-        this.message = message;
-    }
-
-    public Message(int type, Player player, int from, int to) {
-        this.type = type;
-        this.from = from;
-        this.to = to;
-    }
-
-    public Message(int type, Player player, int from, int to, int take) {
-        this.type = type;
-        this.player = player;
-        this.from = from;
-        this.to = to;
-        this.setTaken(take);
     }
 
     public int getType() {
@@ -79,16 +51,6 @@ public class Message implements java.io.Serializable {
         this.type = type;
     }
 
-	/* GET - SET Methodları */
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -97,53 +59,85 @@ public class Message implements java.io.Serializable {
         this.message = message;
     }
 
-    public int getFrom() {
-        return from;
+    public void setSeed(long seed){
+        this.seed = seed;
     }
 
-    public void setFrom(int from) {
-        this.from = from;
+    public long getSeed(){
+        return seed;
     }
 
-    public int getTo() {
-        return to;
+    public void setColor(String color){
+        this.color = color;
     }
 
-    public void setTo(int to) {
-        this.to = to;
+    public String getColor(){
+        return color;
     }
 
-    public int getTaken() {
-        return taken;
+    public void setPosX(double x){
+        pos_x = x;
     }
 
-    public void setTaken(int taken) {
-        this.taken = taken;
+    public double getPosX(){
+        return pos_x;
     }
 
-    public Vector<Player> getUserList() {
-        return userList;
+    public void setPosY(double y){
+        pos_y = y;
     }
 
-    public void setUserList(Vector<Player> userList) {
-        this.userList = userList;
+    public double getPosY(){
+        return pos_y;
     }
 
-
-    public Flag getFlag() {
-        return flag;
+    public void setObjectKey(int key){
+        object_key = key;
     }
 
-    public void setFlag(Flag flag) {
-        this.flag = flag;
+    public int getObjectKey(){
+        return object_key;
     }
 
-    public MainLabyrinth getMainLabyrinth() {
-        return mainLabyrinth;
+    public void setName(String name){
+        this.name = name;
     }
 
-    public void setMainLabyrinth(MainLabyrinth mainLabyrinth) {
-        this.mainLabyrinth = mainLabyrinth;
+    public String getName(){
+        return name;
     }
 
+    public void setNewPositions(int[] keys, double[] x, double[] y){
+        new_positions_keys = keys;
+        new_positions_x = x;
+        new_positions_y = y;
+    }
+
+    public int[] getKeys(){
+        return new_positions_keys;
+    }
+
+    public double[] getNew_positions_x(){
+        return new_positions_x;
+    }
+
+    public double[] getNew_positions_y() {
+        return new_positions_y;
+    }
+
+    public void setFlagType(Flag.flag_type type){
+        flag_type = type;
+    }
+
+    public Flag.flag_type getFlagType(){
+        return flag_type;
+    }
+
+    public void setVector2(Vector_2 vect){
+        this.vect = vect;
+    }
+
+    public Vector_2 getVector2() {
+        return vect;
+    }
 }

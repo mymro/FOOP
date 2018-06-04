@@ -4,19 +4,15 @@ import java.io.Serializable;
 
 public class Player implements Serializable{
     private String name;
-    private String url;
-    private int port;
     private String color;
 
-    public Player(String name, String color, String url, int port){
+    public Player(String name, String color){
         this.name = name;
         this.color = color;
-        this.url = url;
-        this.port = port;
     }
 
 
-    public String getUrl() {
+    /*public String getUrl() {
         return url;
     }
 
@@ -30,7 +26,7 @@ public class Player implements Serializable{
 
     public void setPort(int port) {
         this.port = port;
-    }
+    }*/
 
     public String getName() {
         return name;
@@ -52,8 +48,6 @@ public class Player implements Serializable{
     public String toString() {
         return "Player{" +
                 "name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                ", port=" + port +
                 ", color='" + color + '\'' +
                 '}';
     }
