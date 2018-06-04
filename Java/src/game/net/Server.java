@@ -33,7 +33,7 @@ public class Server implements Serializable {
 
     private Hashtable<Integer, GameObject> moving_objects;
     private Integer current_key = 1;
-    private long last_frame_time;
+    private long last_frame_time = 0;
 
     public Server(int port) {
         colorList.add("#f44242");
@@ -149,7 +149,6 @@ public class Server implements Serializable {
                 }
             };
 
-            last_frame_time = System.nanoTime();
             ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
             executor.scheduleAtFixedRate(gameRunnable, 1000, 16, TimeUnit.MILLISECONDS);//60 FPS
             // has to be shutdown on close
@@ -176,6 +175,9 @@ public class Server implements Serializable {
     }
 
     private void update(){
+        if(last_frame_time == 0){
+            last_frame_time = System.nanoTime();
+        }
         long now = System.nanoTime();
         game_system.setDelta_time((now-last_frame_time)/1000000000.0);
         last_frame_time = now;
