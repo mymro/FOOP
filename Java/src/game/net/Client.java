@@ -85,6 +85,7 @@ public class Client extends Thread {
             case Message.WELCOME:
                 MainDimension dim = new MainDimension(message.getVector2().getDim_x(), message.getVector2().getDim_y(), 0, message.getSeed());
                 clientGUI.createLabyrinth(dim);
+                clientGUI.setColorCircle(message.getColor());
                 this.color = message.getColor();
                 new_player = new Player(userName, message.getColor());
                 this.player = new_player;

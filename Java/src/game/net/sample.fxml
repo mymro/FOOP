@@ -2,8 +2,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox  fx:controller="game.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="top_left">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
+<VBox fx:controller="game.Controller"
+      xmlns:fx="http://javafx.com/fxml" alignment="top_left">
     <MenuBar fx:id="menuBar">
         <menus>
             <Menu text="Connection Options">
@@ -24,6 +26,13 @@
             </Menu>
         </menus>
     </MenuBar>
+
+    <HBox fx:id="circle_box" style="-fx-background-color: #4dd6c6;" spacing="5">
+        <padding>
+            <Insets bottom="15.0" left="12.0" right="12.0" top="15.0" />
+        </padding>
+        <Circle fx:id="playerColorCircle" centerX="20" centerY="20" radius="20"></Circle>
+    </HBox>
 
     <Canvas fx:id="labyrinthCanvas" height="800" width="800" onMouseClicked="#handleClickEvent"></Canvas>
 
