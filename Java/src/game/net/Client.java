@@ -50,14 +50,14 @@ public class Client extends Thread {
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Socket closed client disconnected");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }catch (Exception e){
             e.printStackTrace();
         } finally {
             try {
-                System.out.println(userName + " terminating");
+                System.out.println("Socket closed client disconnected");
                 if (ois != null) {
                     ois.close();
                 }
@@ -72,6 +72,13 @@ public class Client extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void disconnectFromServer() { // disconnect procedure
+        Message message = new Message(Message.CLIENT_DISCONNECT);
+        message.setMessage(userName);
+        sendToServer(message);
+
     }
 
     private void handleMessage(Message message) {
@@ -89,6 +96,10 @@ public class Client extends Thread {
                 new_player = new Player(userName, message.getColor());
                 this.player = new_player;
                 clientGUI.addPlayer(new_player, (int)message.getPosX(), (int)message.getPosY(), message.getObjectKey());
+                break;
+            case Message.BYE:
+                run = false;
+                System.out.println("BYE BYE BYE");
                 break;
             case Message.UPDATE:
                 clientGUI.updateGame(message.getKeys(), message.getNew_positions_x(), message.getNew_positions_y());

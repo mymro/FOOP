@@ -38,13 +38,11 @@ public class ServerThread extends Thread {
                 incoming_message = (Message) ois.readObject();
                 if(incoming_message != null){
                     processClientMessage(incoming_message); // handle this message
-                    if(incoming_message.getType() == Message.CLIENT_DISCONNECT)
-                        break;
                 }
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Socket is closed");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -53,7 +51,7 @@ public class ServerThread extends Thread {
                 ois.close();
                 clientSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Socket is closed");
             }
         }
     }
@@ -68,6 +66,14 @@ public class ServerThread extends Thread {
             case Message.ADD_FLAG:
                 server.addFlag((int)message.getPosX(), (int)message.getPosY(), message.getFlagType());
                 break;
+            case Message.CLIENT_DISCONNECT:
+                server.removeUser(oos,clientSocket, message);
+                sendMessageTo(new Message(Message.BYE), oos);
+                break;
+            case Message.BYE:
+                server.removeUser(oos,clientSocket, message);
+                break;
+
             default:
                 break;
         }
@@ -89,7 +95,7 @@ public class ServerThread extends Thread {
             oos.flush();
         }
         catch(IOException ioException){
-            ioException.printStackTrace();
+            System.out.println("Socked closed and disconnected");
         }
     }
 

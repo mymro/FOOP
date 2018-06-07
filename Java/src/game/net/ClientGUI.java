@@ -358,4 +358,9 @@ public class ClientGUI extends Application {
                 break;
         }
     }
+
+    @Override
+    public void stop() throws Exception {
+        client.disconnectFromServer();
+    }
 }

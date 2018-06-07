@@ -241,4 +241,22 @@ public class Server implements Serializable {
     Vector_2 getLabyrinthDimension(){
         return labyrinth.getLabyrinth().getDimension();
     }
+
+    public void removeUser(ObjectOutputStream oos, Socket socket, Message message) {
+        synchronized(userList) {
+            userList.remove(socket);
+            for (Robot robot : userList.keySet()) {
+                if (robot.getPlayer().getName().equals(message.getName())) {
+                    userList.remove(robot);
+                    System.out.println(message.getName() + "USER DISCONNECTED ");
+                }
+            }
+            try {
+                oos.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
