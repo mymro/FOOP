@@ -30,7 +30,7 @@ public class Main extends Application {
         private double delta_time; // in nanoseconds
         public MainLabyrinth labyrinth;
         public boolean isRunning= true;
-        private String message = "";
+        private String message = null;
         private GameSystem(){
             delta_time = 0;
         }

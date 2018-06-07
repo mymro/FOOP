@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client extends Thread {
 
@@ -22,16 +24,15 @@ public class Client extends Thread {
 
     private ServerSocket clsSocket;
     private Socket socket;
+    private String color =null;
 
     public static ClientGUI clientGUI;
     private Vector_2 dimension = null;
-
 
     public Client(String serverIP, int port, String userName) {
         this.serverIP = serverIP;
         this.port = port;
         this.userName = userName;
-
     }
 
     @Override
@@ -74,7 +75,6 @@ public class Client extends Thread {
     }
 
     private void handleMessage(Message message) {
-
         Player new_player;
         switch (message.getType()) {
             case Message.ADD_PLAYER:
@@ -85,12 +85,16 @@ public class Client extends Thread {
             case Message.WELCOME:
                 MainDimension dim = new MainDimension(message.getVector2().getDim_x(), message.getVector2().getDim_y(), 0, message.getSeed());
                 clientGUI.createLabyrinth(dim);
+                this.color = message.getColor();
                 new_player = new Player(userName, message.getColor());
                 this.player = new_player;
                 clientGUI.addPlayer(new_player, (int)message.getPosX(), (int)message.getPosY(), message.getObjectKey());
                 break;
             case Message.UPDATE:
                 clientGUI.updateGame(message.getKeys(), message.getNew_positions_x(), message.getNew_positions_y());
+                break;
+            case Message.FINISCH:
+                clientGUI.finishGame(message.getMessage(),message.isFinish());
                 break;
             case Message.ADD_FLAG:
                 clientGUI.addFlag((int)message.getPosX(), (int)message.getPosY(), message.getFlagType());
@@ -146,23 +150,19 @@ public class Client extends Thread {
             oos.writeObject(message);
             oos.flush();
         } catch (IOException e) {
-            //clientGUI.showMessage("IO Error:\n" + e.getMessage());
+            clientGUI.finishGame("IO Error:\n" + e.getMessage(),true);
         }
-    }
-
-    public Message getCurrentMessage() {
-        return currentMessage;
-    }
-
-    public String getServerIP() {
-        return serverIP;
-    }
-
-    public int getPort() {
-        return port;
     }
 
     public void setGUI(ClientGUI gui){
         clientGUI = gui;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public String getColor() {
+        return color;
     }
 }

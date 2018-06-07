@@ -12,7 +12,7 @@ public class Message implements java.io.Serializable {
     public static final int USERS_LIST			= 3;
     public static final int BYE					= 4;
     public static final int REQUEST_MATCH		= 5;
-    public static final int START_MATCH 		= 6;
+    public static final int FINISCH 		    = 6;
     public static final int USER_INFO 			= 7;
     public static final int ADD_FLAG            = 8;
     public static final int ADD_PLAYER          = 9;
@@ -35,6 +35,7 @@ public class Message implements java.io.Serializable {
     private int[] new_positions_keys;
     private double[] new_positions_x;
     private  double[] new_positions_y;
+    private boolean finish;
 
     public Message() {
     }
@@ -113,6 +114,11 @@ public class Message implements java.io.Serializable {
         new_positions_y = y;
     }
 
+    public void setState(boolean finish, String message){
+        this.finish = finish;
+        this.message = message;
+    }
+
     public int[] getKeys(){
         return new_positions_keys;
     }
@@ -139,5 +145,9 @@ public class Message implements java.io.Serializable {
 
     public Vector_2 getVector2() {
         return vect;
+    }
+
+    public boolean isFinish() {
+        return finish;
     }
 }

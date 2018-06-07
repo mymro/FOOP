@@ -34,8 +34,9 @@ public class Server implements Serializable {
     private Hashtable<Integer, GameObject> moving_objects;
     private Integer current_key = 1;
     private long last_frame_time = 0;
-
+    private boolean finish = false;
     public Server(int port) {
+
         colorList.add("#f44242");
         colorList.add("#42f480");
         colorList.add("#4341f4");
@@ -145,7 +146,9 @@ public class Server implements Serializable {
         if (connected_players >= PLAYERS_TO_START){
             Runnable gameRunnable = new Runnable() {
                 public void run() {
-                    update();
+                    if(!finish) {
+                        update();
+                    }
                 }
             };
 
@@ -197,6 +200,11 @@ public class Server implements Serializable {
         }
 
         msg.setNewPositions(keys, x,y);
+        if(labyrinth.isFinish() & labyrinth.getMessage() != null){
+            msg.setType(6);
+            finish = true;
+            msg.setState(labyrinth.isFinish(),labyrinth.getMessage());
+        }
 
         sendToClients(msg);
     }

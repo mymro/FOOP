@@ -11,6 +11,8 @@ import game.Main;
 import game.game.objects.SearchHereFlag;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +24,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -33,11 +36,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 public class ClientGUI extends Application {
 
@@ -87,6 +89,7 @@ public class ClientGUI extends Application {
     private Hashtable<Integer, GameObject> moving_objects;
     public static Text actiontarget = new Text();
     private Stage primaryStage;
+    public static int counter = 0;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -168,6 +171,39 @@ public class ClientGUI extends Application {
     static Label infoLabel;
     static Label playerListLabel;
     private static Circle circle;
+    Alert alert = null;
+
+    private static Integer index = 0;
+
+    public void goToFinish(String message) {
+
+        Text gameTitle = new Text(message);
+
+        circle = new Circle(20, 20, 20);
+        circle.setFill(Color.web(message.substring(message.lastIndexOf(".") + 1)));
+        gameTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+
+
+        Task<Void> task = new Task<Void>() {
+
+            @Override
+            protected Void call() throws Exception {
+                Platform.runLater(() -> {
+                    alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Game Information");
+                    alert.setHeaderText("Game Result");
+                    Text text = new Text(message.substring(0, message.lastIndexOf(".")));
+                    alert.setContentText(text.getText());
+                    alert.setGraphic(circle);
+                    alert.showAndWait();
+                });
+
+                return null;
+            }
+        };
+
+        new Thread(task).start();
+    }
 
     public void goToPlay() {
 
@@ -186,33 +222,53 @@ public class ClientGUI extends Application {
 
         primaryStage.setTitle(userName + ", " + hostName);
         primaryStage.setResizable(false);
+        BorderPane border = new BorderPane();
 
-        infoLabel.setFont(Font.font("Amble CN", FontWeight.BOLD, 16));
-        circle = new Circle(5, 5, 5);
-        ((VBox) root).getChildren().add(infoLabel);
-        ((VBox) root).getChildren().add(playerListLabel);
-        ((VBox) root).getChildren().add(circle);
+        HBox hbox = addHBox();
+        border.setTop(hbox);
+        border.setCenter(((VBox) root));
 
-        Scene gameScene = new Scene(root);
+        Scene gameScene = new Scene(border);
         prepareActionHandlers(gameScene);
         graphicsContext = controller.labyrinthCanvas.getGraphicsContext2D();
         primaryStage.setScene(gameScene);
 
-        new AnimationTimer(){
+
+        new AnimationTimer() {
 
             long last_frame_time = System.nanoTime();
 
             @Override
-            public void handle(long now)  {
-                if(labyrinth != null){
+            public void handle(long now) {
+                if (labyrinth != null) {
                     graphicsContext.setFill(Color.BLACK);
-                    graphicsContext.fillRect(0,0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
-                    game_system.setDelta_time((now- last_frame_time)/1000000000.0);
+                    graphicsContext.fillRect(0, 0, graphicsContext.getCanvas().getWidth(), graphicsContext.getCanvas().getHeight());
+                    game_system.setDelta_time((now - last_frame_time) / 1000000000.0);
                     last_frame_time = now;
                     labyrinth.draw(graphicsContext);
+
                 }
             }
         }.start();
+
+
+    }
+
+      /*
+     * Creates an HBox with two buttons for the top region
+     */
+
+    public HBox addHBox() {
+        HBox hbox = new HBox();
+        hbox.setPadding(new Insets(15, 12, 15, 12));
+        hbox.setSpacing(5);   // Gap between nodes
+        hbox.setStyle("-fx-background-color: #4dd6c6;");
+
+        circle = new Circle(20, 20, 20);
+        circle.setFill(Color.web(client.getColor()));
+        hbox.getChildren().addAll(circle);
+
+        return hbox;
     }
 
     private static void prepareActionHandlers(Scene gameScene) {
@@ -236,25 +292,38 @@ public class ClientGUI extends Application {
         launch(args);
     }
 
-    public void updateGame(int[]keys, double[] x, double[] y) {
-        for (int i = 0; i < keys.length; i++){
+    public void finishGame(String message, boolean finish) {
+        if (finish && message != null) {
+            goToFinish(message);
+
+        }
+    }
+
+    public void updateGame(int[] keys, double[] x, double[] y) {
+
+        for (int i = 0; i < keys.length; i++) {
             moving_objects.get(keys[i]).setPos_x(x[i]);
             moving_objects.get(keys[i]).setPos_y(y[i]);
         }
     }
 
-    public void createLabyrinth(MainDimension dim){
+    public void setColorCircle(String x){
+        if(x !=null) {
+            this.circle.setFill(Color.web(x));
+        }
+    }
+    public void createLabyrinth(MainDimension dim) {
         labyrinth = new MainLabyrinth(dim);
     }
 
-    public synchronized void addPlayer(Player player, int x, int y, int object_key){
-        synchronized (moving_objects){
-            moving_objects.put(object_key, labyrinth.addPlayer(player, 0, x,y));
+    public synchronized void addPlayer(Player player, int x, int y, int object_key) {
+        synchronized (moving_objects) {
+            moving_objects.put(object_key, labyrinth.addPlayer(player, 0, x, y));
         }
     }
 
-    public void createFlag(double mouse_x, double mouse_y, Flag.flag_type type){
-        int x =labyrinth.getLabyrinth().getDimension().getDim_x();
+    public void createFlag(double mouse_x, double mouse_y, Flag.flag_type type) {
+        int x = labyrinth.getLabyrinth().getDimension().getDim_x();
         int y = labyrinth.getLabyrinth().getDimension().getDim_y();
         Canvas canvas = graphicsContext.getCanvas();
         double step_width = canvas.getWidth() / x;
@@ -276,7 +345,7 @@ public class ClientGUI extends Application {
         }
     }
 
-    public void addFlag(int x, int y, Flag.flag_type type){
+    public void addFlag(int x, int y, Flag.flag_type type) {
         Flag flag;
         switch (type) {
             case attract:

@@ -95,8 +95,8 @@ public class Robot extends GameObject implements Serializable{
     public void update() {
         if(system.isRunning) {
             if (current_node.getType().equals(Labyrinth.NodeType.finish)) {
-                system.setRunning(false);
-                system.setMessage("Game is finished " + this.player.getName() + " is  with color " + player.getColor() + " won ");
+                this.mainLabyrinth.setFinish(true);
+                this.mainLabyrinth.setMessage("Game is finished  \n" + this.player.getName() + " WON." +player.getColor());
                 return;
             }
 

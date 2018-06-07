@@ -16,6 +16,9 @@ public class MainLabyrinth extends GameObject implements FModifier ,Serializable
     private long seed;
     private Vector<FModifier> modifiers;
 
+    private boolean finish = true;
+    private String message =null;
+
     public Labyrinth getLabyrinth() {
         return labyrinth;
     }
@@ -156,5 +159,21 @@ public class MainLabyrinth extends GameObject implements FModifier ,Serializable
 
     public long getSeed(){
         return seed;
+    }
+
+    public boolean isFinish() {
+        return finish;
+    }
+
+    public void setFinish(boolean finish) {
+        this.finish = finish;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
