@@ -157,7 +157,6 @@ public class ClientGUI extends Application {
                 setPort(gui.getPort());
                 client = new Client(getHostName(), getPort(), getUserName());
                 client.setGUI(main_gui);
-                client.start();
                 goToPlay();
             }
         });
@@ -224,15 +223,13 @@ public class ClientGUI extends Application {
         primaryStage.setResizable(false);
         BorderPane border = new BorderPane();
 
-        HBox hbox = addHBox();
-        border.setTop(hbox);
-        border.setCenter(((VBox) root));
-
-        Scene gameScene = new Scene(border);
+        Scene gameScene = new Scene(root);
         prepareActionHandlers(gameScene);
         graphicsContext = controller.labyrinthCanvas.getGraphicsContext2D();
+        circle = controller.playerColorCircle;
         primaryStage.setScene(gameScene);
 
+        client.start();
 
         new AnimationTimer() {
 
@@ -265,7 +262,7 @@ public class ClientGUI extends Application {
         hbox.setStyle("-fx-background-color: #4dd6c6;");
 
         circle = new Circle(20, 20, 20);
-        circle.setFill(Color.web(client.getColor()));
+        //circle.setFill(Color.web(client.getColor()));
         hbox.getChildren().addAll(circle);
 
         return hbox;

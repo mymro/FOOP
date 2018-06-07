@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuBar;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 
 public class Controller {
 
@@ -23,6 +24,9 @@ public class Controller {
 
     @FXML
     public MenuBar menuBar;
+
+    @FXML
+    public Circle playerColorCircle;
 
     public ClientGUI clientGUI;
 
