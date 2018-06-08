@@ -25,7 +25,7 @@ public class DontComeNearFlag extends Flag implements Serializable{
 
     @Override
     public double getFModifierAt(double x, double y) {
-        return 20*Math.exp(-((Math.pow(x-getPos_x(),2)/(200) + Math.pow(y-getPos_y(), 2)/(200))));
+        return 20*Math.exp(-((Math.pow(x-getPos_x(),2)/(50) + Math.pow(y-getPos_y(), 2)/(50))));
     }
 
     @Override
