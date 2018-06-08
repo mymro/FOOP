@@ -16,9 +16,8 @@ public class SearchHereFlag extends Flag implements Serializable{
     public void draw(GraphicsContext gc){
         double step_width = gc.getCanvas().getWidth()/dim_x;
         double step_height = gc.getCanvas().getHeight()/dim_y;
-        gc.setStroke(Color.web("#4cf140", -0.8*getFModifierAt(getPos_x(),getPos_y())/20));
-        gc.setLineWidth(step_width);
-        gc.strokeOval((getPos_x())*step_width, (getPos_y())*step_height, (2+1)*step_width, (2+1)*step_height);
+        gc.setFill(Color.web("#4cf140"));
+        gc.fillOval((getPos_x())*step_width, (getPos_y())*step_height, step_width, step_height);
     }
 
     @Override
