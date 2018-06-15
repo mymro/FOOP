@@ -30,8 +30,8 @@
       <file leaf-file-name="MainLabyrinth.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/game/objects/MainLabyrinth.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="63">
-              <caret line="76" column="13" lean-forward="false" selection-start-line="76" selection-start-column="13" selection-end-line="76" selection-end-column="13" />
+            <state relative-caret-position="346">
+              <caret line="112" column="0" lean-forward="true" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
               <folding>
                 <marker date="1529060006625" expanded="false" signature="5035:5046" ph=" { " />
                 <marker date="1529060006625" expanded="false" signature="5061:5067" ph=" }" />
@@ -39,8 +39,6 @@
                 <marker date="1529060006625" expanded="false" signature="5176:5182" ph=" }" />
                 <marker date="1529060006625" expanded="false" signature="5244:5255" ph=" { " />
                 <marker date="1529060006625" expanded="false" signature="5299:5305" ph=" }" />
-                <marker date="1529060006625" expanded="true" signature="5376:5543" ph="{...}" />
-                <marker date="1529060006625" expanded="true" signature="5588:5773" ph="{...}" />
                 <marker date="1529060006625" expanded="false" signature="5800:5810" ph=" { " />
                 <marker date="1529060006625" expanded="false" signature="5822:5828" ph=" }" />
                 <marker date="1529060006625" expanded="false" signature="5859:5870" ph=" { " />
@@ -111,11 +109,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Flag.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Flag.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/core/Flag.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="21">
-              <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+            <state relative-caret-position="307">
+              <caret line="17" column="46" lean-forward="true" selection-start-line="17" selection-start-column="46" selection-end-line="17" selection-end-column="46" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FModifier.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/game/core/FModifier.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="6" column="7" lean-forward="true" selection-start-line="6" selection-start-column="7" selection-end-line="6" selection-end-column="7" />
               <folding />
             </state>
           </provider>
@@ -124,8 +132,8 @@
       <file leaf-file-name="DontComeNearFlag.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/game/objects/DontComeNearFlag.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="29" column="25" lean-forward="false" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="25" />
+            <state relative-caret-position="399">
+              <caret line="23" column="22" lean-forward="true" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -136,16 +144,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="336">
               <caret line="24" column="13" lean-forward="false" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Application.java" pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk-9/lib/src.zip!/javafx.graphics/javafx/application/Application.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="147">
-              <caret line="7" column="2" lean-forward="false" selection-start-line="7" selection-start-column="2" selection-end-line="7" selection-end-column="2" />
               <folding />
             </state>
           </provider>
@@ -254,7 +252,6 @@
         <option value="$PROJECT_DIR$/src/Game/Core/MainDimension.java" />
         <option value="$PROJECT_DIR$/src/Game/Main.java" />
         <option value="$PROJECT_DIR$/src/game/core/Dimension.java" />
-        <option value="$PROJECT_DIR$/src/game/core/FModifier.java" />
         <option value="$PROJECT_DIR$/src/game/Main.java" />
         <option value="$PROJECT_DIR$/src/game/core/MainDimension.java" />
         <option value="$PROJECT_DIR$/src/game/game/objects/Player.java" />
@@ -274,6 +271,7 @@
         <option value="$PROJECT_DIR$/src/game/game/objects/DontComeNearFlag.java" />
         <option value="$PROJECT_DIR$/src/game/game/objects/SearchHereFlag.java" />
         <option value="$PROJECT_DIR$/src/game/core/Flag.java" />
+        <option value="$PROJECT_DIR$/src/game/core/FModifier.java" />
       </list>
     </option>
   </component>
@@ -436,7 +434,7 @@
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="SearchEverywhereHistoryKey" value="Robot&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/game/objects/Robot.java&#10;Robo&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/game/objects/Robot.java&#10;Client&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/net/Client.java&#10;Contr&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/Controller.java&#10;Game&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/core/GameObject.java&#10;Lab&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/game/objects/MainLabyrinth.java&#10;Labyrin&#9;PSI&#9;JAVA://Game.Core.Labyrinth.LabyrinthNode&#10;Dim&#9;PSI&#9;JAVA://Game.GameObjects.Dimension&#10;Message&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Message.java&#10;MainD&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/MainDimension.java&#10;Clien&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Client.java&#10;ClientTh&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/ClientThread.java&#10;Server&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Server.java&#10;MainL&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/MainLabyrinth.java&#10;Player&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/Player.java" />
+    <property name="SearchEverywhereHistoryKey" value="FM&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/core/FModifier.java&#10;Robot&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/game/objects/Robot.java&#10;Robo&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/game/objects/Robot.java&#10;Client&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/net/Client.java&#10;Contr&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/Controller.java&#10;Game&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/core/GameObject.java&#10;Lab&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/Java/src/game/game/objects/MainLabyrinth.java&#10;Labyrin&#9;PSI&#9;JAVA://Game.Core.Labyrinth.LabyrinthNode&#10;Dim&#9;PSI&#9;JAVA://Game.GameObjects.Dimension&#10;Message&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Message.java&#10;MainD&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/MainDimension.java&#10;Clien&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Client.java&#10;ClientTh&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/ClientThread.java&#10;Server&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/net/Server.java&#10;MainL&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/MainLabyrinth.java&#10;Player&#9;FILE&#9;file://C:/Users/LENOVO/Desktop/UNI/FOOP/FOOP/src/Game/GameObjects/Player.java" />
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
   </component>
@@ -794,7 +792,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="186963000" />
+    <option name="totallyTimeSpent" value="188019000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -818,12 +816,13 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.68222225" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2881549" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.32801822" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2733485" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2733485" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20676692" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32460135" sideWeight="0.49785176" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24895833" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973147" sideWeight="0.49369368" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -863,7 +862,6 @@
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Problems" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19583334" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32555673" sideWeight="0.49785176" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
@@ -986,13 +984,6 @@
     <entry file="file://$PROJECT_DIR$/src/Game/GameObjects/DontComeNearFlag.java" />
     <entry file="file://$PROJECT_DIR$/src/Game/GameObjects/SearchHereFlag.java" />
     <entry file="file://$PROJECT_DIR$/src/Game/GameObjects/MainLabyrinth.java" />
-    <entry file="file://$PROJECT_DIR$/src/game/core/FModifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" column="17" lean-forward="false" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk-9/lib/src.zip!/javafx.fxml/javafx/fxml/FXMLLoader.java" />
     <entry file="jar://C:/Program Files/Java/jdk-9/lib/src.zip!/javafx.graphics/javafx/scene/canvas/Canvas.java" />
     <entry file="jar://C:/Program Files/Java/jdk-9/lib/src.zip!/javafx.graphics/javafx/concurrent/Task.java" />
@@ -1023,33 +1014,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/game/net/ClientThread.java" />
-    <entry file="file://$PROJECT_DIR$/src/game/game/objects/MainLabyrinth.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="76" column="13" lean-forward="false" selection-start-line="76" selection-start-column="13" selection-end-line="76" selection-end-column="13" />
-          <folding>
-            <marker date="1529060006625" expanded="false" signature="5035:5046" ph=" { " />
-            <marker date="1529060006625" expanded="false" signature="5061:5067" ph=" }" />
-            <marker date="1529060006625" expanded="false" signature="5122:5133" ph=" { " />
-            <marker date="1529060006625" expanded="false" signature="5176:5182" ph=" }" />
-            <marker date="1529060006625" expanded="false" signature="5244:5255" ph=" { " />
-            <marker date="1529060006625" expanded="false" signature="5299:5305" ph=" }" />
-            <marker date="1529060006625" expanded="true" signature="5376:5543" ph="{...}" />
-            <marker date="1529060006625" expanded="true" signature="5588:5773" ph="{...}" />
-            <marker date="1529060006625" expanded="false" signature="5800:5810" ph=" { " />
-            <marker date="1529060006625" expanded="false" signature="5822:5828" ph=" }" />
-            <marker date="1529060006625" expanded="false" signature="5859:5870" ph=" { " />
-            <marker date="1529060006625" expanded="false" signature="5884:5890" ph=" }" />
-            <marker date="1529060006625" expanded="false" signature="5933:5944" ph=" { " />
-            <marker date="1529060006625" expanded="false" signature="5965:5971" ph=" }" />
-            <marker date="1529060006625" expanded="false" signature="6003:6014" ph=" { " />
-            <marker date="1529060006625" expanded="false" signature="6029:6035" ph=" }" />
-            <marker date="1529060006625" expanded="false" signature="6079:6090" ph=" { " />
-            <marker date="1529060006625" expanded="false" signature="6113:6119" ph=" }" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/game/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="282">
@@ -1184,14 +1148,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/game/objects/DontComeNearFlag.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="29" column="25" lean-forward="false" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/game/game/objects/SearchHereFlag.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="420">
@@ -1234,8 +1190,49 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/game/core/Flag.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        <state relative-caret-position="307">
+          <caret line="17" column="46" lean-forward="true" selection-start-line="17" selection-start-column="46" selection-end-line="17" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/game/objects/DontComeNearFlag.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="23" column="22" lean-forward="true" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/game/objects/MainLabyrinth.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="346">
+          <caret line="112" column="0" lean-forward="true" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
+          <folding>
+            <marker date="1529060006625" expanded="false" signature="5035:5046" ph=" { " />
+            <marker date="1529060006625" expanded="false" signature="5061:5067" ph=" }" />
+            <marker date="1529060006625" expanded="false" signature="5122:5133" ph=" { " />
+            <marker date="1529060006625" expanded="false" signature="5176:5182" ph=" }" />
+            <marker date="1529060006625" expanded="false" signature="5244:5255" ph=" { " />
+            <marker date="1529060006625" expanded="false" signature="5299:5305" ph=" }" />
+            <marker date="1529060006625" expanded="false" signature="5800:5810" ph=" { " />
+            <marker date="1529060006625" expanded="false" signature="5822:5828" ph=" }" />
+            <marker date="1529060006625" expanded="false" signature="5859:5870" ph=" { " />
+            <marker date="1529060006625" expanded="false" signature="5884:5890" ph=" }" />
+            <marker date="1529060006625" expanded="false" signature="5933:5944" ph=" { " />
+            <marker date="1529060006625" expanded="false" signature="5965:5971" ph=" }" />
+            <marker date="1529060006625" expanded="false" signature="6003:6014" ph=" { " />
+            <marker date="1529060006625" expanded="false" signature="6029:6035" ph=" }" />
+            <marker date="1529060006625" expanded="false" signature="6079:6090" ph=" { " />
+            <marker date="1529060006625" expanded="false" signature="6113:6119" ph=" }" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/core/FModifier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="6" column="7" lean-forward="true" selection-start-line="6" selection-start-column="7" selection-end-line="6" selection-end-column="7" />
           <folding />
         </state>
       </provider>
